@@ -4,7 +4,7 @@
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/single-spa-angular2.js",
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "rm -r lib && babel src --out-dir lib",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "npm run build"
   },

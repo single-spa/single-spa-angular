@@ -24,7 +24,7 @@ export default function singleSpaAngular1(userOpts) {
 		throw new Error(`single-spa-angular2 must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()`);
 	}
 
-	if (!mainModule) {
+	if (!opts.mainModule) {
 		throw new Error(`single-spa-angular2 must be passed opts.mainModule, which is the Angular module to bootstrap`);
 	}
 
@@ -44,12 +44,14 @@ function bootstrap(opts) {
 }
 
 function mount(opts) {
-	return new Promise((resolve, reject) => {
-		const containerEl = getContainerEl(opts);
-		containerEl.innerHTML = template;
-		opts.bootstrappedModule = opts.platform.bootstrapModule(opts.mainModule);
-		resolve();
-	});
+	const containerEl = getContainerEl(opts);
+	containerEl.innerHTML = opts.template;
+	return opts
+		.angularPlatform
+		.bootstrapModule(opts.mainModule)
+		.then(module => {
+			opts.bootstrappedModule = module;
+		})
 }
 
 function unmount(opts) {
