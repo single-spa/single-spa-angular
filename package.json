@@ -1,0 +1,30 @@
+{
+  "name": "single-spa-angular2",
+  "version": "0.1.0",
+  "description": "Helpers for building single-spa applications which use Angular 2",
+  "main": "lib/single-spa-angular2.js",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CanopyTax/single-spa-angular2.git"
+  },
+  "keywords": [
+    "single-spa",
+    "angular2"
+  ],
+  "author": "Joel Denning",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/CanopyTax/single-spa-angular2/issues"
+  },
+  "homepage": "https://github.com/CanopyTax/single-spa-angular2#readme",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-stage-3": "^6.17.0"
+  }
+}
