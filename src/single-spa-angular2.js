@@ -6,9 +6,9 @@ const defaultOpts = {
 	template: null,
 };
 
-export default function singleSpaAngular1(userOpts) {
+export default function singleSpaAngular2(userOpts) {
 	if (typeof userOpts !== 'object') {
-		throw new Error(`single-spa-angular1 requires a configuration object`);
+		throw new Error(`single-spa-angular2 requires a configuration object`);
 	}
 
 	const opts = {
