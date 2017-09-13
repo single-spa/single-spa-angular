@@ -56,6 +56,8 @@ function mount(opts) {
 
 function unmount(opts) {
 	return new Promise((resolve, reject) => {
+		const routerRef = opts.bootstrappedModule.injector.get(Router);
+		routerRef.dispose();
 		opts.bootstrappedModule.destroy();
 		delete opts.bootstrappedModule;
 		resolve();
