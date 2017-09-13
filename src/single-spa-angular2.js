@@ -4,6 +4,8 @@ const defaultOpts = {
 	angularPlatform: null,
 	mainModule: null,
 	template: null,
+	// optional opts
+	Router: null,
 };
 
 export default function singleSpaAngular2(userOpts) {
@@ -56,8 +58,10 @@ function mount(opts) {
 
 function unmount(opts) {
 	return new Promise((resolve, reject) => {
-		const routerRef = opts.bootstrappedModule.injector.get(Router);
-		routerRef.dispose();
+		if (opts.Router) {
+			const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
+			routerRef.dispose();
+		}
 		opts.bootstrappedModule.destroy();
 		delete opts.bootstrappedModule;
 		resolve();
