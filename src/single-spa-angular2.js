@@ -52,7 +52,7 @@ function mount(opts) {
 		.angularPlatform
 		.bootstrapModule(opts.mainModule)
 		.then(module => {
-			opts.bootstrappedModule = module;
+			return opts.bootstrappedModule = module;
 		})
 }
 
