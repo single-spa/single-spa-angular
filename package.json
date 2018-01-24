@@ -4,7 +4,7 @@
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/single-spa-angular2.js",
   "scripts": {
-    "build": "rm -r lib && babel src --out-dir lib",
+    "build": "rimraf lib && babel src --out-dir lib --source-maps",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "npm run build"
   },
@@ -23,8 +23,9 @@
   },
   "homepage": "https://github.com/CanopyTax/single-spa-angular2#readme",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-preset-latest": "^6.16.0",
-    "babel-preset-stage-3": "^6.17.0"
+    "babel-cli": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "rimraf": "^2.6.2"
   }
 }
