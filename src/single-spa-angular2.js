@@ -1,11 +1,11 @@
 const defaultOpts = {
 	// required opts
-	domElementGetter: null,
 	angularPlatform: null,
 	mainModule: null,
 	template: null,
 	// optional opts
 	Router: null,
+  domElementGetter: null, // only optional if you provide a domElementGetter as a custom prop
 };
 
 export default function singleSpaAngular2(userOpts) {
@@ -17,10 +17,6 @@ export default function singleSpaAngular2(userOpts) {
 		...defaultOpts,
 		...userOpts,
 	};
-
-	if (typeof opts.domElementGetter !== 'function') {
-		throw new Error(`single-spa-angular2 must be passed opts.domElementGetter function`);
-	}
 
 	if (!opts.angularPlatform) {
 		throw new Error(`single-spa-angular2 must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()`);
@@ -45,18 +41,29 @@ function bootstrap(opts) {
 	return Promise.resolve();
 }
 
-function mount(opts) {
-	const containerEl = getContainerEl(opts);
-	containerEl.innerHTML = opts.template;
-	return opts
-		.angularPlatform
-		.bootstrapModule(opts.mainModule)
-		.then(module => {
-			return opts.bootstrappedModule = module;
-		})
+function mount(opts, props) {
+  return Promise
+    .resolve()
+    .then(() => {
+      const domElementGetter = chooseDomElementGetter(opts, props)
+      if (!domElementGetter) {
+        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`)
+      }
+
+      const containerEl = getContainerEl(domElementGetter)
+      containerEl.innerHTML = opts.template
+    })
+    .then(domElementGetter => {
+      return opts
+        .angularPlatform
+        .bootstrapModule(opts.mainModule)
+        .then(module => {
+          return opts.bootstrappedModule = module;
+        })
+    })
 }
 
-function unmount(opts) {
+function unmount(opts, props) {
 	return new Promise((resolve, reject) => {
 		if (opts.Router) {
 			const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
@@ -68,11 +75,15 @@ function unmount(opts) {
 	});
 }
 
-function getContainerEl(opts) {
-	const element = opts.domElementGetter();
+function getContainerEl(domElementGetter) {
+	const element = domElementGetter();
 	if (!element) {
 		throw new Error(`domElementGetter did not return a valid dom element`);
 	}
 
 	return element;
+}
+
+function chooseDomElementGetter(opts, props) {
+  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter
 }
