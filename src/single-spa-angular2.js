@@ -53,7 +53,7 @@ function mount(opts, props) {
       const containerEl = getContainerEl(domElementGetter)
       containerEl.innerHTML = opts.template
     })
-    .then(domElementGetter => {
+    .then(() => {
       return opts
         .angularPlatform
         .bootstrapModule(opts.mainModule)
