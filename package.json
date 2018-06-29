@@ -1,6 +1,6 @@
 {
   "name": "single-spa-angular",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/single-spa-angular.js",
   "scripts": {
