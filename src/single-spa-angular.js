@@ -8,9 +8,9 @@ const defaultOpts = {
   domElementGetter: null, // only optional if you provide a domElementGetter as a custom prop
 };
 
-export default function singleSpaAngular2(userOpts) {
+export default function singleSpaAngular(userOpts) {
   if (typeof userOpts !== 'object') {
-    throw new Error(`single-spa-angular2 requires a configuration object`);
+    throw new Error(`single-spa-angular requires a configuration object`);
   }
 
   const opts = {
@@ -19,15 +19,15 @@ export default function singleSpaAngular2(userOpts) {
   };
 
   if (!opts.angularPlatform) {
-    throw new Error(`single-spa-angular2 must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()`);
+    throw new Error(`single-spa-angular must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()`);
   }
 
   if (!opts.mainModule) {
-    throw new Error(`single-spa-angular2 must be passed opts.mainModule, which is the Angular module to bootstrap`);
+    throw new Error(`single-spa-angular must be passed opts.mainModule, which is the Angular module to bootstrap`);
   }
 
   if (typeof opts.template !== 'string') {
-    throw new Error(`single-spa-angular2 must be passed opts.template string`);
+    throw new Error(`single-spa-angular must be passed opts.template string`);
   }
 
   return {

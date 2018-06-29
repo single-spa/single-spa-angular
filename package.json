@@ -1,8 +1,8 @@
 {
-  "name": "single-spa-angular2",
+  "name": "single-spa-angular",
   "version": "1.3.0",
   "description": "Helpers for building single-spa applications which use Angular 2",
-  "main": "lib/single-spa-angular2.js",
+  "main": "lib/single-spa-angular.js",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --source-maps",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,18 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CanopyTax/single-spa-angular2.git"
+    "url": "git+https://github.com/CanopyTax/single-spa-angular.git"
   },
   "keywords": [
     "single-spa",
-    "angular2"
+    "angular"
   ],
   "author": "Joel Denning",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/CanopyTax/single-spa-angular2/issues"
+    "url": "https://github.com/CanopyTax/single-spa-angular/issues"
   },
-  "homepage": "https://github.com/CanopyTax/single-spa-angular2#readme",
+  "homepage": "https://github.com/CanopyTax/single-spa-angular#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-latest": "^6.24.1",
