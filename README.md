@@ -5,7 +5,7 @@ Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) appli
 This project is great for people who use Angular without angular-cli. But if that's not you, try out [single-spa-angular-cli](https://github.com/PlaceMe-SAS/single-spa-angular-cli).
 
 ## Example
-An example can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/angular2/angular2.app.js) repository.
+An example can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/angular/angular.app.js) repository.
 
 ## Quickstart
 First, in the [single-spa application](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), run `npm install --save single-spa-angular`. Then, create an entry file for application:
