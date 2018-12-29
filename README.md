@@ -18,16 +18,16 @@ import mainModule from './main-module.ts';
 import {Router} from '@angular/router';
 
 export default singleSpaAngular({
-	domElementGetter,
-	mainModule,
-	angularPlatform: platformBrowserDynamic(),
-	template: `<component-to-render />`,
-	Router,
+  domElementGetter,
+  mainModule,
+  angularPlatform: platformBrowserDynamic(),
+  template: `<component-to-render />`,
+  Router,
   ApplicationRef,
 })
 
 function domElementGetter() {
-	return document.getElementById('angular');
+  return document.getElementById('angular');
 }
 ```
 
