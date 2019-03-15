@@ -1,0 +1,10 @@
+{
+  "$schema": "@angular-devkit/architect/src/builders-schema.json",
+  "builders": {
+    "build": {
+      "class": "./lib/builders/browser",
+      "schema": "./src/builders/browser/schema.json",
+      "description": "Build an Angular CLI application as a single module"
+    }
+  }
+}
