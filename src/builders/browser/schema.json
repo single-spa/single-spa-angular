@@ -1,8 +1,7 @@
 {
-  "title": "Webpack browser schema for Build Facade.",
-  "description": "Browser target options",
+  "title": "Webpack browser schema for single-spa-angular.",
+  "description": "Browser target options for single-spa-angular",
   "properties": {
-
     "libraryName": {
       "type": "string",
       "description": "Library name (maps to WebpackConfig.output.library)"

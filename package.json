@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --source-maps && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "yarn build"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -27,12 +27,18 @@
     "@angular-devkit/architect": ">= 0.10.0",
     "@angular-devkit/build-angular": ">= 0.10.0",
     "@angular-devkit/core": ">= 0.10.0",
+    "@angular/compiler": ">=2",
+    "@angular/compiler-cli": ">=2",
+    "@angular/core": ">=2",
     "rxjs": ">= 6.0.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.6",
     "@angular-devkit/build-angular": "^0.13.6",
     "@angular-devkit/core": "^7.3.6",
+    "@angular/compiler": "^7.2.9",
+    "@angular/compiler-cli": "^7.2.9",
+    "@angular/core": "^7.2.9",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
@@ -40,5 +46,7 @@
     "rimraf": "^2.6.2",
     "typescript": "^3.3.3333"
   },
-  "dependencies": {}
+  "dependencies": {
+    "webpack-merge": "^4.2.1"
+  }
 }
