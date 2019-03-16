@@ -27,18 +27,25 @@
     "@angular-devkit/architect": ">= 0.10.0",
     "@angular-devkit/build-angular": ">= 0.10.0",
     "@angular-devkit/core": ">= 0.10.0",
+    "@angular/compiler": ">=2",
+    "@angular/compiler-cli": ">=2",
     "rxjs": ">= 6.0.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.6",
     "@angular-devkit/build-angular": "^0.13.6",
     "@angular-devkit/core": "^7.3.6",
+    "@angular/compiler": "^7.2.9",
+    "@angular/compiler-cli": "^7.2.9",
+    "@angular/core": "^7.2.9",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "@types/node": "^11.11.3",
     "rimraf": "^2.6.2",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.1.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "webpack-merge": "^4.2.1"
+  }
 }
