@@ -47,3 +47,35 @@ All options are passed to single-spa-angular via the `opts` parameter when calli
 ## Other notes
 - If you have multiple angular child applications, make sure that `reflect-metadata` is only imported once in the root application and is not imported again in the child applications. Otherwise, you might see an `No NgModule metadata found` error. See [issue thread](https://github.com/CanopyTax/single-spa-angular/issues/2#issuecomment-347864894) for more details.
 - NOte that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
+
+
+## Angular Builder
+To aid in building your applications a builder is available to generate a module for single-spa to consume.
+
+### Usage
+To build your Angular CLI application as a single-spa app do the following.
+
+* Open `angular.json` found in the project root
+* Locate the project you wish to update.
+* Navigate to the `architect > build` property.
+* Set the `builder` property to `single-spa-angular:build`.
+* Create a new option `libraryName` and provide a name for your module
+* (Optional) Create a new option `libraryTarget`, this determines the type of library.
+  * By default a UMD module will be created
+  * Available options can be [found here](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111)  
+
+Configuration should look similar to this:
+```json
+    "architect": {
+        "build": {
+          "builder": "single-spa-angular:build",
+          "options": {
+            "libraryName": "hiAngularApp",
+            "libraryTarget": "var",
+            // Existing CLI options
+          }
+        }
+    }
+```
+
+Run `ng build` and verify your dist contains one asset, `main.js`.

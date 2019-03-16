@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "inlineSourceMap": true,
+    "sourceRoot": ".",
+    "strictNullChecks": true,
+    "target": "es2016",
+    "lib": [
+      "es2017"
+    ],
+    "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ],
+    "outDir": "./lib"
+  }
+}
