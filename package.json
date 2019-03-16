@@ -29,6 +29,7 @@
     "@angular-devkit/core": ">= 0.10.0",
     "@angular/compiler": ">=2",
     "@angular/compiler-cli": ">=2",
+    "@angular/core": ">=2",
     "rxjs": ">= 6.0.0"
   },
   "devDependencies": {
