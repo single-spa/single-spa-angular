@@ -1,3 +1,5 @@
+// tslint:disable: max-line-length
+
 const defaultOpts = {
   // required opts
   angularPlatform: null,
@@ -44,7 +46,7 @@ export default function singleSpaAngular(userOpts) {
 
 function bootstrap(opts) {
   return Promise.resolve().then(() => {
-    opts.routingEventListener = function(evt) {
+    opts.routingEventListener = (evt) => {
       /* When popstate and hashchange events occur, single-spa delays them in order to
        * check which applications should be active and perform any necessary mounting/unmounting.
        *
@@ -58,23 +60,23 @@ function bootstrap(opts) {
        * way of detecting it. So I fell back to just always causing an application tick, even though that's probably
        * not great for performance.
        */
-      const applicationRef = opts.bootstrappedModule.injector.get(opts.ApplicationRef)
-      applicationRef.tick()
-    }
-  })
+      const applicationRef = opts.bootstrappedModule.injector.get(opts.ApplicationRef);
+      applicationRef.tick();
+    };
+  });
 }
 
 function mount(opts, props) {
   return Promise
     .resolve()
     .then(() => {
-      const domElementGetter = chooseDomElementGetter(opts, props)
+      const domElementGetter = chooseDomElementGetter(opts, props);
       if (!domElementGetter) {
-        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`)
+        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
       }
 
-      const containerEl = getContainerEl(domElementGetter)
-      containerEl.innerHTML = opts.template
+      const containerEl = getContainerEl(domElementGetter);
+      containerEl.innerHTML = opts.template;
     })
     .then(() => {
       return opts
@@ -83,11 +85,11 @@ function mount(opts, props) {
         .then(module => {
           opts.bootstrappedModule = module;
           if (opts.ApplicationRef) {
-            window.addEventListener('single-spa:routing-event', opts.routingEventListener)
+            window.addEventListener('single-spa:routing-event', opts.routingEventListener);
           }
-          return module
-        })
-    })
+          return module;
+        });
+    });
 }
 
 function unmount(opts, props) {
@@ -98,11 +100,11 @@ function unmount(opts, props) {
       routerRef.dispose();
     }
     if (opts.ApplicationRef) {
-      window.removeEventListener('single-spa:routing-event', opts.routingEventListener)
+      window.removeEventListener('single-spa:routing-event', opts.routingEventListener);
     }
     opts.bootstrappedModule.destroy();
     delete opts.bootstrappedModule;
-  })
+  });
 }
 
 function getContainerEl(domElementGetter) {
@@ -115,5 +117,5 @@ function getContainerEl(domElementGetter) {
 }
 
 function chooseDomElementGetter(opts, props) {
-  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter
+  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter;
 }

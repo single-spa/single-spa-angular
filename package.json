@@ -5,9 +5,10 @@
   "main": "lib/single-spa-angular.js",
   "builders": "builders.json",
   "scripts": {
-    "build": "rimraf lib && tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "build": "yarn clean && yarn lint && tsc",
+    "clean": "rimraf lib"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "@angular-devkit/core": "^7.3.6",
     "@types/node": "^11.11.3",
     "rimraf": "^2.6.2",
+    "tslint": "^5.14.0",
     "typescript": "^3.3.3333"
   },
   "dependencies": {}

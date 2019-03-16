@@ -1,6 +1,6 @@
+import { BuilderContext } from '@angular-devkit/architect';
 import { BrowserBuilder } from '@angular-devkit/build-angular';
 import { Path, virtualFs } from '@angular-devkit/core';
-import { BuilderContext } from '@angular-devkit/architect';
 import * as fs from 'fs';
 import { Configuration } from 'webpack';
 
@@ -11,11 +11,11 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
     super(context);
   }
 
-  buildWebpackConfig(
+  public buildWebpackConfig(
     root: Path,
     projectRoot: Path,
     host: virtualFs.Host<fs.Stats>,
-    options: SingleSpaBuilderSchema
+    options: SingleSpaBuilderSchema,
   ): Configuration {
     // Disable es2015 polyfills
     // tslint:disable-next-line: max-line-length
@@ -33,7 +33,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
 
     // Remove Angular's IndexHtmlWebpackPlugin from build
     const indexHtmlWebpackPluginIndex = config.plugins.findIndex(
-      plugin => (plugin as any).constructor.name === 'IndexHtmlWebpackPlugin'
+      (plugin) => (plugin as any).constructor.name === 'IndexHtmlWebpackPlugin',
     );
 
     if (indexHtmlWebpackPluginIndex > -1) {
@@ -43,7 +43,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
     // Configure Wepack output
     config.output = {
       library: options.libraryName,
-      libraryTarget: options.libraryTarget
+      libraryTarget: options.libraryTarget,
     };
 
     return config;

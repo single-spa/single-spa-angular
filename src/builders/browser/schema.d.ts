@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
- import { NormalizedBrowserBuilderSchema } from '@angular-devkit/build-angular';
+import { NormalizedBrowserBuilderSchema } from '@angular-devkit/build-angular';
 
 export interface SingleSpaBuilderSchema extends NormalizedBrowserBuilderSchema {
   libraryTarget: string;
@@ -78,7 +78,9 @@ export interface ExtraEntryPointObject {
   lazy: boolean;
 }
 
-export declare type FileReplacement = DeprecatedFileReplacment | CurrentFileReplacement;
+export declare type FileReplacement =
+  | DeprecatedFileReplacment
+  | CurrentFileReplacement;
 
 export interface DeprecatedFileReplacment {
   /**
