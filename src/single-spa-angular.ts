@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 const defaultOpts = {
   // required opts
   angularPlatform: null,
@@ -10,8 +12,8 @@ const defaultOpts = {
 };
 
 export default function singleSpaAngular(userOpts) {
-  if (typeof userOpts !== 'object') {
-    throw new Error(`single-spa-angular requires a configuration object`);
+  if (typeof userOpts !== "object") {
+    throw new Error("single-spa-angular requires a configuration object");
   }
 
   const opts = {
@@ -20,19 +22,19 @@ export default function singleSpaAngular(userOpts) {
   };
 
   if (!opts.angularPlatform) {
-    throw new Error(`single-spa-angular must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()`);
+    throw new Error("single-spa-angular must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()");
   }
 
   if (!opts.mainModule) {
-    throw new Error(`single-spa-angular must be passed opts.mainModule, which is the Angular module to bootstrap`);
+    throw new Error("single-spa-angular must be passed opts.mainModule, which is the Angular module to bootstrap");
   }
 
-  if (typeof opts.template !== 'string') {
-    throw new Error(`single-spa-angular must be passed opts.template string`);
+  if (typeof opts.template !== "string") {
+    throw new Error("single-spa-angular must be passed opts.template string");
   }
 
   if (opts.Router && !opts.ApplicationRef || opts.ApplicationRef && !opts.Router) {
-    throw Error('For @angular/router to work with single-spa, you must provide both the Router and ApplicationRef opts');
+    throw Error("For @angular/router to work with single-spa, you must provide both the Router and ApplicationRef opts");
   }
 
   return {
@@ -44,7 +46,7 @@ export default function singleSpaAngular(userOpts) {
 
 function bootstrap(opts) {
   return Promise.resolve().then(() => {
-    opts.routingEventListener = function(evt) {
+    opts.routingEventListener = function() {
       /* When popstate and hashchange events occur, single-spa delays them in order to
        * check which applications should be active and perform any necessary mounting/unmounting.
        *
@@ -58,23 +60,23 @@ function bootstrap(opts) {
        * way of detecting it. So I fell back to just always causing an application tick, even though that's probably
        * not great for performance.
        */
-      const applicationRef = opts.bootstrappedModule.injector.get(opts.ApplicationRef)
-      applicationRef.tick()
-    }
-  })
+      const applicationRef = opts.bootstrappedModule.injector.get(opts.ApplicationRef);
+      applicationRef.tick();
+    };
+  });
 }
 
 function mount(opts, props) {
   return Promise
     .resolve()
     .then(() => {
-      const domElementGetter = chooseDomElementGetter(opts, props)
+      const domElementGetter = chooseDomElementGetter(opts, props);
       if (!domElementGetter) {
-        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`)
+        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
       }
 
-      const containerEl = getContainerEl(domElementGetter)
-      containerEl.innerHTML = opts.template
+      const containerEl = getContainerEl(domElementGetter);
+      containerEl.innerHTML = opts.template;
     })
     .then(() => {
       return opts
@@ -83,13 +85,14 @@ function mount(opts, props) {
         .then(module => {
           opts.bootstrappedModule = module;
           if (opts.ApplicationRef) {
-            window.addEventListener('single-spa:routing-event', opts.routingEventListener)
+            window.addEventListener("single-spa:routing-event", opts.routingEventListener);
           }
-          return module
-        })
-    })
+          return module;
+        });
+    });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function unmount(opts, props) {
   return Promise.resolve().then(() => {
     if (opts.Router) {
@@ -98,22 +101,22 @@ function unmount(opts, props) {
       routerRef.dispose();
     }
     if (opts.ApplicationRef) {
-      window.removeEventListener('single-spa:routing-event', opts.routingEventListener)
+      window.removeEventListener("single-spa:routing-event", opts.routingEventListener);
     }
     opts.bootstrappedModule.destroy();
     delete opts.bootstrappedModule;
-  })
+  });
 }
 
 function getContainerEl(domElementGetter) {
   const element = domElementGetter();
   if (!element) {
-    throw new Error(`domElementGetter did not return a valid dom element`);
+    throw new Error("domElementGetter did not return a valid dom element");
   }
 
   return element;
 }
 
 function chooseDomElementGetter(opts, props) {
-  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter
+  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter;
 }

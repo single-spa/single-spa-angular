@@ -1,0 +1,17 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["prefer-arrow"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "semi": ["error", "always"],
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/explicit-function-return-type": false,
+    "@typescript-eslint/explicit-member-accessibility": false,
+    "@typescript-eslint/no-explicit-any": false
+  }
+}
