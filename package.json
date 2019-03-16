@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --source-maps && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "yarn build"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
