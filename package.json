@@ -5,7 +5,7 @@
   "main": "lib/single-spa-angular.js",
   "builders": "builders.json",
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib --source-maps && tsc",
+    "build": "rimraf lib && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "npm run build"
   },

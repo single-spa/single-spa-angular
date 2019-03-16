@@ -13,6 +13,7 @@
     "strictNullChecks": true,
     "target": "es2016",
     "lib": [
+      "dom",
       "es2017"
     ],
     "rootDir": "./src",
