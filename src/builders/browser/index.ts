@@ -49,7 +49,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
       externals: {
         'zone.js': 'Zone',
       },
-    })
+    });
   }
 }
 
