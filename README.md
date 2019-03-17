@@ -55,27 +55,29 @@ To aid in building your applications a builder is available to generate a module
 ### Usage
 To build your Angular CLI application as a single-spa app do the following.
 
-* Open `angular.json` found in the project root
+* Open `angular.json`
 * Locate the project you wish to update.
 * Navigate to the `architect > build` property.
 * Set the `builder` property to `single-spa-angular:build`.
-* Create a new option `libraryName` and provide a name for your module
-* (Optional) Create a new option `libraryTarget`, this determines the type of library.
-  * By default a UMD module will be created
-  * Available options can be [found here](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111)  
+* Run `ng build` and verify your dist contains one asset, `main.js`.
 
-Configuration should look similar to this:
+Example Configuration:
 ```json
+[...]
     "architect": {
         "build": {
           "builder": "single-spa-angular:build",
-          "options": {
-            "libraryName": "hiAngularApp",
-            "libraryTarget": "var",
-            // Existing CLI options
-          }
+          [...]
         }
     }
+[...]
 ```
+#### Builder Options
+Configuration options are provided to the `options` section of the builder. 
 
-Run `ng build` and verify your dist contains one asset, `main.js`.
+| Name | Description | Default Value |
+| ---- | ----------- | ------------- |
+| libraryName | (optional) Specify the name of the module | Angular CLI project name |
+| libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
+
+
