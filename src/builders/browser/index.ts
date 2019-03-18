@@ -1,6 +1,6 @@
+import { BuilderContext } from '@angular-devkit/architect';
 import { BrowserBuilder } from '@angular-devkit/build-angular';
 import { Path, virtualFs } from '@angular-devkit/core';
-import { BuilderContext } from '@angular-devkit/architect';
 import * as fs from 'fs';
 import { Configuration } from 'webpack';
 import webpackMerge from 'webpack-merge';
@@ -16,8 +16,11 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
     root: Path,
     projectRoot: Path,
     host: virtualFs.Host<fs.Stats>,
-    options: SingleSpaBuilderSchema
+    options: SingleSpaBuilderSchema,
   ): Configuration {
+
+    const libraryName = options.libraryName || this.context.targetSpecifier && this.context.targetSpecifier.project;
+
     // Disable es2015 polyfills
     // tslint:disable-next-line: max-line-length
     // https://github.com/angular/angular-cli/blob/3d8064bb64d72557474a7484f1b85eaf35788916/packages/angular_devkit/build_angular/src/angular-cli-files/models/webpack-configs/common.ts#L56
@@ -34,7 +37,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
 
     // Remove Angular's IndexHtmlWebpackPlugin from build
     const indexHtmlWebpackPluginIndex = config.plugins.findIndex(
-      plugin => (plugin as any).constructor.name === 'IndexHtmlWebpackPlugin'
+      plugin => (plugin as any).constructor.name === 'IndexHtmlWebpackPlugin',
     );
 
     if (indexHtmlWebpackPluginIndex > -1) {
@@ -43,7 +46,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
 
     return webpackMerge.smart(config, {
       output: {
-        library: options.libraryName,
+        library: libraryName,
         libraryTarget: options.libraryTarget,
       },
       externals: {
