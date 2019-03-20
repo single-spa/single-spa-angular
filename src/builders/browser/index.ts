@@ -3,7 +3,7 @@ import { Path, virtualFs } from '@angular-devkit/core';
 import { BuilderContext } from '@angular-devkit/architect';
 import * as fs from 'fs';
 import { Configuration } from 'webpack';
-import webpackMerge from 'webpack-merge';
+import * as webpackMerge from 'webpack-merge';
 
 import { SingleSpaBuilderSchema } from './schema';
 
