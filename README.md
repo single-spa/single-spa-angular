@@ -49,10 +49,12 @@ All options are passed to single-spa-angular via the `opts` parameter when calli
 - NOte that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
 
 
-## Angular Builder
-To aid in building your applications a builder is available to generate a module for single-spa to consume.
+## Angular Builders
+To aid in building your applications there are builders available to generate modules for single-spa to consume and to serve modules using the Angular CLI dev server.
 
-### Usage
+### Browser Builder
+
+#### Usage
 To build your Angular CLI application as a single-spa app do the following.
 
 * Open `angular.json`
@@ -72,7 +74,7 @@ Example Configuration:
     }
 [...]
 ```
-#### Builder Options
+##### Builder Options
 Configuration options are provided to the `options` section of the builder. 
 
 | Name | Description | Default Value |
@@ -80,4 +82,14 @@ Configuration options are provided to the `options` section of the builder.
 | libraryName | (optional) Specify the name of the module | Angular CLI project name |
 | libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
 
+### Dev-server Builder
+
+#### Usage
+To server your Angular CLI application as a single-spa app do the following.
+
+* Open `angular.json`
+* Locate the project you wish to update.
+* Navigate to the `architect > serve` property.
+* Set the `builder` property to `single-spa-angular:dev-server`.
+* Run `ng serve` and verify you can access your module at http://localhost:4200/main.js.
 
