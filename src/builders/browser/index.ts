@@ -3,7 +3,7 @@ import { BrowserBuilder } from '@angular-devkit/build-angular';
 import { Path, virtualFs } from '@angular-devkit/core';
 import * as fs from 'fs';
 import { Configuration } from 'webpack';
-import webpackMerge from 'webpack-merge';
+import * as webpackMerge from 'webpack-merge';
 
 import { SingleSpaBuilderSchema } from './schema';
 
@@ -46,8 +46,8 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
 
     return webpackMerge.smart(config, {
       output: {
-        library: libraryName,
-        libraryTarget: options.libraryTarget,
+        library: options.libraryName,
+        libraryTarget: options.libraryTarget as any,
       },
       externals: {
         'zone.js': 'Zone',

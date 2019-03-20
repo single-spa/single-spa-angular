@@ -6,23 +6,26 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
-    "inlineSourceMap": true,
+    "skipLibCheck": false,
+    "sourceMap": true,
     "sourceRoot": ".",
     "strictNullChecks": true,
     "target": "es2016",
     "lib": [
       "dom",
-      "es2017"
+      "es2018"
     ],
     "rootDir": "./src",
     "typeRoots": [
       "./node_modules/@types"
     ],
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "outDir": "./lib"
-  }
+  },
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
 }

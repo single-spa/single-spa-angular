@@ -1,16 +1,30 @@
 # single-spa-angular
-Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular. Note that this project works with Angular 2, 3, 4, 5+, despite its name.
-
-## Alternative
-This project is great for people who use Angular without angular-cli. But if that's not you, try out [single-spa-angular-cli](https://github.com/PlaceMe-SAS/single-spa-angular-cli).
+Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular.
 
 ## Example
 An example can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/angular/angular.app.js) repository.
 
 ## Quickstart
-First, in the [single-spa application](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), run `npm install --save single-spa-angular`. Then, create an entry file for application:
+If you're using the Angular CLI, use the Angular Schematic to quickly upgrade your application to single-spa.
 
-```js
+In the root of your Angular CLI application run the following:
+```bash
+ng add single-spa-angular
+```
+The schematic performs the following tasks:
+* Install single-spa-angular
+* Create a new entry in the project's architect `single-spa` preconfigured to use the [Angular Builder](#Angular-Builder)
+* Generate a `main.single-spa.ts` in your project's `/src`
+* Add an npm script `npm run build:single-spa`
+
+## Manual Install
+In root of the application run:
+```bash
+npm install --save single-spa-angular
+```
+
+Then create `main.single-spa.ts` with the following content:
+```typescript
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {ApplicationRef} from '@angular/core';
 import singleSpaAngular from 'single-spa-angular';
@@ -46,11 +60,12 @@ All options are passed to single-spa-angular via the `opts` parameter when calli
 
 ## Other notes
 - If you have multiple angular child applications, make sure that `reflect-metadata` is only imported once in the root application and is not imported again in the child applications. Otherwise, you might see an `No NgModule metadata found` error. See [issue thread](https://github.com/CanopyTax/single-spa-angular/issues/2#issuecomment-347864894) for more details.
-- NOte that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
+- Note that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
 
 
 ## Angular Builder
 To aid in building your applications a builder is available to generate a module for single-spa to consume.
+**NOTE: If you installed this library using the Angular Schematic, this is already configured.**
 
 ### Usage
 To build your Angular CLI application as a single-spa app do the following.
@@ -79,5 +94,3 @@ Configuration options are provided to the `options` section of the builder.
 | ---- | ----------- | ------------- |
 | libraryName | (optional) Specify the name of the module | Angular CLI project name |
 | libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
-
-

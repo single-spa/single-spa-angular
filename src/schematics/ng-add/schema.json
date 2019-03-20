@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "single-spa-ng-add",
+  "title": "single-spa ng-add schematic",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "Name of the project to update",
+      "$default": {
+        "$source": "projectName"
+      }
+    },
+    "routing": {
+      "type": "boolean",
+      "description": "When true, angular application supports routing",
+      "default": false,
+      "x-prompt": "Does your current application use Angular routing?"
+    }
+  },
+  "required": []
+}
