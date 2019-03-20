@@ -46,7 +46,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
 
     return webpackMerge.smart(config, {
       output: {
-        library: options.libraryName,
+        library: libraryName,
         libraryTarget: options.libraryTarget as any,
       },
       externals: {
