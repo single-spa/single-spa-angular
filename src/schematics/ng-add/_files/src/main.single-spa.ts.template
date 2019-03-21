@@ -1,3 +1,4 @@
+import 'core-js/es7/reflect';
 <% if (routing) { %>import { enableProdMode, ApplicationRef } from '@angular/core';<% } %>
 <% if (!routing) { %>import { enableProdMode } from '@angular/core';<% } %>
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if (routing) { %>
@@ -17,4 +18,14 @@ export default singleSpaAngular({
   template: '<<%= prefix %>-root />',<% if (routing) { %>
   Router,
   ApplicationRef,<% } %>
+  domElementGetter() {
+    let containerEl = document.getElementById('<<%= prefix %>');
+    if (!containerEl) {
+      containerEl = document.createElement('div');
+      containerEl.id = '<<%= prefix %>';
+      document.body.appendChild(containerEl);
+    }
+
+    return containerEl;
+  },
 });
