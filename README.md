@@ -6,17 +6,17 @@ Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) appli
 If you're using the Angular CLI, use the Angular Schematic to quickly upgrade your application to single-spa.
 
 In the root of your Angular CLI application run the following:
-```bash
+```sh
 ng add single-spa-angular@beta
 ```
 The schematic performs the following tasks:
-* Install single-spa-angular
-* Create a new entry in the project's architect `single-spa` preconfigured to use the [Angular Builder](#Angular-Builder)
-* Generate a `main.single-spa.ts` in your project's `/src`
-* Add an npm script `npm run build:single-spa`
+* Install single-spa-angular.
+* Create a new entry in the project's architect called `single-spa`, which is a preconfigured [Angular Builder](#Angular-Builder).
+* Generate a `main.single-spa.ts` in your project's `/src`.
+* Add an npm script `npm run build:single-spa`.
 
 ### Building
-Now run `npm run build:single-spa`, which will create a `dist` directory with your compiled code.
+Now run `ng build`, which will create a `dist` directory with your compiled code.
 
 ### Check if it works
 
