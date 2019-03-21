@@ -1,21 +1,55 @@
 # single-spa-angular
 Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular.
 
-## Example
-An example can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/angular/angular.app.js) repository.
-
-## Quickstart
+## Angular CLI
+### Installation
 If you're using the Angular CLI, use the Angular Schematic to quickly upgrade your application to single-spa.
 
 In the root of your Angular CLI application run the following:
 ```bash
-ng add single-spa-angular
+ng add single-spa-angular@beta
 ```
 The schematic performs the following tasks:
 * Install single-spa-angular
 * Create a new entry in the project's architect `single-spa` preconfigured to use the [Angular Builder](#Angular-Builder)
 * Generate a `main.single-spa.ts` in your project's `/src`
 * Add an npm script `npm run build:single-spa`
+
+### Building
+Now run `npm run build:single-spa`, which will create a `dist` directory with your compiled code.
+
+### Check if it works
+
+Now create a directory **in the parent directory of your angular project** that is called `root-config`. Create an `index.html` file in it:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Angular test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/" />
+</head>
+<body>
+  <script src="https://unpkg.com/zone.js"></script>
+  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.js"></script>
+  <script src="/name-of-angular-project/dist/name-of-angular-project/main.js"></script>
+  <script>
+    singleSpa.registerApplication('test3', window.test3.default, location => true);
+    singleSpa.start();
+  </script>
+</body>
+</html>
+```
+
+Finally, run the following command from inside of your `root-config` directory:
+```sh
+npx http-server . -o
+```
+
+Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
+root config's html file so that you have multiple microfrontends coexisting within a single page.
 
 ## Manual Install
 In root of the application run:
@@ -41,13 +75,22 @@ export default singleSpaAngular({
 })
 
 function domElementGetter() {
-  return document.getElementById('angular');
+  let containerEl = document.getElementById('my-app');
+  if (!containerEl) {
+    containerEl = document.createElement('div');
+    containerEl.id = 'my-app';
+    document.body.appendChild(containerEl);
+  }
+
+  return containerEl;
 }
 ```
 
-## Options
+## single-spa-angular options
 
-All options are passed to single-spa-angular via the `opts` parameter when calling `singleSpaAngular(opts)`. The following options are available:
+Options are passed to single-spa-angular via the `opts` parameter when calling `singleSpaAngular(opts)`. This happens inside of your `main.single-spa.ts` file.
+
+The following options are available:
 
 - `mainModule`: (required) An Angular module class. If you're using Typescript or ES6 decorators, this is a class with the @NgModule decorator on it.
 - `angularPlatform`: (required) The platform with which to bootstrap your module. The "Angular platform" refers to whether the code is running on the browser, mobile, server, etc. In the case of a single-spa application, you should use the `platformBrowserDynamic` platform.
@@ -61,7 +104,6 @@ All options are passed to single-spa-angular via the `opts` parameter when calli
 ## Other notes
 - If you have multiple angular child applications, make sure that `reflect-metadata` is only imported once in the root application and is not imported again in the child applications. Otherwise, you might see an `No NgModule metadata found` error. See [issue thread](https://github.com/CanopyTax/single-spa-angular/issues/2#issuecomment-347864894) for more details.
 - Note that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
-
 
 ## Angular Builder
 To aid in building your applications a builder is available to generate a module for single-spa to consume.
@@ -78,14 +120,15 @@ To build your Angular CLI application as a single-spa app do the following.
 
 Example Configuration:
 ```json
-[...]
-    "architect": {
-        "build": {
-          "builder": "single-spa-angular:build",
-          [...]
+{
+  "architect": {
+      "build": {
+        "builder": "single-spa-angular:build",
+        "options": {
         }
-    }
-[...]
+      }
+  }
+}
 ```
 #### Builder Options
 Configuration options are provided to the `options` section of the builder. 
