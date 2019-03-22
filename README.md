@@ -137,3 +137,6 @@ Configuration options are provided to the `options` section of the builder.
 | ---- | ----------- | ------------- |
 | libraryName | (optional) Specify the name of the module | Angular CLI project name |
 | libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
+
+#### Contributing
+For instructions on how to test this locally before creating a pull request, see the [Contributing guidelines](/CONTRIBUTING/md).
