@@ -33,7 +33,7 @@ Now create a directory **in the parent directory of your angular project** that 
 </head>
 <body>
   <script src="https://unpkg.com/zone.js"></script>
-  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.js"></script>
+  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.min.js"></script>
   <script src="/nameOfAngularProject/dist/nameOfAngularProject/main.js"></script>
   <script>
     singleSpa.registerApplication('nameOfAngularProject', window.nameOfAngularProject.default, location => true);
