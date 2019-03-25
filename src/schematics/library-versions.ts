@@ -1,1 +1,1 @@
-export const singleSpaAngular = 'beta';
+export const singleSpaAngular = '^3.0.0';
