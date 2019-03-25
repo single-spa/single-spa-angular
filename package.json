@@ -34,7 +34,8 @@
     "@angular/compiler": ">=2",
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
-    "rxjs": ">= 6.0.0"
+    "rxjs": ">= 6.0.0",
+    "webpack": ">=4.6.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.6",

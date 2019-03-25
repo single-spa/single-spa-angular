@@ -7,7 +7,22 @@
       "description": "Library name (maps to WebpackConfig.output.library)"
     },
     "libraryTarget": {
-      "type": "string",
+      "enum": [
+        "var",
+        "assign",
+        "this",
+        "window",
+        "self",
+        "global",
+        "commonjs",
+        "commonjs2",
+        "commonjs-module",
+        "amd",
+        "amd-require",
+        "umd",
+        "umd2",
+        "jsonp"
+      ],
       "default": "umd",
       "description": "How the library will be exposed (maps to WebpackConfig.output.targetLibrary)"
     },
