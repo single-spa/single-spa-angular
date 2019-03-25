@@ -45,7 +45,7 @@ Now create a directory **in the parent directory of your angular project** that 
 
 Finally, run the following command from inside of your `root-config` directory:
 ```sh
-npx http-server . -o
+npx http-server . -o -c-1
 ```
 
 Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
