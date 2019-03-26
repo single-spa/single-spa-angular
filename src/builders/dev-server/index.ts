@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DevServerBuilder } from '@angular-devkit/build-angular';
 import { BuilderContext } from '@angular-devkit/architect';
 import { virtualFs, Path, tags } from '@angular-devkit/core';
