@@ -59,6 +59,7 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "webpack": "^4.29.6",
     "webpack-merge": "^4.2.1"
   }
 }
