@@ -23,13 +23,13 @@ Now run `ng build`, which will create a `dist` directory with your compiled code
 Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this:
 ```
 index.html
-nameOfAngularProject
---> dist
-----> nameOfAngularProject
+nameOfAngularProject/
+--> dist/
+----> nameOfAngularProject/
 ------> main.js
---> src
 --> package.json
 --> angular.json
+--> src/
 ```
 
 ```html
