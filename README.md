@@ -15,9 +15,6 @@ The schematic performs the following tasks:
 * Generate a `main.single-spa.ts` in your project's `/src`.
 * Add an npm script `npm run build:single-spa`.
 
-### Building
-Now run `ng build`, which will create a `dist` directory with your compiled code.
-
 ### Check if it works
 
 Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this:
@@ -56,11 +53,14 @@ nameOfAngularProject/
 
 Finally, run the following command from inside of the application directory:
 ```sh
-ng serve
+ng serve --open
 ```
 
 Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
 root config's html file so that you have multiple microfrontends coexisting within a single page.
+
+### Building
+You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
 
 ## Manual Install
 In root of the application run:

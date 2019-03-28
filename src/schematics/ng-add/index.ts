@@ -33,7 +33,7 @@ export function addDependencies(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
     addPackageToPackageJson(host, 'single-spa-angular', versions.singleSpaAngular);
     context.addTask(new NodePackageInstallTask());
-    context.logger.info(`Added 'single-spa' as a dependency`);
+    context.logger.info(`Added 'single-spa-angular' as a dependency`);
   }
 }
 
