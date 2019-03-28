@@ -1,12 +1,14 @@
 import { DevServerBuilder } from '@angular-devkit/build-angular';
 import { BuilderContext } from '@angular-devkit/architect';
-import { virtualFs, Path, tags} from '@angular-devkit/core';
+import { virtualFs, Path, tags } from '@angular-devkit/core';
 import { SingleSpaBuilderSchema } from '../browser/schema';
 import { Configuration } from 'webpack';
 import * as fs from 'fs';
+import * as path from 'path';
 import { SingleSpaBrowserBuilder } from '../browser';
+import * as webpackMerge from 'webpack-merge';
 
-
+// @ts-ignore
 export class SingleSpaDevServer extends DevServerBuilder {
     constructor(context: BuilderContext) {
         super(context);
@@ -24,6 +26,17 @@ export class SingleSpaDevServer extends DevServerBuilder {
         SINGLE-SPA-ANGULAR: Angular dev server is serving application as a single module`);
         return webpackConfig;
     }    
+    _buildServerConfig(root, projectRoot, options, browserOptions) {
+        // @ts-ignore
+        const devServerConfig = super._buildServerConfig(root, projectRoot, options, browserOptions);
+
+        return webpackMerge.smart(devServerConfig, {
+            // @ts-ignore
+            contentBase: path.resolve(root, projectRoot.serveDirectory || '../'),
+            historyApiFallback: true,
+            publicPath: root.slice(root.lastIndexOf(path.sep)) + '/' + options.outputPath,
+        })
+    }
 }
 
 export default SingleSpaDevServer;

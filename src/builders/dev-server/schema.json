@@ -3,6 +3,10 @@
   "description": "Dev Server target options for single-spa-angular.",
   "type": "object",
   "properties": {
+    "serveDirectory": {
+      "type": "string",
+      "description": "A relative path where your single-spa root config is."
+    },
     "browserTarget": {
       "type": "string",
       "description": "Target to serve."
