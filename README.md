@@ -149,7 +149,7 @@ Example Configuration:
 }
 ```
 #### ng build options
-Configuration options are provided to the `architect.build.option` section of your angular.json. 
+Configuration options are provided to the `architect.build.options` section of your angular.json. 
 
 | Name | Description | Default Value |
 | ---- | ----------- | ------------- |
