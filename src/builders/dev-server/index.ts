@@ -23,18 +23,23 @@ export class SingleSpaDevServer extends DevServerBuilder {
         const browserBuilder = new SingleSpaBrowserBuilder(this.context);
         const webpackConfig = browserBuilder.buildWebpackConfig(root, projectRoot, host, options);
         this.context.logger.info(tags.oneLine `
-        SINGLE-SPA-ANGULAR: Angular dev server is serving application as a single module`);
+        [single-spa-angular]: Angular dev server is serving application as a single module`);
         return webpackConfig;
     }    
     _buildServerConfig(root, projectRoot, options, browserOptions) {
         // @ts-ignore
         const devServerConfig = super._buildServerConfig(root, projectRoot, options, browserOptions);
+        const contentBase = path.resolve(root, projectRoot.serveDirectory || '../');
+        const lastPos = root.lastIndexOf('/') || root.lastIndexOf(path.sep);
+        const publicPath = root.slice(lastPos) + '/' + options.outputPath        
+        this.context.logger.info(tags.oneLine `[single-spa-angular]: webpack output is served from ${publicPath}`);
+        this.context.logger.info(tags.oneLine `[single-spa-angular]: content not from webpack is served from ${contentBase}`);
 
         return webpackMerge.smart(devServerConfig, {
             // @ts-ignore
-            contentBase: path.resolve(root, projectRoot.serveDirectory || '../'),
+            contentBase: contentBase,
             historyApiFallback: true,
-            publicPath: root.slice(root.lastIndexOf(path.sep)) + '/' + options.outputPath,
+            publicPath: publicPath,
         })
     }
 }
