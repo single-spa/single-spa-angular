@@ -33,7 +33,7 @@ export function addDependencies(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
     addPackageToPackageJson(host, 'single-spa-angular', versions.singleSpaAngular);
     context.addTask(new NodePackageInstallTask());
-    context.logger.info(`Added 'single-spa' as a dependency`);
+    context.logger.info(`Added 'single-spa-angular' as a dependency`);
   }
 }
 
@@ -72,6 +72,10 @@ export function updateConfiguration(options: NgAddOptions) {
     clientProject.architect['single-spa'].builder = 'single-spa-angular:build';
     clientProject.architect['single-spa'].options.main = 'src/main.single-spa.ts';
 
+    // Copy configuration from the serve architect
+    clientProject.architect['single-spa-serve'] = clientProject.architect.serve;
+    clientProject.architect['single-spa-serve'].builder = 'single-spa-angular:dev-server';
+    clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 
     host.overwrite(workspacePath, JSON.stringify(workspace, null, 2));
 
@@ -92,6 +96,8 @@ export function addNPMScripts(options: NgAddOptions) {
     const pkg = JSON.parse(buffer.toString());
 
     pkg.scripts['build:single-spa'] = `ng run ${options.project}:single-spa`;
+
+    pkg.scripts['serve:single-spa'] = `ng run ${options.project}:single-spa-serve`
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
   };

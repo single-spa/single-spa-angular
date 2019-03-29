@@ -71,13 +71,18 @@ describe('ng-add', () => {
     const angularJSON = JSON.parse(getFileContent(tree, '/angular.json'));
     const ssApp = angularJSON.projects['ss-angular-cli-app'];
     expect(ssApp.architect['single-spa']).toBeDefined();
-    expect(ssApp.architect['single-spa'].builder).toBe('single-spa-angular:build');
+    expect(ssApp.architect['single-spa'].builder).toBe('single-spa-angular:build');    
     expect(ssApp.architect['single-spa'].options.main).toBe('src/main.single-spa.ts');
+    expect(ssApp.architect['single-spa-serve']).toBeDefined();
+    expect(ssApp.architect['single-spa-serve'].builder).toBe('single-spa-angular:dev-server');    
+    expect(ssApp.architect['single-spa-serve'].options.browserTarget).toBe('ss-angular-cli-app:single-spa');
+    
   });
 
   test('should add build:single-spa npm script', () => {
     const tree = testRunner.runSchematic<NgAddOptions>('ng-add', { routing: true }, defaultAppTree);
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.scripts['build:single-spa']).toBeDefined();
+    expect(packageJSON.scripts['serve:single-spa']).toBeDefined();
   });
 });

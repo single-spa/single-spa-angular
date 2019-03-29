@@ -1,6 +1,6 @@
 {
   "name": "single-spa-angular",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.6",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/single-spa-angular.js",
   "builders": "builders.json",
@@ -34,7 +34,8 @@
     "@angular/compiler": ">=2",
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
-    "rxjs": ">= 6.0.0"
+    "rxjs": ">= 6.0.0",
+    "webpack": ">=4.6.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.6",

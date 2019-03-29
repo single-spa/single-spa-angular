@@ -15,12 +15,20 @@ The schematic performs the following tasks:
 * Generate a `main.single-spa.ts` in your project's `/src`.
 * Add an npm script `npm run build:single-spa`.
 
-### Building
-Now run `ng build`, which will create a `dist` directory with your compiled code.
-
 ### Check if it works
 
-Now create a directory **in the parent directory of your angular project** that is called `root-config`. Create an `index.html` file in it:
+Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this:
+```
+index.html
+nameOfAngularProject/
+--> dist/
+----> nameOfAngularProject/
+------> main.js
+--> package.json
+--> angular.json
+--> src/
+```
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -33,7 +41,7 @@ Now create a directory **in the parent directory of your angular project** that 
 </head>
 <body>
   <script src="https://unpkg.com/zone.js"></script>
-  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.js"></script>
+  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.min.js"></script>
   <script src="/nameOfAngularProject/dist/nameOfAngularProject/main.js"></script>
   <script>
     singleSpa.registerApplication('nameOfAngularProject', window.nameOfAngularProject.default, location => true);
@@ -43,13 +51,16 @@ Now create a directory **in the parent directory of your angular project** that 
 </html>
 ```
 
-Finally, run the following command from inside of your `root-config` directory:
+Finally, run the following command from inside of the application directory:
 ```sh
-npx http-server . -o
+ng serve --open
 ```
 
 Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
 root config's html file so that you have multiple microfrontends coexisting within a single page.
+
+### Building
+You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
 
 ## Manual Install
 In root of the application run:
@@ -125,15 +136,32 @@ Example Configuration:
       "build": {
         "builder": "single-spa-angular:build",
         "options": {
+          "libraryName": "hello",
+        }
+      },
+      "serve": {
+        "builder": "single-spa-angular:dev-server",
+        "options": {
+          "serveDirectory": "../"
         }
       }
   }
 }
 ```
-#### Builder Options
-Configuration options are provided to the `options` section of the builder. 
+#### ng build options
+Configuration options are provided to the `architect.build.options` section of your angular.json. 
 
 | Name | Description | Default Value |
 | ---- | ----------- | ------------- |
 | libraryName | (optional) Specify the name of the module | Angular CLI project name |
 | libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
+
+#### ng serve options
+Configuration options are provided to the `architect.serve.options` section of your angular.json. 
+
+| Name | Description | Default Value |
+| ---- | ----------- | ------------- |
+| serveDirectory | (optional) A relative path to the directory where your index.html file is (single-spa root config) | `"../"`
+
+#### Contributing
+For instructions on how to test this locally before creating a pull request, see the [Contributing guidelines](/CONTRIBUTING/md).
