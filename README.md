@@ -17,7 +17,7 @@ The schematic performs the following tasks:
 
 ### Check if it works
 
-Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this:
+Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this. Be sure to replace `nameOfAngularProject` with the actual name of your project.
 ```
 index.html
 nameOfAngularProject/
