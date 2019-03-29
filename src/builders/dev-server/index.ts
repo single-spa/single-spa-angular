@@ -32,9 +32,9 @@ export class SingleSpaDevServer extends DevServerBuilder {
 
         return webpackMerge.smart(devServerConfig, {
             // @ts-ignore
-            contentBase: path.resolve(root, projectRoot.serveDirectory || '../'),
+            contentBase: path.resolve(root, projectRoot.serveDirectory || `..${path.sep}`),
             historyApiFallback: true,
-            publicPath: root.slice(root.lastIndexOf(path.sep)) + '/' + options.outputPath,
+            publicPath: root.slice(root.lastIndexOf(path.sep)) + path.sep + options.outputPath,
         })
     }
 }
