@@ -7,11 +7,13 @@
  */
 
 import { NormalizedBrowserBuilderSchema } from '@angular-devkit/build-angular';
+import { SingleSpaWebpackBuilderConfig} from '../single-spa-webpack-builder-config';
 
 export interface SingleSpaBuilderSchema extends NormalizedBrowserBuilderSchema {
   libraryTarget: "var" | "assign" | "this" | "window" | "global" | "commonjs" | "commonjs2" | "amd" | "umd" | "jsonp" | undefined;  
   libraryName: string;
   serveDirectory: string;
+  singleSpaWebpackConfig: SingleSpaWebpackBuilderConfig;
 }
 
 export type OptimizationOptions = boolean | OptimizationObject;

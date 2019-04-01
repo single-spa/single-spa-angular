@@ -26,7 +26,25 @@
       "default": "umd",
       "description": "How the library will be exposed (maps to WebpackConfig.output.targetLibrary)"
     },
-
+    "singleSpaWebpackConfig": {
+      "type": "object",
+      "default": false,
+      "description": "Single spa webpack configuration",      
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the custom webpack configuration file"
+        },
+        "mergeStrategies": {
+          "type": "object",
+          "description": "Merge strategies per webpack config field"
+        },
+        "replaceDuplicatePlugins": {
+          "type": "boolean",
+          "description": "Flag to indicate how to handle duplicate plugin definitions"
+        }
+      }
+    },
     "assets": {
       "type": "array",
       "description": "List of static application assets.",
