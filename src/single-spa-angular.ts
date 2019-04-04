@@ -2,8 +2,7 @@
 
 const defaultOpts = {
   // required opts
-  angularPlatform: null,
-  mainModule: null,
+  bootstrapFunction: null,
   template: null,
   // optional opts
   Router: null,
@@ -13,7 +12,7 @@ const defaultOpts = {
 
 export default function singleSpaAngular(userOpts) {
   if (typeof userOpts !== "object") {
-    throw new Error("single-spa-angular requires a configuration object");
+    throw Error("single-spa-angular requires a configuration object");
   }
 
   const opts = {
@@ -21,16 +20,12 @@ export default function singleSpaAngular(userOpts) {
     ...userOpts,
   };
 
-  if (!opts.angularPlatform) {
-    throw new Error("single-spa-angular must be passed opts.angularPlatform. Usually this should be the return value of platformBrowserDynamic()");
-  }
-
-  if (!opts.mainModule) {
-    throw new Error("single-spa-angular must be passed opts.mainModule, which is the Angular module to bootstrap");
+  if (typeof opts.bootstrapFunction !== 'function') {
+    throw Error("single-spa-angular must be passed an opts.bootstrapFunction")
   }
 
   if (typeof opts.template !== "string") {
-    throw new Error("single-spa-angular must be passed opts.template string");
+    throw Error("single-spa-angular must be passed opts.template string");
   }
 
   if (opts.Router && !opts.ApplicationRef || opts.ApplicationRef && !opts.Router) {
@@ -72,23 +67,28 @@ function mount(opts, props) {
     .then(() => {
       const domElementGetter = chooseDomElementGetter(opts, props);
       if (!domElementGetter) {
-        throw new Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
+        throw Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
       }
 
       const containerEl = getContainerEl(domElementGetter);
       containerEl.innerHTML = opts.template;
     })
     .then(() => {
-      return opts
-        .angularPlatform
-        .bootstrapModule(opts.mainModule)
-        .then(module => {
-          opts.bootstrappedModule = module;
-          if (opts.ApplicationRef) {
-            window.addEventListener("single-spa:routing-event", opts.routingEventListener);
-          }
-          return module;
-        });
+      const bootstrapPromise = opts.bootstrapFunction()
+      if (!(bootstrapPromise instanceof Promise)) {
+        throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
+      }
+
+      return bootstrapPromise.then(module => {
+        if (!module || typeof module.destroy !== 'function') {
+          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
+        }
+        opts.bootstrappedModule = module;
+        if (opts.ApplicationRef) {
+          window.addEventListener("single-spa:routing-event", opts.routingEventListener);
+        }
+        return module;
+      });
     });
 }
 
@@ -111,7 +111,7 @@ function unmount(opts, props) {
 function getContainerEl(domElementGetter) {
   const element = domElementGetter();
   if (!element) {
-    throw new Error("domElementGetter did not return a valid dom element");
+    throw Error("domElementGetter did not return a valid dom element");
   }
 
   return element;

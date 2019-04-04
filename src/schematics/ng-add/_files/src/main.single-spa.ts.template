@@ -13,8 +13,7 @@ if (environment.production) {
 }
 
 export default singleSpaAngular({
-  mainModule: AppModule,
-  angularPlatform: platformBrowserDynamic(),
+  bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
   template: '<<%= prefix %>-root />',<% if (routing) { %>
   Router,
   ApplicationRef,<% } %>
