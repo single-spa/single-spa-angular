@@ -29,7 +29,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
     // Delegate the building of the webpack config to the new builder.
     // Builder based on custom builders implmented by @meltedspark
     // https://github.com/meltedspark/angular-builders
-    return SingleSpaWebpackBuilder.buildWebpackConfig(root, options.singleSpaWebpackConfig, config, options, this.context);
+    return SingleSpaWebpackBuilder.buildWebpackConfig(root, options.singleSpaWebpackConfigPath, config, options, this.context);
   }
 }
 

@@ -30,7 +30,7 @@ export class SingleSpaDevServer extends DevServerBuilder {
         // Delegate the building of the webpack config to the new builder.
         // Builder based on custom builders implmented by @meltedspark
         // https://github.com/meltedspark/angular-builders
-        const webpackConfig = SingleSpaWebpackBuilder.buildWebpackConfig(root, options.singleSpaWebpackConfig, config, options, this.context);
+        const webpackConfig = SingleSpaWebpackBuilder.buildWebpackConfig(root, options.singleSpaWebpackConfigPath, config, options, this.context);
         this.context.logger.info(tags.oneLine`
         [single-spa-angular]: Angular dev server is serving application as a single module`);
         return webpackConfig;
