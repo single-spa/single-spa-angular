@@ -60,7 +60,6 @@
     "webpack": "^4.29.6"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
     "webpack-merge": "^4.2.1"
   }
 }

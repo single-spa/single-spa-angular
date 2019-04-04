@@ -36,20 +36,19 @@ export class SingleSpaDevServer extends DevServerBuilder {
         return webpackConfig;
     }
     _buildServerConfig(root, projectRoot, options, browserOptions) {
+        
+        // super._buildServerConfig will call into our overriding buildWebpackConfig,        
         // @ts-ignore
-        const devServerConfig = super._buildServerConfig(root, projectRoot, options, browserOptions);
-        const contentBase = path.resolve(root, projectRoot.serveDirectory || '../');
-        const lastPos = root.lastIndexOf('/') || root.lastIndexOf(path.sep);
-        const publicPath = root.slice(lastPos) + '/' + options.outputPath
-        this.context.logger.info(tags.oneLine`[single-spa-angular]: webpack output is served from ${publicPath}`);
-        this.context.logger.info(tags.oneLine`[single-spa-angular]: content not from webpack is served from ${contentBase}`);
+        const serverConfig = super._buildServerConfig(root, projectRoot, options, browserOptions);
 
-        return webpackMerge.smart(devServerConfig, {
-            // @ts-ignore
-            contentBase: contentBase,
-            historyApiFallback: true,
-            publicPath: publicPath,
-        })
+        // the angular cli implementation ignores any devServer customisation that we might have put in
+        // the external webpack configuration so we need to put it back in.
+        const config = SingleSpaWebpackBuilder.buildServerConfig(root, projectRoot, serverConfig, options, this.context);
+
+        this.context.logger.info(tags.oneLine`[single-spa-angular]: webpack output is served from ${config.publicPath}`);
+        this.context.logger.info(tags.oneLine`[single-spa-angular]: content not from webpack is served from ${config.contentBase}`);
+
+        return config.devServer;
     }
 }
 
