@@ -26,7 +26,10 @@
       "default": "umd",
       "description": "How the library will be exposed (maps to WebpackConfig.output.targetLibrary)"
     },
-
+    "singleSpaWebpackConfigPath": {
+      "type": "string",      
+      "description": "Path to additional single spa webpack configuration",            
+    },
     "assets": {
       "type": "array",
       "description": "List of static application assets.",

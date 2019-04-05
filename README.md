@@ -153,6 +153,7 @@ Configuration options are provided to the `architect.build.options` section of y
 | ---- | ----------- | ------------- |
 | libraryName | (optional) Specify the name of the module | Angular CLI project name |
 | libraryTarget | (optional) The type of library to build [see available options](https://github.com/webpack/webpack/blob/master/declarations/WebpackOptions.d.ts#L1111) | "UMD" |
+| singleSpaWebpackConfigPath | (optional) Path to external webpack config to be merged with angular-cli output | undefined |
 
 #### ng serve options
 Configuration options are provided to the `architect.serve.options` section of your angular.json. 
