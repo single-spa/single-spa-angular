@@ -1,24 +1,12 @@
-import { BuilderContext } from '@angular-devkit/architect';
 import { BrowserBuilder } from '@angular-devkit/build-angular';
 import { Path, virtualFs } from '@angular-devkit/core';
 import * as fs from 'fs';
 import { Configuration } from 'webpack';
-import * as webpackMerge from 'webpack-merge';
-
 import { SingleSpaBuilderSchema } from './schema';
-import { SingleSpaWebpackBuilder } from '../single-spa-webpack-builder';
+import { buildWebpackConfig } from '../single-spa-webpack-builder';
 
 export class SingleSpaBrowserBuilder extends BrowserBuilder {
-  constructor(context: BuilderContext) {
-    super(context);
-  }
-
-  buildWebpackConfig(
-    root: Path,
-    projectRoot: Path,
-    host: virtualFs.Host<fs.Stats>,
-    options: SingleSpaBuilderSchema,
-  ): Configuration {    
+  buildWebpackConfig(root: Path, projectRoot: Path, host: virtualFs.Host<fs.Stats>, options: SingleSpaBuilderSchema): Configuration {    
     // Disable es2015 polyfills
     // tslint:disable-next-line: max-line-length
     // https://github.com/angular/angular-cli/blob/3d8064bb64d72557474a7484f1b85eaf35788916/packages/angular_devkit/build_angular/src/angular-cli-files/models/webpack-configs/common.ts#L56
@@ -29,7 +17,7 @@ export class SingleSpaBrowserBuilder extends BrowserBuilder {
     // Delegate the building of the webpack config to the new builder.
     // Builder based on custom builders implmented by @meltedspark
     // https://github.com/meltedspark/angular-builders
-    return SingleSpaWebpackBuilder.buildWebpackConfig(root, options.singleSpaWebpackConfigPath, config, options, this.context);
+    return buildWebpackConfig(root, options.singleSpaWebpackConfigPath, config, options, this.context);
   }
 }
 

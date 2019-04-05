@@ -3,6 +3,10 @@
   "description": "Dev Server target options for single-spa-angular.",
   "type": "object",
   "properties": {
+    "singleSpaWebpackConfigPath": {
+      "type": "string",
+      "description": "Path to additional single spa webpack configuration"
+    },
     "serveDirectory": {
       "type": "string",
       "description": "A relative path where your single-spa root config is."
