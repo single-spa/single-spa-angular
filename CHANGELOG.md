@@ -1,0 +1,1 @@
+See https://github.com/CanopyTax/single-spa-angular/releases.
