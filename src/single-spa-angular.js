@@ -6,6 +6,7 @@ const defaultOpts = {
   // optional opts
   Router: null,
   ApplicationRef: null,
+  NgZone: null,
   domElementGetter: null, // only optional if you provide a domElementGetter as a custom prop
 };
 
@@ -44,6 +45,21 @@ export default function singleSpaAngular(userOpts) {
 
 function bootstrap(opts) {
   return Promise.resolve().then(() => {
+    // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
+    opts.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
+
+    if (opts.NgZone) {
+      // This is a hack, since NgZone doesn't allow you to configure the property that identifies your zone.
+      // See https://github.com/PlaceMe-SAS/single-spa-angular-cli/issues/33,
+      // https://github.com/CanopyTax/single-spa-angular/issues/47,
+      // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
+      // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
+      opts.NgZone.isInAngularZone = function() {
+        // @ts-ignore
+        return window.Zone.current.get(opts.zoneIdentifier) === true;
+      }
+    }
+
     opts.routingEventListener = function(evt) {
       /* When popstate and hashchange events occur, single-spa delays them in order to
        * check which applications should be active and perform any necessary mounting/unmounting.
@@ -81,6 +97,9 @@ function mount(opts, props) {
         .angularPlatform
         .bootstrapModule(opts.mainModule)
         .then(module => {
+          if (opts.NgZone) {
+            module.injector.get(opts.NgZone)._inner._properties[opts.zoneIdentifier] = true;
+          }
           opts.bootstrappedModule = module;
           if (opts.ApplicationRef) {
             window.addEventListener('single-spa:routing-event', opts.routingEventListener)
