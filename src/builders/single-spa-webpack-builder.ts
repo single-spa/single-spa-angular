@@ -2,6 +2,7 @@ import { Configuration } from 'webpack';
 import { getSystemPath, Path, tags } from '@angular-devkit/core'
 import { BuilderContext } from '@angular-devkit/architect';
 import * as webpackMerge from 'webpack-merge';
+import { merge } from 'rxjs';
 
 export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig: Configuration, options: any, context: BuilderContext): Configuration {
   const libraryName = options.libraryName || context.targetSpecifier && context.targetSpecifier.project;
@@ -26,6 +27,13 @@ export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig
 
   if (indexHtmlWebpackPluginIndex > -1) {
     mergedConfig.plugins.splice(indexHtmlWebpackPluginIndex, 1);
+  }
+
+  if (Array.isArray(mergedConfig.entry.styles)) {
+    // We want the global styles to be part of the "main" entry. The order of strings in this array
+    // matters -- only the last item in the array will have its exports become the exports for the entire
+    // webpack bundle
+    mergedConfig.entry.main = [...mergedConfig.entry.styles, ...mergedConfig.entry.main];
   }
 
   // Remove bundles
