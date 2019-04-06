@@ -2,7 +2,6 @@ import { Configuration } from 'webpack';
 import { getSystemPath, Path, tags } from '@angular-devkit/core'
 import { BuilderContext } from '@angular-devkit/architect';
 import * as webpackMerge from 'webpack-merge';
-import { merge } from 'rxjs';
 
 export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig: Configuration, options: any, context: BuilderContext): Configuration {
   const libraryName = options.libraryName || context.targetSpecifier && context.targetSpecifier.project;
