@@ -32,6 +32,10 @@ export default function singleSpaAngular(userOpts) {
     throw Error("For @angular/router to work with single-spa, you must provide both the Router and ApplicationRef opts");
   }
 
+  if (!opts.NgZone) {
+    throw Error(`single-spa-angular must be passed the NgZone opt`);
+  }
+
   return {
     bootstrap: bootstrap.bind(null, opts),
     mount: mount.bind(null, opts),
@@ -39,8 +43,21 @@ export default function singleSpaAngular(userOpts) {
   };
 }
 
-function bootstrap(opts) {
+function bootstrap(opts, props) {
   return Promise.resolve().then(() => {
+    // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
+    opts.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
+
+    // This is a hack, since NgZone doesn't allow you to configure the property that identifies your zone.
+    // See https://github.com/PlaceMe-SAS/single-spa-angular-cli/issues/33,
+    // https://github.com/CanopyTax/single-spa-angular/issues/47,
+    // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
+    // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
+    opts.NgZone.isInAngularZone = function() {
+      // @ts-ignore
+      return window.Zone.current.get(opts.zoneIdentifier) === 'true';
+    }
+
     opts.routingEventListener = function() {
       /* When popstate and hashchange events occur, single-spa delays them in order to
        * check which applications should be active and perform any necessary mounting/unmounting.
@@ -83,6 +100,8 @@ function mount(opts, props) {
         if (!module || typeof module.destroy !== 'function') {
           throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
         }
+        module.injector.get(opts.NgZone)._inner._properties[opts.zoneIdentifier] = true;
+        
         opts.bootstrappedModule = module;
         if (opts.ApplicationRef) {
           window.addEventListener("single-spa:routing-event", opts.routingEventListener);
@@ -118,5 +137,25 @@ function getContainerEl(domElementGetter) {
 }
 
 function chooseDomElementGetter(opts, props) {
-  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter;
+  if (props && props.customProps && props.customProps.domElementGetter) {
+    return props.customProps.domElementGetter;
+  } else if (opts.domElementGetter) {
+    return opts.domElementGetter;
+  } else {
+    return defaultDomElementGetter(props.name);
+  }
+}
+
+function defaultDomElementGetter(name) {
+  return function getDefaultDomElement() {
+    const id = `single-spa-application:${name}`;
+    let domElement = document.getElementById(id);
+    if (!domElement) {
+      domElement = document.createElement('div');
+      domElement.id = id;
+      document.body.appendChild(domElement);
+    }
+
+    return domElement;
+  }
 }
