@@ -1,6 +1,9 @@
 # single-spa-angular
 Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular.
 
+## Example
+See https://github.com/joeldenning/coexisting-angular-microfrontends.
+
 ## Angular CLI
 ### Installation
 If you're using the Angular CLI, use the Angular Schematic to quickly upgrade your application to single-spa.
