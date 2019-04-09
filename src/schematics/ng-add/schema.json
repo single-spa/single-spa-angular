@@ -14,7 +14,7 @@
     "routing": {
       "type": "boolean",
       "description": "When true, angular application supports routing",
-      "default": false,
+      "default": true,
       "x-prompt": "Does your current application use Angular routing?"
     }
   },

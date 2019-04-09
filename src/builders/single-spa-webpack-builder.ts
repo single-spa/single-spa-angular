@@ -4,7 +4,7 @@ import { BuilderContext } from '@angular-devkit/architect';
 import * as webpackMerge from 'webpack-merge';
 
 export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig: Configuration, options: any, context: BuilderContext): Configuration {
-  const libraryName = options.libraryName || context.targetSpecifier && context.targetSpecifier.project;
+  const libraryName = options.libraryName || context.workspace.getDefaultProjectName() || context.targetSpecifier && context.targetSpecifier.project;
 
   const singleSpaConfig = {
     output: {
