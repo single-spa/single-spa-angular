@@ -43,8 +43,8 @@ nameOfAngularProject/
   <base href="/" />
 </head>
 <body>
-  <script src="https://unpkg.com/zone.js"></script>
   <script src="https://unpkg.com/single-spa/lib/umd/single-spa.min.js"></script>
+  <script src="https://unpkg.com/zone.js"></script>
   <script src="/nameOfAngularProject/dist/nameOfAngularProject/main.js"></script>
   <script>
     singleSpa.registerApplication('nameOfAngularProject', window.nameOfAngularProject.default, location => true);
@@ -74,17 +74,16 @@ npm install --save single-spa-angular
 Then create `main.single-spa.ts` with the following content:
 ```typescript
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { ApplicationRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 import singleSpaAngular from 'single-spa-angular';
 import { Router } from '@angular/router';
 import { AppModule } From './app/app.module';
 
 export default singleSpaAngular({
   bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
-  domElementGetter,
   template: `<component-to-render />`,
   Router,
-  ApplicationRef,
+  NgZone,
 })
 
 function domElementGetter() {

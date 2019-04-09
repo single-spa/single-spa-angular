@@ -6,7 +6,6 @@ const defaultOpts = {
   template: null,
   // optional opts
   Router: null,
-  ApplicationRef: null,
   domElementGetter: null, // only optional if you provide a domElementGetter as a custom prop
 };
 
@@ -26,10 +25,6 @@ export default function singleSpaAngular(userOpts) {
 
   if (typeof opts.template !== "string") {
     throw Error("single-spa-angular must be passed opts.template string");
-  }
-
-  if (opts.Router && !opts.ApplicationRef || opts.ApplicationRef && !opts.Router) {
-    throw Error("For @angular/router to work with single-spa, you must provide both the Router and ApplicationRef opts");
   }
 
   if (!opts.NgZone) {
@@ -57,24 +52,6 @@ function bootstrap(opts, props) {
       // @ts-ignore
       return window.Zone.current.get(opts.zoneIdentifier) === 'true';
     }
-
-    opts.routingEventListener = function() {
-      /* When popstate and hashchange events occur, single-spa delays them in order to
-       * check which applications should be active and perform any necessary mounting/unmounting.
-       *
-       * ZoneJS freaks out about this because it hears about the events but it wasn't inside of a
-       * Zone.current.run() block (or similar). I tried out modifying single-spa to call the event listener
-       * inside of a Zone.run() block, but that didn't seem to help. I think if we could get that working
-       * that it would be the best solution.
-       *
-       * I also tried out trying to detect with single-spa:routing-event events are the ones that actually
-       * need to trigger an application tick, since not every one of them does. But I wasn't able to find a reliable
-       * way of detecting it. So I fell back to just always causing an application tick, even though that's probably
-       * not great for performance.
-       */
-      const applicationRef = opts.bootstrappedModule.injector.get(opts.ApplicationRef);
-      applicationRef.tick();
-    };
   });
 }
 
@@ -103,9 +80,6 @@ function mount(opts, props) {
         module.injector.get(opts.NgZone)._inner._properties[opts.zoneIdentifier] = true;
         
         opts.bootstrappedModule = module;
-        if (opts.ApplicationRef) {
-          window.addEventListener("single-spa:routing-event", opts.routingEventListener);
-        }
         return module;
       });
     });
@@ -118,9 +92,6 @@ function unmount(opts, props) {
       // Workaround for https://github.com/angular/angular/issues/19079
       const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
       routerRef.dispose();
-    }
-    if (opts.ApplicationRef) {
-      window.removeEventListener("single-spa:routing-event", opts.routingEventListener);
     }
     opts.bootstrappedModule.destroy();
     delete opts.bootstrappedModule;
