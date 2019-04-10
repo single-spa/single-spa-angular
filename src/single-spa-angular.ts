@@ -94,6 +94,34 @@ function unmount(opts, props) {
       routerRef.dispose();
     }
     opts.bootstrappedModule.destroy();
+    if (opts.AnimationEngine) {
+      /*
+      The BrowserAnimationsModule does not clean up after itself :'(. When you unmount/destroy the main module, the
+      BrowserAnimationsModule uses an AnimationRenderer thing to remove dom elements from the page. But the AnimationRenderer
+      defers the actual work to the TransitionAnimationEngine to do this, and the TransitionAnimationEngine doesn't actually
+      remove the dom node, but just calls "markElementAsRemoved()".
+
+      See https://github.com/angular/angular/blob/db62ccf9eb46ee89366ade586365ea027bb93eb1/packages/animations/browser/src/render/transition_animation_engine.ts#L717
+
+      What markAsRemovedDoes is put it into an array called "collectedLeaveElements", which is all the elements that should be removed
+      after the DOM has had a chance to do any animations.
+
+      See https://github.com/angular/angular/blob/master/packages/animations/browser/src/render/transition_animation_engine.ts#L525
+
+      The actual dom nodes aren't removed until the TransitionAnimationEngine "flushes".
+
+      See https://github.com/angular/angular/blob/db62ccf9eb46ee89366ade586365ea027bb93eb1/packages/animations/browser/src/render/transition_animation_engine.ts#L851
+
+      Unfortunately, though, that "flush" will never happen, since the entire module is being destroyed and there will be no more flushes.
+      So what we do in this code is force one more flush of the animations after the module is destroyed.
+
+      Ideally, we would do this by getting the TransitionAnimationEngine directly and flushing it. Unfortunately, though, it's private class
+      that cannot be imported and is not provided to the dependency injector. So, instead, we get its wrapper class, AnimationEngine, and then
+      access its private variable reference to the TransitionAnimationEngine so that we can call flush.
+      */
+      const animationEngine = opts.bootstrappedModule.injector.get(opts.AnimationEngine);
+      animationEngine._transitionEngine.flush();
+    }
     delete opts.bootstrappedModule;
   });
 }

@@ -46,7 +46,8 @@ export function createMainEntry(options: NgAddOptions) {
     const templateSource = apply(url('./_files/src'), [
       applyTemplates({
         prefix: project.workspace.prefix,
-        routing: options.routing
+        routing: options.routing,
+        usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
       }),
       move(path)
     ]);

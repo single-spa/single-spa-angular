@@ -106,8 +106,10 @@ The following options are available:
 
 - `bootstrapFunction`: (required) A function that returns a promise that resolves with a resolved Angular module that is bootstrapped. Usually, your implementation will look like this: `bootstrapFunction: () => platformBrowserDynamic().bootstrapModule()`.
 - `template`: (required) An html string that will be put into the DOM Element returned by `domElementGetter`. This template can be anything, but it is recommended that you keeping it simple by making it only one Angular component. For example, `<my-component />` is recommended, but `<div><my-component /><span>Hello</span><another-component /></div>` is allowed. Note that `innerHTML` is used to put the template onto the DOM.
-- `Router`: (optional) The angular router class. This is required when you are using `@angular/router` and must be used in conjunction with the `ApplicationRef` option.
-- `ApplicationRef`: (optional) The angular application ref interface. This is required when you are using `@angular/router` and must be used in conjunction with the `Router` option.
+- `Router`: (optional) The angular router class. This is required when you are using `@angular/router`.
+- `AnimationModule`: (optional) The animation module class. This is required when you are using BrowserAnimationsModule.
+  Example way to import this: `import { eAnimationEngine as AnimationModule } from '@angular/animations/browser';`.
+  See [Issue 48](https://github.com/CanopyTax/single-spa-angular/issues/48) for more details.
 - `domElementGetter`: (optional) A function that takes in no arguments and returns a DOMElement. This dom element is where the Angular application will be bootstrapped, mounted, and unmounted.
     Note that this opt can only be omitted when domElementGetter is passed in as a [custom prop](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#custom-props). So you must either
     do `singleSpaReact({..., domElementGetter: function() {return ...}})` or do `singleSpa.registerApplication(name, app, activityFn, {domElementGetter: function() {...}})`
