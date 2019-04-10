@@ -20,7 +20,7 @@ The schematic performs the following tasks:
 
 ### Check if it works
 
-Now create a file **in the parent directory of your angular project** called `index.html` file in it. Your directory structure should look like this. Be sure to replace `nameOfAngularProject` with the actual name of your project.
+Now create a file **in the parent directory of your angular project** called `index.html`. Your directory structure should look like this. Be sure to replace `nameOfAngularProject` with the actual name of your project.
 ```
 index.html
 nameOfAngularProject/
@@ -57,6 +57,11 @@ nameOfAngularProject/
 Finally, run the following command from inside of the application directory:
 ```sh
 ng serve --open
+```
+
+Alternatively you can run the following command from the root directory where your index.html is located:
+```sh
+npx light-server -s . --historyindex './index.html' -o
 ```
 
 Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
@@ -105,7 +110,7 @@ Options are passed to single-spa-angular via the `opts` parameter when calling `
 The following options are available:
 
 - `bootstrapFunction`: (required) A function that returns a promise that resolves with a resolved Angular module that is bootstrapped. Usually, your implementation will look like this: `bootstrapFunction: () => platformBrowserDynamic().bootstrapModule()`.
-- `template`: (required) An html string that will be put into the DOM Element returned by `domElementGetter`. This template can be anything, but it is recommended that you keeping it simple by making it only one Angular component. For example, `<my-component />` is recommended, but `<div><my-component /><span>Hello</span><another-component /></div>` is allowed. Note that `innerHTML` is used to put the template onto the DOM.
+- `template`: (required) An html string that will be put into the DOM Element returned by `domElementGetter`. This template can be anything, but it is recommended that you keeping it simple by making it only one Angular component. For example, `<my-component />` is recommended, but `<div><my-component /><span>Hello</span><another-component /></div>` is allowed. Note that `innerHTML` is used to put the template onto the DOM. Also note that when using multiple angular applications simultaneously, you will want to make sure that the component selectors provided are unique to avoid collisions.
 - `Router`: (optional) The angular router class. This is required when you are using `@angular/router`.
 - `AnimationModule`: (optional) The animation module class. This is required when you are using BrowserAnimationsModule.
   Example way to import this: `import { eAnimationEngine as AnimationModule } from '@angular/animations/browser';`.
@@ -117,6 +122,7 @@ The following options are available:
 ## Other notes
 - If you have multiple angular child applications, make sure that `reflect-metadata` is only imported once in the root application and is not imported again in the child applications. Otherwise, you might see an `No NgModule metadata found` error. See [issue thread](https://github.com/CanopyTax/single-spa-angular/issues/2#issuecomment-347864894) for more details.
 - Note that you should only have one version of ZoneJS, even if you have multiple versions of Angular.
+- Make sure that the root component selectors for each of your angular applications are unique so that angular can differentiate them. The default selector for an angular cli application is `app-root`. You will need to update these selectors to be unique in your child application's `app.component.ts`, as well as in the singleSpaAngular template option found in `main.single-spa.ts`. To catch other references (such as in test files) try a project wide find and replace for `app-root`.  
 
 ## Angular Builder
 To aid in building your applications a builder is available to generate a module for single-spa to consume.
