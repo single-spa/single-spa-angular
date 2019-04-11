@@ -59,16 +59,18 @@ Finally, run the following command from inside of the application directory:
 ng serve --open
 ```
 
-Alternatively you can run the following command from the root directory where your index.html is located:
-```sh
-npx light-server -s . --historyindex './index.html' -o
-```
-
 Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
 root config's html file so that you have multiple microfrontends coexisting within a single page.
 
 ### Building
 You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
+
+To test that the build worked correctly, you can run a static web server which simulates what a deployed environment
+would be like with your index.html file.
+```sh
+# Do this in the same directory as your index.html file
+npx light-server -s . --historyindex './index.html' -o
+```
 
 ## Manual Install
 In root of the application run:
