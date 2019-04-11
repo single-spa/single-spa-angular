@@ -17,5 +17,5 @@ export default singleSpaAngular({
   template: '<<%= prefix %>-root />',<% if (routing) { %>
   Router,<% } %>
   NgZone: NgZone,<% if (usingBrowserAnimationsModule) { %>
-  AnimationEngine: AnimationEngine, <% } %>
+  AnimationEngine: AnimationEngine,<% } %>
 });
