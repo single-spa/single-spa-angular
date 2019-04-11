@@ -20,13 +20,8 @@ export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig
 
   const mergedConfig: any = webpackMerge.smart(baseWebpackConfig, singleSpaConfig, customWebpackConfig);
 
-  const indexHtmlWebpackPluginIndex = mergedConfig.plugins.findIndex(
-    plugin => (plugin as any).constructor.name === 'IndexHtmlWebpackPlugin',
-  );
-
-  if (indexHtmlWebpackPluginIndex > -1) {
-    mergedConfig.plugins.splice(indexHtmlWebpackPluginIndex, 1);
-  }
+  removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
+  removeMiniCssExtract(mergedConfig);
 
   if (Array.isArray(mergedConfig.entry.styles)) {
     // We want the global styles to be part of the "main" entry. The order of strings in this array
@@ -42,4 +37,23 @@ export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig
   delete mergedConfig.optimization.splitChunks;
 
   return mergedConfig;
+}
+
+function removePluginByName(plugins, name) {
+  const pluginIndex = plugins.findIndex(plugin => plugin.constructor.name === name);
+  if (pluginIndex > -1) {
+    plugins.splice(pluginIndex, 1);
+  }
+}
+
+function removeMiniCssExtract(config) {
+  removePluginByName(config.plugins, 'MiniCssExtractPlugin');
+  config.module.rules.forEach(rule => {
+    if (rule.use) {
+      const cssMiniExtractIndex = rule.use.findIndex(use => typeof use === 'string' && use.includes('mini-css-extract-plugin'));
+      if (cssMiniExtractIndex >= 0) {
+        rule.use[cssMiniExtractIndex] = {loader: 'style-loader'}
+      }
+    }
+  });
 }
