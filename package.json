@@ -1,6 +1,6 @@
 {
   "name": "single-spa-angular",
-  "version": "3.0.0-beta.15",
+  "version": "3.0.0-beta.17",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/browser-lib/single-spa-angular.js",
   "builders": "builders.json",
