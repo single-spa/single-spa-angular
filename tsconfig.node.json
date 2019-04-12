@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2016",
+  },
+  "include": [
+    "src/builders/**/*",
+    "src/schematics/**/*"
+  ]
+}

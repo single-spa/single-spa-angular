@@ -10,7 +10,6 @@
     "sourceMap": true,
     "sourceRoot": ".",
     "strictNullChecks": true,
-    "target": "es2016",
     "lib": [
       "dom",
       "es2018"
