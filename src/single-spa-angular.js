@@ -43,7 +43,7 @@ export default function singleSpaAngular(userOpts) {
   };
 }
 
-function bootstrap(opts) {
+function bootstrap(opts, props) {
   return Promise.resolve().then(() => {
     // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
     opts.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
