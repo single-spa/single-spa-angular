@@ -6,7 +6,11 @@ See https://github.com/joeldenning/coexisting-angular-microfrontends.
 
 ## Angular CLI
 ### Installation
-If you're using the Angular CLI, use the Angular Schematic to quickly upgrade your application to single-spa.
+First, create an angular application. This requires installing [angular cli](https://cli.angular.io/).
+```sh
+ng new app1 --routing --defaults
+cd app1
+```
 
 In the root of your Angular CLI application run the following:
 ```sh
@@ -21,14 +25,14 @@ The schematic performs the following tasks:
 ### Add a route
 If you're doing routing within your angular application, do the following:
 
-1. Add `{ provide: APP_BASE_HREF, useValue: '/' }` to `app.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for mroe details.
+1. Add `{ provide: APP_BASE_HREF, useValue: '/' }` to `app-routing.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for more details.
 2. Create an empty route component, that will handle all routes that are not handled by this single-spa application. `ng g component EmptyRoute`
-3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes.
+3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
 
 ### Check if it works
 
-Run `ng serve`. This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to http://single-spa-playground.com
-and follow the instructions there to verify everything is working and for instructions on creating the shared html file.
+Run `ng serve`. This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to
+http://single-spa-playground.org and follow the instructions there to verify everything is working and for instructions on creating the shared html file.
 
 ### Building
 You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
@@ -47,12 +51,16 @@ import singleSpaAngular from 'single-spa-angular';
 import { Router } from '@angular/router';
 import { AppModule } From './app/app.module';
 
-export default singleSpaAngular({
+const lifecycles = singleSpaAngular({
   bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
   template: `<component-to-render />`,
   Router,
   NgZone,
 })
+
+export const bootstrap = lifecycles.bootstrap;
+export const mount = lifecycles.mount;
+export const unmount = lifecycles.unmount;
 
 function domElementGetter() {
   let containerEl = document.getElementById('my-app');
