@@ -18,59 +18,20 @@ The schematic performs the following tasks:
 * Generate a `main.single-spa.ts` in your project's `/src`.
 * Add an npm script `npm run build:single-spa`.
 
+### Add a route
+If you're doing routing within your angular application, do the following:
+
+1. Add `{ provide: APP_BASE_HREF, useValue: '/' }` to `app.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for mroe details.
+2. Create an empty route component, that will handle all routes that are not handled by this single-spa application. `ng g component EmptyRoute`
+3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes.
+
 ### Check if it works
 
-Now create a file **in the parent directory of your angular project** called `index.html`. Your directory structure should look like this. Be sure to replace `nameOfAngularProject` with the actual name of your project.
-```
-index.html
-nameOfAngularProject/
---> dist/
-----> nameOfAngularProject/
-------> main.js
---> package.json
---> angular.json
---> src/
-```
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Angular test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="/" />
-</head>
-<body>
-  <script src="https://unpkg.com/single-spa/lib/umd/single-spa.min.js"></script>
-  <script src="https://unpkg.com/zone.js"></script>
-  <script src="/nameOfAngularProject/dist/nameOfAngularProject/main.js"></script>
-  <script>
-    singleSpa.registerApplication('nameOfAngularProject', window.nameOfAngularProject.default, location => true);
-    singleSpa.start();
-  </script>
-</body>
-</html>
-```
-
-Finally, run the following command from inside of the application directory:
-```sh
-ng serve --open
-```
-
-Congrats! Now you've got your angular-cli application running as a single-spa application. Now you can add more Angular, React, or Vue applications to your
-root config's html file so that you have multiple microfrontends coexisting within a single page.
+Run `ng serve`. This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to http://single-spa-playground.com
+and follow the instructions there to verify everything is working and for instructions on creating the shared html file.
 
 ### Building
 You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
-
-To test that the build worked correctly, you can run a static web server which simulates what a deployed environment
-would be like with your index.html file.
-```sh
-# Do this in the same directory as your index.html file
-npx light-server -s . --historyindex './index.html' -o
-```
 
 ## Manual Install
 In root of the application run:

@@ -21,7 +21,6 @@ export class SingleSpaDevServer extends DevServerBuilder {
         // Builder based on custom builders implmented by @meltedspark
         // https://github.com/meltedspark/angular-builders
         const webpackConfig = buildWebpackConfig(root, options.singleSpaWebpackConfigPath, config, options, this.context);
-        this.context.logger.info(tags.oneLine`[single-spa-angular]: Angular dev server is serving application as a single module`);
         return webpackConfig;
     }
     _buildServerConfig(root, projectRoot, options, browserOptions) {
@@ -38,15 +37,11 @@ export class SingleSpaDevServer extends DevServerBuilder {
 
         const finalConfig = webpackMerge.smart(defaultServerConfig, {
             // @ts-ignore
-            contentBase: projectRoot.serveDirectory || '../',
-            historyApiFallback: true,
-            publicPath: root.slice(root.lastIndexOf('/')) + '/' + options.outputPath,
+            historyApiFallback: false,
         }, customWebpackDevServerConfig);
 
         // @ts-ignore
-        this.context.logger.info(tags.oneLine`[single-spa-angular]: webpack output is served from ${finalConfig.publicPath}`);
-        // @ts-ignore
-        this.context.logger.info(tags.oneLine`[single-spa-angular]: content not from webpack is served from ${finalConfig.contentBase}`);
+        this.context.logger.info(tags.oneLine`Your single-spa application can be downloaded at http://localhost:${finalConfig.port}/main.js`);
 
         return finalConfig;
     }
