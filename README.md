@@ -30,8 +30,13 @@ If you're doing routing within your angular application, do the following:
 3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
 
 ### Check if it works
+Run the following:
 
-Run `ng serve`. This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to
+```js
+ng serve --port 4200 --publicHost http://localhost:4200 --disable-host-check
+```
+
+This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to
 http://single-spa-playground.org and follow the instructions there to verify everything is working and for instructions on creating the shared html file.
 
 ### Building
