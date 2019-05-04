@@ -49,7 +49,7 @@ npm install --save single-spa-angular
 ```
 
 Then create `main.single-spa.ts` with the following content:
-```typescript
+```js
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NgZone } from '@angular/core';
 import singleSpaAngular from 'single-spa-angular';
