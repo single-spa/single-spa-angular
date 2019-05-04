@@ -43,7 +43,7 @@ http://single-spa-playground.org and follow the instructions there to verify eve
 You can run `ng build --prod`, which will create a `dist` directory with your compiled code.
 
 ## Manual Install
-In root of the application run:
+If you are not using Angular CLI, do the following:
 ```bash
 npm install --save single-spa-angular
 ```
@@ -66,17 +66,6 @@ const lifecycles = singleSpaAngular({
 export const bootstrap = lifecycles.bootstrap;
 export const mount = lifecycles.mount;
 export const unmount = lifecycles.unmount;
-
-function domElementGetter() {
-  let containerEl = document.getElementById('my-app');
-  if (!containerEl) {
-    containerEl = document.createElement('div');
-    containerEl.id = 'my-app';
-    document.body.appendChild(containerEl);
-  }
-
-  return containerEl;
-}
 ```
 
 ## single-spa-angular options
