@@ -32,7 +32,7 @@ If you're doing routing within your angular application, do the following:
 ### Check if it works
 Run the following:
 
-```js
+```sh
 ng serve --port 4200 --publicHost http://localhost:4200 --disable-host-check
 ```
 
