@@ -67,12 +67,12 @@ describe('ng-add', () => {
   });
 
   test('should modify angular.json', () => {
-    const tree = testRunner.runSchematic<NgAddOptions>('ng-add', { routing: true }, defaultAppTree);
+    const tree = testRunner.runSchematic<NgAddOptions>('ng-add', { routing: true, project: 'ss-angular-cli-app' }, defaultAppTree);
     const angularJSON = JSON.parse(getFileContent(tree, '/angular.json'));
     const ssApp = angularJSON.projects['ss-angular-cli-app'];
     expect(ssApp.architect['single-spa']).toBeDefined();
     expect(ssApp.architect['single-spa'].builder).toBe('single-spa-angular:build');    
-    expect(ssApp.architect['single-spa'].options.main).toBe('src/main.single-spa.ts');
+    expect(ssApp.architect['single-spa'].options.main).toBe('projects/ss-angular-cli-app/src/main.single-spa.ts');
     expect(ssApp.architect['single-spa-serve']).toBeDefined();
     expect(ssApp.architect['single-spa-serve'].builder).toBe('single-spa-angular:dev-server');    
     expect(ssApp.architect['single-spa-serve'].options.browserTarget).toBe('ss-angular-cli-app:single-spa');
