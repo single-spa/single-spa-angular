@@ -1,6 +1,8 @@
 # single-spa-angular
 Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular.
 
+[Join the #angular channel in single-spa's slack workspace](https://join.slack.com/t/single-spa/shared_invite/enQtMzIwMTcxNTU3ODQyLTM1Y2U1OWMzNTNjOWYyZDBlMDJhN2VkYzk3MDI2NzQ2Nzg0MzMzNjVhNWE2YjVhMTcxNjFkOWYzMjllMmUxMjk)
+
 ## Example
 See https://github.com/joeldenning/coexisting-angular-microfrontends.
 
