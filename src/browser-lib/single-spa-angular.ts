@@ -50,7 +50,7 @@ function bootstrap(opts, props) {
     // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
     opts.NgZone.isInAngularZone = function() {
       // @ts-ignore
-      return window.Zone.current.get(opts.zoneIdentifier) === 'true';
+      return window.Zone.current.get(opts.zoneIdentifier) === true;
     }
   });
 }
