@@ -68,7 +68,7 @@ function mount(opts, props) {
       containerEl.innerHTML = opts.template;
     })
     .then(() => {
-      const bootstrapPromise = opts.bootstrapFunction()
+      const bootstrapPromise = opts.bootstrapFunction(props)
       if (!(bootstrapPromise instanceof Promise)) {
         throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
       }
