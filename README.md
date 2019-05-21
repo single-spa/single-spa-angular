@@ -59,7 +59,7 @@ import { Router } from '@angular/router';
 import { AppModule } From './app/app.module';
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
+  bootstrapFunction: (customProps) => platformBrowserDynamic().bootstrapModule(AppModule),
   template: `<component-to-render />`,
   Router,
   NgZone,
@@ -70,13 +70,17 @@ export const mount = lifecycles.mount;
 export const unmount = lifecycles.unmount;
 ```
 
+## Custom Props
+[Custom props](https://single-spa.js.org/docs/building-applications.html#custom-props) are a way of passing auth or other data to your single-spa applications. The custom props are available inside of the bootstrapFunction explained below.
+
 ## single-spa-angular options
 
 Options are passed to single-spa-angular via the `opts` parameter when calling `singleSpaAngular(opts)`. This happens inside of your `main.single-spa.ts` file.
 
 The following options are available:
 
-- `bootstrapFunction`: (required) A function that returns a promise that resolves with a resolved Angular module that is bootstrapped. Usually, your implementation will look like this: `bootstrapFunction: () => platformBrowserDynamic().bootstrapModule()`.
+- `bootstrapFunction`: (required) A function that is given custom props as an argument and returns a promise that resolves with a resolved Angular module that is bootstrapped. Usually, your implementation will look like this: `bootstrapFunction: (customProps) => platformBrowserDynamic().bootstrapModule()`.
+  See [custom props documentation](https://single-spa.js.org/docs/building-applications.html#custom-props) for more info on the argument passed to the function.
 - `template`: (required) An html string that will be put into the DOM Element returned by `domElementGetter`. This template can be anything, but it is recommended that you keeping it simple by making it only one Angular component. For example, `<my-component />` is recommended, but `<div><my-component /><span>Hello</span><another-component /></div>` is allowed. Note that `innerHTML` is used to put the template onto the DOM. Also note that when using multiple angular applications simultaneously, you will want to make sure that the component selectors provided are unique to avoid collisions.
 - `Router`: (optional) The angular router class. This is required when you are using `@angular/router`.
 - `AnimationModule`: (optional) The animation module class. This is required when you are using BrowserAnimationsModule.
