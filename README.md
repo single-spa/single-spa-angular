@@ -121,7 +121,6 @@ Example Configuration:
       "serve": {
         "builder": "single-spa-angular:dev-server",
         "options": {
-          "serveDirectory": "../"
         }
       }
   }
@@ -141,7 +140,6 @@ Configuration options are provided to the `architect.serve.options` section of y
 
 | Name | Description | Default Value |
 | ---- | ----------- | ------------- |
-| serveDirectory | (optional) A relative path to the directory where your index.html file is (single-spa root config) | `"../"`
 | singleSpaWebpackConfigPath | (optional) Path to partial webpack config to be merged with angular's config. Example: `extra-webpack.config.js` | undefined |
 
 #### Contributing

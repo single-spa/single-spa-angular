@@ -38,6 +38,7 @@ export class SingleSpaDevServer extends DevServerBuilder {
         const finalConfig = webpackMerge.smart(defaultServerConfig, {
             // @ts-ignore
             historyApiFallback: false,
+            
         }, customWebpackDevServerConfig);
 
         // @ts-ignore

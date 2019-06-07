@@ -11,7 +11,6 @@ import { NormalizedBrowserBuilderSchema } from '@angular-devkit/build-angular';
 export interface SingleSpaBuilderSchema extends NormalizedBrowserBuilderSchema {
   libraryTarget: "var" | "assign" | "this" | "window" | "global" | "commonjs" | "commonjs2" | "amd" | "umd" | "jsonp" | undefined;  
   libraryName: string;
-  serveDirectory: string;
   singleSpaWebpackConfigPath: string;
 }
 

@@ -7,10 +7,6 @@
       "type": "string",
       "description": "Path to additional single spa webpack configuration"
     },
-    "serveDirectory": {
-      "type": "string",
-      "description": "A relative path where your single-spa root config is."
-    },
     "browserTarget": {
       "type": "string",
       "description": "Target to serve."
