@@ -32,7 +32,7 @@ If you're doing routing within your angular application, do the following:
 3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
 
 ### Configuring multiple apps
-When you have multiple apps running side by side, you'll need to make sure that their root
+When you have multiple apps running side by side, you'll need to make sure that their
 [component selectors](https://angular.io/api/core/Directive#selector) are unique. When creating a new
 project, you can have angular-cli do this for you by passing in the `--prefix` option:
 
