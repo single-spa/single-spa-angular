@@ -10,7 +10,7 @@ See https://github.com/joeldenning/coexisting-angular-microfrontends.
 ### Installation
 First, create an angular application. This requires installing [angular cli](https://cli.angular.io/).
 ```sh
-ng new app1 --routing --defaults
+ng new app1 --routing --defaults --prefix my-app
 cd app1
 ```
 
@@ -30,6 +30,21 @@ If you're doing routing within your angular application, do the following:
 1. Add `{ provide: APP_BASE_HREF, useValue: '/' }` to `app-routing.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for more details.
 2. Create an empty route component, that will handle all routes that are not handled by this single-spa application. `ng g component EmptyRoute`
 3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
+
+### Configuring multiple apps
+When you have multiple apps running side by side, you'll need to make sure that their root
+[component selectors](https://angular.io/api/core/Directive#selector) are unique. When creating a new
+project, you can have angular-cli do this for you by passing in the `--prefix` option:
+
+```sh
+ng new --prefix app2
+```
+
+If you did not use the `--prefix` option, you should set the prefix manually:
+
+1. For an application called app2, add `"prefix": "app2"` to `projects.app2` inside of the angular.json.
+2. Go to `app.component.ts`. Modify `selector` to be `app2-root`.
+3. Go to `main.single-spa.ts`. Modify `template` to be `<app2-root>`.
 
 ### Check if it works
 Run the following:
