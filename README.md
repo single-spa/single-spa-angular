@@ -10,8 +10,8 @@ See https://github.com/joeldenning/coexisting-angular-microfrontends.
 ### Installation
 First, create an angular application. This requires installing [angular cli](https://cli.angular.io/).
 ```sh
-ng new app1 --routing --defaults --prefix my-app
-cd app1
+ng new my-app --routing --defaults --prefix my-app
+cd my-app
 ```
 
 In the root of your Angular CLI application run the following:
