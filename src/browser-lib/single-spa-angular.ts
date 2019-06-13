@@ -136,12 +136,15 @@ function getContainerEl(domElementGetter) {
 }
 
 function chooseDomElementGetter(opts, props) {
-  if (props && props.customProps && props.customProps.domElementGetter) {
-    return props.customProps.domElementGetter;
+  props = props && props.customProps ? props.customProps : props
+  if (props.domElement) {
+    return () => props.domElement
+  } else if (props.domElementGetter) {
+    return props.domElementGetter
   } else if (opts.domElementGetter) {
-    return opts.domElementGetter;
+    return opts.domElementGetter
   } else {
-    return defaultDomElementGetter(props.name);
+    return defaultDomElementGetter(props.name)
   }
 }
 
