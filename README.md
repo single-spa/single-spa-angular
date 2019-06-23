@@ -27,7 +27,7 @@ The schematic performs the following tasks:
 ### Add a route
 If you're doing routing within your angular application, do the following:
 
-1. Add `{ provide: APP_BASE_HREF, useValue: '/' }` to `app-routing.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for more details.
+1. Add `providers: [{ provide: APP_BASE_HREF, useValue: '/' }]` to `app-routing.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for more details.
 2. Create an empty route component, that will handle all routes that are not handled by this single-spa application. `ng g component EmptyRoute`
 3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
 
