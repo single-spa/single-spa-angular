@@ -86,7 +86,33 @@ export const unmount = lifecycles.unmount;
 ```
 
 ## Custom Props
-[Custom props](https://single-spa.js.org/docs/building-applications.html#custom-props) are a way of passing auth or other data to your single-spa applications. The custom props are available inside of the bootstrapFunction explained below.
+[Custom props](https://single-spa.js.org/docs/building-applications.html#custom-props) are a way of passing auth or other data to your single-spa applications. The custom props are available inside of the bootstrapFunction explained below. Additionally, if you use the angular cli schematic,
+you may subscribe to the singleSpaPropsSubject in your component, as shown below:
+
+```ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { singleSpaPropsSubject, SingleSpaProps } from 'src/single-spa/single-spa-props';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit, OnDestroy {
+  singleSpaProps: SingleSpaProps = null;
+  subscription: Subscription = null;
+  ngOnInit() {
+    this.subscription = singleSpaPropsSubject.subscribe(
+      props => this.singleSpaProps = props
+    )
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe()
+  }
+}
+
+```
 
 ## single-spa-angular options
 
