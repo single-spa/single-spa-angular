@@ -53,6 +53,7 @@ export function createMainEntry(options: NgAddOptions) {
     ]);
     const rule = mergeWith(templateSource, MergeStrategy.Overwrite);
     context.logger.info(`Generated 'main.single-spa.ts`);
+    context.logger.info(`Generated 'single-spa-props.ts`);
     return rule(host, context);
   }
 }
