@@ -35,6 +35,7 @@
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
     "rxjs": ">= 6.0.0",
+    "single-spa": ">= 4.0.0",
     "webpack": ">=4.6.0"
   },
   "devDependencies": {
@@ -55,6 +56,7 @@
     "eslint": "^5.15.2",
     "jest": "^24.5.0",
     "rimraf": "^2.6.2",
+    "single-spa": "^4.3.5",
     "ts-jest": "^24.0.0",
     "typescript": "3.2.4",
     "webpack": "^4.29.6"

@@ -1,20 +1,22 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import { AppProps, LifeCycles } from 'single-spa'
 
 const defaultOpts = {
   // required opts
+  NgZone: null,
   bootstrapFunction: null,
   template: null,
   // optional opts
-  Router: null,
-  domElementGetter: null, // only optional if you provide a domElementGetter as a custom prop
+  Router: undefined,
+  domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
 };
 
-export default function singleSpaAngular(userOpts) {
+export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
   if (typeof userOpts !== "object") {
     throw Error("single-spa-angular requires a configuration object");
   }
 
-  const opts = {
+  const opts: SingleSpaAngularOpts = {
     ...defaultOpts,
     ...userOpts,
   };
@@ -160,4 +162,12 @@ function defaultDomElementGetter(name) {
 
     return domElement;
   }
+}
+
+type SingleSpaAngularOpts = {
+  NgZone: any;
+  bootstrapFunction(props: AppProps): Promise<any>;
+  template: string;
+  Router?: any;
+  domElementGetter?(): HTMLElement;
 }
