@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { AppProps, LifeCycles } from 'single-spa'
-import { Router } from '@angular/router'
-import { NgZone } from '@angular/core';
 
 const defaultOpts = {
   // required opts
@@ -56,6 +54,14 @@ function bootstrap(opts, props) {
       // @ts-ignore
       return window.Zone.current.get(opts.zoneIdentifier) === true;
     }
+
+    opts.routingEventListener = function() {
+      opts.bootstrappedNgZone.run(() => {
+        // See https://github.com/CanopyTax/single-spa-angular/issues/86
+        // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
+        // unless we tell Zone that something happened
+      })
+    }
   });
 }
 
@@ -81,7 +87,9 @@ function mount(opts, props) {
         if (!module || typeof module.destroy !== 'function') {
           throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
         }
-        module.injector.get(opts.NgZone)._inner._properties[opts.zoneIdentifier] = true;
+        opts.bootstrappedNgZone = module.injector.get(opts.NgZone)
+        opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
+        window.addEventListener('single-spa:routing-event', opts.routingEventListener)
         
         opts.bootstrappedModule = module;
         return module;
@@ -97,6 +105,7 @@ function unmount(opts, props) {
       const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
       routerRef.dispose();
     }
+    window.removeEventListener('single-spa:routing-event', opts.routingEventListener)
     opts.bootstrappedModule.destroy();
     if (opts.AnimationEngine) {
       /*
@@ -167,9 +176,9 @@ function defaultDomElementGetter(name) {
 }
 
 type SingleSpaAngularOpts = {
-  NgZone: NgZone;
+  NgZone: any;
   bootstrapFunction(props: AppProps): Promise<any>;
   template: string;
-  Router?: Router;
+  Router?: any;
   domElementGetter?(): HTMLElement;
 }
