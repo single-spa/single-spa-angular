@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { AppProps, LifeCycles } from 'single-spa'
-import { Router } from '@angular/router'
-import { NgZone } from '@angular/core';
 
 const defaultOpts = {
   // required opts
@@ -167,9 +165,9 @@ function defaultDomElementGetter(name) {
 }
 
 type SingleSpaAngularOpts = {
-  NgZone: NgZone;
+  NgZone: any;
   bootstrapFunction(props: AppProps): Promise<any>;
   template: string;
-  Router?: Router;
+  Router?: any;
   domElementGetter?(): HTMLElement;
 }
