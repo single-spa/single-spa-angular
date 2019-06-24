@@ -55,6 +55,7 @@ function bootstrap(opts, props) {
   });
 }
 
+let routingListener;
 function mount(opts, props) {
   return Promise
     .resolve()
@@ -78,7 +79,13 @@ function mount(opts, props) {
           throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
         }
         module.injector.get(opts.NgZone)._inner._properties[opts.zoneIdentifier] = true;
-        
+        const ngZone = module.injector.get(opts.NgZone);
+        const ngZoneID = opts.zoneIdentifier;
+        routingListener = () => {
+          //fix browser back / forward button
+          ngZone.run(() => console.log("ngZone for", ngZoneID));
+        };
+        window.addEventListener('single-spa:routing-event', routingListener);
         opts.bootstrappedModule = module;
         return module;
       });
@@ -88,6 +95,7 @@ function mount(opts, props) {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function unmount(opts, props) {
   return Promise.resolve().then(() => {
+    window.removeEventListener('single-spa:routing-event', routingListener);
     if (opts.Router) {
       // Workaround for https://github.com/angular/angular/issues/19079
       const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
