@@ -6,6 +6,7 @@ import { buildWebpackConfig } from '../single-spa-webpack-builder';
 import * as fs from 'fs';
 import * as webpackMerge from 'webpack-merge';
 import { getSystemPath } from '@angular-devkit/core';
+import * as path from 'path';
 
 // @ts-ignore
 export class SingleSpaDevServer extends DevServerBuilder {
@@ -38,7 +39,10 @@ export class SingleSpaDevServer extends DevServerBuilder {
         const finalConfig = webpackMerge.smart(defaultServerConfig, {
             // @ts-ignore
             historyApiFallback: false,
-            
+            contentBase: path.resolve(process.cwd(), 'src'),
+            headers: {
+                'Access-Control-Allow-Headers': '*',
+            }
         }, customWebpackDevServerConfig);
 
         // @ts-ignore
