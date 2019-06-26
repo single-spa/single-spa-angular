@@ -35,7 +35,6 @@
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
     "rxjs": ">= 6.0.0",
-    "single-spa": ">= 4.0.0",
     "webpack": ">=4.6.0"
   },
   "devDependencies": {
@@ -62,6 +61,7 @@
     "webpack": "^4.29.6"
   },
   "dependencies": {
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "single-spa": ">= 4.0.0"
   }
 }

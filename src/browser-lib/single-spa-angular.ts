@@ -9,6 +9,7 @@ const defaultOpts = {
   // optional opts
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
+  AnimationEngine: undefined,
 };
 
 export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
@@ -181,4 +182,5 @@ type SingleSpaAngularOpts = {
   template: string;
   Router?: any;
   domElementGetter?(): HTMLElement;
+  AnimationEngine?: any;
 }
