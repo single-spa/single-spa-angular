@@ -50,7 +50,7 @@ If you did not use the `--prefix` option, you should set the prefix manually:
 Run the following:
 
 ```sh
-ng serve --port 4200 --publicHost http://localhost:4200 --disable-host-check
+ng serve --port 4200 --publicHost http://localhost:4200 --deployUrl http://localhost:4200 --disable-host-check
 ```
 
 This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to
