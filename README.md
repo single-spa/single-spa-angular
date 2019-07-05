@@ -21,15 +21,18 @@ ng add single-spa-angular@beta
 The schematic performs the following tasks:
 * Install single-spa-angular.
 * Create a new entry in the project's architect called `single-spa`, which is a preconfigured [Angular Builder](#Angular-Builder).
-* Generate a `main.single-spa.ts` in your project's `/src`.
+* Generate a `main.single-spa.ts` in your project `src/`.
+* Generate `single-spa-props.ts` in `src/single-spa/`
+* Generate `asset-url.ts` in `src/single-spa/`
+* Generate an EmptyRouteComponent in `src/app/empty-route/`, to be used in app-routing.module.ts.
 * Add an npm script `npm run build:single-spa`.
 
 ### Add a route
 If you're doing routing within your angular application, do the following:
 
 1. Add `providers: [{ provide: APP_BASE_HREF, useValue: '/' }]` to `app-routing.module.ts`. See https://angular.io/api/common/APP_BASE_HREF for more details.
-2. Create an empty route component, that will handle all routes that are not handled by this single-spa application. `ng g component EmptyRoute`
-3. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
+2. Add `{ path: '**', component: EmptyRouteComponent }` to your `app-routing.module.ts` routes. See https://angular.io/guide/router#configuration for more details.
+3. Add a declaration for EmptyRouteComponent in `app.module.ts`. See https://angular.io/guide/ngmodules#the-basic-ngmodule.
 
 ### Configuring multiple apps
 When you have multiple apps running side by side, you'll need to make sure that their
@@ -50,7 +53,7 @@ If you did not use the `--prefix` option, you should set the prefix manually:
 Run the following:
 
 ```sh
-ng serve --port 4200 --publicHost http://localhost:4200 --deployUrl http://localhost:4200 --disable-host-check
+ng serve --port 4200 --public-host http://localhost:4200 --deploy-url http://localhost:4200 --disable-host-check
 ```
 
 This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to
