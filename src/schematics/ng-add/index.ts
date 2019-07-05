@@ -33,6 +33,9 @@ export default function (options: NgAddOptions): Rule {
 export function addDependencies(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
     addPackageToPackageJson(host, 'single-spa-angular', versions.singleSpaAngular);
+    if (atLeastAngular8()) {
+      addPackageToPackageJson(host, '@angular-builders/custom-webpack', versions.angularBuilderCustomWebpack);
+    }
     context.addTask(new NodePackageInstallTask());
     context.logger.info(`Added 'single-spa-angular' as a dependency`);
   }
