@@ -5,6 +5,7 @@
   },
   "include": [
     "src/builders/**/*",
+    "src/webpack/*",
     "src/schematics/**/*"
   ]
 }

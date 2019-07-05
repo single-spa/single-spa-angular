@@ -19,6 +19,7 @@ import * as versions from '../library-versions';
 import { normalize, join } from 'path';
 import { addPackageToPackageJson } from '../utils';
 import { WorkspaceProject } from '@angular-devkit/core/src/workspace';
+import * as semver from 'semver'
 
 export default function (options: NgAddOptions): Rule {
   return chain([
@@ -41,10 +42,11 @@ export function createMainEntry(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
 
     const project = getClientProject(host, options);
-    const path = join(normalize(project.workspace.root), 'src');
+    const path = normalize(project.workspace.root);
 
-    const templateSource = apply(url('./_files/src'), [
+    const templateSource = apply(url('./_files'), [
       applyTemplates({
+        atLeastAngular8: atLeastAngular8(),
         prefix: project.workspace.prefix,
         routing: options.routing,
         usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
@@ -54,6 +56,8 @@ export function createMainEntry(options: NgAddOptions) {
     const rule = mergeWith(templateSource, MergeStrategy.Overwrite);
     context.logger.info(`Generated 'main.single-spa.ts`);
     context.logger.info(`Generated 'single-spa-props.ts`);
+    context.logger.info(`Generated asset-url.ts`);
+    context.logger.info(`Generated extra-webpack.config.js`);
     return rule(host, context);
   }
 }
@@ -69,21 +73,47 @@ export function updateConfiguration(options: NgAddOptions) {
     }
     const workspacePath = getWorkspacePath(host);
 
-    // Copy configuration from build architect
-    clientProject.architect['single-spa'] = clientProject.architect.build;
-    clientProject.architect['single-spa'].builder = 'single-spa-angular:build';
-    clientProject.architect['single-spa'].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
-
-    // Copy configuration from the serve architect
-    clientProject.architect['single-spa-serve'] = clientProject.architect.serve;
-    clientProject.architect['single-spa-serve'].builder = 'single-spa-angular:dev-server';
-    clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
+    if (atLeastAngular8()) {
+      updateProjectNewAngular(context, clientProject)
+    } else {
+      updateProjectOldAngular(context, clientProject, project)
+    }
 
     host.overwrite(workspacePath, JSON.stringify(workspace, null, 2));
 
     context.logger.info(`Updated angular.json configuration`);
+    // @ts-ignore
+    context.logger.info(clientProject.architect.build.builder)
     return host;
   };
+}
+
+function updateProjectOldAngular(context, clientProject, project) {
+  context.logger.info('Using single-spa-angular builder for Angular versions before 8')
+
+  // Copy configuration from build architect
+  clientProject.architect['single-spa'] = clientProject.architect.build;
+  clientProject.architect['single-spa'].builder = 'single-spa-angular:build';
+  clientProject.architect['single-spa'].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
+
+  // Copy configuration from the serve architect
+  clientProject.architect['single-spa-serve'] = clientProject.architect.serve;
+  clientProject.architect['single-spa-serve'].builder = 'single-spa-angular:dev-server';
+  clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
+}
+
+function updateProjectNewAngular(context, clientProject) {
+  context.logger.info('Using @angular-devkit/custom-webpack builder.')
+  // @ts-ignore
+  clientProject.architect.build.builder = '@angular-builders/custom-webpack:browser'
+  // @ts-ignore
+  clientProject.architect.build.options.customWebpackConfig = {
+    path: "./extra-webpack.config.js"
+  }
+  // @ts-ignore
+  clientProject.architect.build.options.main = 'src/main.single-spa.ts'
+  // @ts-ignore
+  clientProject.architect.serve.builder = '@angular-builders/custom-webpack:dev-server';
 }
 
 export function addNPMScripts(options: NgAddOptions) {
@@ -97,9 +127,9 @@ export function addNPMScripts(options: NgAddOptions) {
 
     const pkg = JSON.parse(buffer.toString());
 
-    pkg.scripts['build:single-spa'] = `ng run ${options.project}:single-spa`;
+    pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:4200/`;
 
-    pkg.scripts['serve:single-spa'] = `ng run ${options.project}:single-spa-serve`
+    pkg.scripts['serve:single-spa'] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/`
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
   };
@@ -118,4 +148,10 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
   }
 
   return { name: project!, workspace: clientProject };
+}
+
+
+function atLeastAngular8(): boolean {
+  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
+  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
 }
