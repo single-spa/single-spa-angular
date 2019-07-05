@@ -114,6 +114,23 @@ export class AppComponent implements OnInit, OnDestroy {
 
 ```
 
+## Angular assets
+[Angular assets](https://angular.io/guide/file-structure#application-source-files) must be handled differently within single-spa. If you
+use the single-spa-angular schematics, there is a file called `asset-url.ts` to help you out with this. Feel free to create an injectable
+Angular Pipe for the asset url for usage within html templates.
+
+```js
+// Doesn't work with single-spa
+const urlToImageAsset = '/assets/file.png'
+```
+
+```js
+import { assetUrl } from 'src/single-spa/asset-url';
+
+// Works great with single-spa
+const urlToImageAsset = assetUrl('file.png')
+```
+
 ## single-spa-angular options
 
 Options are passed to single-spa-angular via the `opts` parameter when calling `singleSpaAngular(opts)`. This happens inside of your `main.single-spa.ts` file.
