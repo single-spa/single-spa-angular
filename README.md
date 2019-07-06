@@ -53,7 +53,7 @@ If you did not use the `--prefix` option, you should set the prefix manually:
 Run the following:
 
 ```sh
-ng serve --port 4200 --public-host http://localhost:4200 --deploy-url http://localhost:4200 --disable-host-check
+npm run serve:single-spa
 ```
 
 This **will not** open up an html file, since single-spa applications all share one html file. Instead, go to

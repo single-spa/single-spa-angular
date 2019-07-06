@@ -132,7 +132,7 @@ export function addNPMScripts(options: NgAddOptions) {
 
     pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:4200/`;
 
-    pkg.scripts['serve:single-spa'] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/`
+    pkg.scripts['serve:single-spa'] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false`
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
   };
