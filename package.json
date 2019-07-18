@@ -6,7 +6,7 @@
   "builders": "builders.json",
   "schematics": "./schematics.json",
   "scripts": {
-    "prepublish": "npm run build && npm run test",
+    "prepublishOnly": "npm run build && npm run test",
     "build": "npm run clean && tsc -p tsconfig.node.json && tsc -p tsconfig.browser.json && npm run :copy-schematic-files",
     "clean": "rimraf lib",
     "test": "jest",
