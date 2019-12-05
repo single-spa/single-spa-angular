@@ -17,6 +17,15 @@ export default (config, options) => {
           'Access-Control-Allow-Headers': '*',
       },
     },
+    module: {
+      rules: [
+        {
+          parser: {
+            system: false
+          }
+        }
+      ]
+    }
   }
 
   // @ts-ignore
