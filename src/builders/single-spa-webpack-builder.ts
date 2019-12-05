@@ -13,6 +13,15 @@ export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig
     },
     externals: {
       'zone.js': 'Zone',
+    },
+    module: {
+      rules: [
+        {
+          parser: {
+            system: false
+          }
+        }
+      ]
     }
   }
 
