@@ -1,0 +1,131 @@
+import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+
+@Component({
+  selector: 'parcel',
+  template: '<div>Parcel works!</div>'
+})
+export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() config: any; // import { ParcelConfig } from 'single-spa';
+  @Input() mountParcel: any;
+  @Input() onParcelMount: () => void;
+
+  @Input() handleError = err => console.error(err);
+
+  @Input() wrapWith = "div";
+  @Input() customProps: any;
+  @Input() appendTo: any;
+
+
+  createdDomElement: any;
+
+  hasError: boolean;
+
+  unmounted: any;
+  nextThingToDo: Promise<any>;
+
+  title = 'utente';
+
+  parcel: any;
+
+  constructor() {
+  }
+
+  ngOnInit() {
+    if (!this.config) {
+      throw new Error(`single-spa-react's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-react`)
+    }
+
+    this.addThingToDo('mount', () => {
+      const mountParcel = this.mountParcel; // this.props.mountParcel ||
+      if (!mountParcel) {
+        throw new Error(`
+				  <Parcel /> was not passed a mountParcel prop, nor is it rendered where mountParcel is within the React context.
+				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop
+				`)
+      }
+      let domElement;
+      // if (this.el) {
+      //   domElement = this.el
+      // } else {
+      this.createdDomElement = domElement = document.createElement(this.wrapWith)
+      this.appendTo.appendChild(domElement)
+      // }
+      this.parcel = mountParcel(this.config, { domElement, ...this.getParcelProps() })
+      if (this.onParcelMount) {
+        this.parcel.mountPromise.then(this.onParcelMount)
+      }
+      this.unmounted = false;
+      return this.parcel.mountPromise
+    })
+  }
+
+  ngOnChanges() {
+    this.addThingToDo('update', () => {
+      if (this.parcel && this.parcel.update) {
+        return this.parcel.update(this.getParcelProps())
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.addThingToDo('unmount', () => {
+      if (this.parcel && this.parcel.getStatus() === "MOUNTED") {
+        return this.parcel.unmount()
+      }
+    })
+
+    if (this.createdDomElement) {
+      this.createdDomElement.parentNode.removeChild(this.createdDomElement)
+    }
+
+    this.unmounted = true
+  }
+
+  addThingToDo(action, thing) {
+    if (this.hasError && action !== 'unmount') {
+      // In an error state, we don't do anything anymore except for unmounting
+      return
+    }
+
+    this.nextThingToDo = (this.nextThingToDo || Promise.resolve())
+      .then((...args) => {
+        if (this.unmounted && action !== 'unmount') {
+          // Never do anything once the react component unmounts
+          return
+        }
+
+        return thing(...args)
+      })
+      .catch(err => {
+        this.nextThingToDo = Promise.resolve() // reset so we don't .then() the bad promise again
+        this.hasError = true;
+
+        if (err && err.message) {
+          err.message = `During '${action}', parcel threw an error: ${err.message}`
+        }
+
+        if (this.handleError) {
+          this.handleError(err)
+        } else {
+          setTimeout(() => { throw err })
+        }
+
+        // No more things to do should be done -- the parcel is in an error state
+        throw err
+      })
+  }
+
+  getParcelProps = () => {
+    // const parcelProps = { ...this.props }
+
+    // delete parcelProps.mountParcel
+    // delete parcelProps.config
+    // delete parcelProps.wrapWith
+    // delete parcelProps.appendTo
+    // delete parcelProps.handleError
+    // delete parcelProps.parcelDidMount
+
+    return this.customProps;
+  }
+
+}

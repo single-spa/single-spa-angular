@@ -33,7 +33,7 @@ export default function (options: NgAddOptions): Rule {
 export function addDependencies(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
     addPackageToPackageJson(host, 'single-spa-angular', versions.singleSpaAngular);
-    if (atLeastAngular8()) {
+    if (false) {
       addPackageToPackageJson(host, '@angular-builders/custom-webpack', versions.angularBuilderCustomWebpack);
     }
     context.addTask(new NodePackageInstallTask());
@@ -49,7 +49,7 @@ export function createMainEntry(options: NgAddOptions) {
 
     const templateSource = apply(url('./_files'), [
       applyTemplates({
-        atLeastAngular8: atLeastAngular8(),
+        atLeastAngular8: false,
         prefix: project.workspace.prefix,
         routing: options.routing,
         usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
@@ -76,7 +76,7 @@ export function updateConfiguration(options: NgAddOptions) {
     }
     const workspacePath = getWorkspacePath(host);
 
-    if (atLeastAngular8()) {
+    if (false) {
       updateProjectNewAngular(context, clientProject)
     } else {
       updateProjectOldAngular(context, clientProject, project)
@@ -154,7 +154,7 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 
-function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
-}
+// function atLeastAngular8(): boolean {
+//   const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
+//   return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
+// }
