@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy, Input, OnChanges, ViewChild, ElementRef }
 
 @Component({
   selector: 'parcel',
-  template: '<div #parcel>Parcel works!</div>'
+  template: `
+  <div #parcelDiv>Parcel works!</div>
+  `
 })
 export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild('parcel') content: ElementRef;
+  @ViewChild('parcelDiv') parcelDiv: ElementRef;
   @Input() config: any; // import { ParcelConfig } from 'single-spa';
   @Input() mountParcel: any;
   @Input() onParcelMount: () => void;
@@ -40,9 +42,9 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         throw new Error(`
 				  <Parcel /> was not passed a mountParcel prop, nor is it rendered where mountParcel is within the React context.
 				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop
-				`)
+				`);
       }
-      debugger
+
       let domElement;
       // if (this.el) {
       //   domElement = this.el
@@ -51,15 +53,17 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         this.createdDomElement = domElement = document.createElement(this.wrapWith);
         this.appendTo.appendChild(domElement);
       } else {
-        this.createdDomElement = domElement = this.content.nativeElement;
+        this.createdDomElement = domElement = document.createElement(this.wrapWith);
+        this.parcelDiv.nativeElement.appendChild(domElement);
       }
       // }
-      this.parcel = mountParcel(this.config, { domElement, ...this.getParcelProps() })
+      this.parcel = mountParcel(this.config, { domElement, ...this.getParcelProps() });
+
       if (this.onParcelMount) {
-        this.parcel.mountPromise.then(this.onParcelMount)
+        this.parcel.mountPromise.then(this.onParcelMount);
       }
       this.unmounted = false;
-      return this.parcel.mountPromise;
+      // return this.parcel.mountPromise;
     })
   }
 
