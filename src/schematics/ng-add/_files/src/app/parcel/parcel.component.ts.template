@@ -1,17 +1,16 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'parcel',
-  template: '<div>Parcel works!</div>'
+  template: '<div #parcel>Parcel works!</div>'
 })
 export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
+  @ViewChild('parcel') content: ElementRef;
   @Input() config: any; // import { ParcelConfig } from 'single-spa';
   @Input() mountParcel: any;
   @Input() onParcelMount: () => void;
-
   @Input() handleError = err => console.error(err);
-
-  @Input() wrapWith = "div";
+  @Input() wrapWith = 'div';
   @Input() customProps: any;
   @Input() appendTo: any;
 
@@ -43,19 +42,24 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop
 				`)
       }
+      debugger
       let domElement;
       // if (this.el) {
       //   domElement = this.el
       // } else {
-      this.createdDomElement = domElement = document.createElement(this.wrapWith)
-      this.appendTo.appendChild(domElement)
+      if (this.appendTo) {
+        this.createdDomElement = domElement = document.createElement(this.wrapWith);
+        this.appendTo.appendChild(domElement);
+      } else {
+        this.createdDomElement = domElement = this.content.nativeElement;
+      }
       // }
       this.parcel = mountParcel(this.config, { domElement, ...this.getParcelProps() })
       if (this.onParcelMount) {
         this.parcel.mountPromise.then(this.onParcelMount)
       }
       this.unmounted = false;
-      return this.parcel.mountPromise
+      return this.parcel.mountPromise;
     })
   }
 
