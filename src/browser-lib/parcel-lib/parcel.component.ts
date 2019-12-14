@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Parcel } from 'single-spa';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
   hasError: boolean;
   unmounted: any;
   nextThingToDo: Promise<any>;
-  parcel: any;
+  parcel: Parcel;
 
   constructor() {
   }

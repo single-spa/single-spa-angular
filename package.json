@@ -64,14 +64,13 @@
     "jest": "^24.5.0",
     "ng-packagr": "^5.7.1",
     "rimraf": "^2.6.2",
-    "single-spa": "^4.3.5",
+    "single-spa": "^4.4.1",
     "ts-jest": "^24.0.0",
     "typescript": "3.2.4",
     "webpack": "^4.29.6"
   },
   "dependencies": {
     "@angular/common": "^7.2.0",
-    "semver": "^6.2.0",
-    "single-spa": ">= 4.0.0"
+    "semver": "^6.2.0"
   }
 }
