@@ -19,14 +19,9 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 
 
   createdDomElement: any;
-
   hasError: boolean;
-
   unmounted: any;
   nextThingToDo: Promise<any>;
-
-  title = 'utente';
-
   parcel: any;
 
   constructor() {
@@ -34,22 +29,20 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     if (!this.config) {
-      throw new Error(`single-spa-react's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-react`)
+      throw new Error(`single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-react`)
     }
 
     this.addThingToDo('mount', () => {
       const mountParcel = this.mountParcel; // this.props.mountParcel ||
       if (!mountParcel) {
         throw new Error(`
-				  <Parcel /> was not passed a mountParcel prop, nor is it rendered where mountParcel is within the React context.
+				  <Parcel /> was not passed a mountParcel prop.
 				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop
 				`);
       }
       const elRef = new Date().valueOf() + '';
       let domElement: HTMLElement;
-      // if (this.el) {
-      //   domElement = this.el
-      // } else {
+
       if (this.appendTo) {
         this.createdDomElement = domElement = document.createElement(this.wrapWith);
         this.appendTo.appendChild(domElement);
@@ -58,22 +51,21 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         domElement.id = elRef;
         this.parcelDiv.nativeElement.appendChild(domElement);
       }
-      debugger
-      // }
-      this.parcel = mountParcel(this.config, { domElement, ...this.getParcelProps(), elRef });
+
+      this.parcel = mountParcel(this.config, { domElement, ...this.customProps, elRef });
 
       if (this.onParcelMount) {
         this.parcel.mountPromise.then(this.onParcelMount);
       }
       this.unmounted = false;
-      // return this.parcel.mountPromise;
+      return this.parcel.mountPromise;
     })
   }
 
   ngOnChanges() {
     this.addThingToDo('update', () => {
       if (this.parcel && this.parcel.update) {
-        return this.parcel.update(this.getParcelProps())
+        return this.parcel.update(this.customProps)
       }
     })
   }
@@ -124,19 +116,6 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         // No more things to do should be done -- the parcel is in an error state
         throw err
       })
-  }
-
-  getParcelProps = () => {
-    // const parcelProps = { ...this.props }
-
-    // delete parcelProps.mountParcel
-    // delete parcelProps.config
-    // delete parcelProps.wrapWith
-    // delete parcelProps.appendTo
-    // delete parcelProps.handleError
-    // delete parcelProps.parcelDidMount
-
-    return this.customProps;
   }
 
 }
