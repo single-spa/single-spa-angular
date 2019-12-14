@@ -71,6 +71,8 @@
   },
   "dependencies": {
     "@angular/common": "^7.2.0",
-    "semver": "^6.2.0"
+    "semver": "^6.2.0",
+    "single-spa": "^4.4.1",
+    "tsickle": "^0.37.1"
   }
 }
