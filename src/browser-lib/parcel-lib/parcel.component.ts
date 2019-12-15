@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
-import { Parcel } from 'single-spa';
+import { Parcel, ParcelConfig } from 'single-spa';
 
 
 @Component({
   selector: 'parcel',
   template: `
-  <div #parcelDiv>Parcel works!</div>
+  <div #parcelDiv></div>
   `
 })
 export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('parcelDiv') parcelDiv: ElementRef;
-  @Input() config: any; // import { ParcelConfig } from 'single-spa';
+  @Input() config: ParcelConfig;
   @Input() mountParcel: any;
   @Input() onParcelMount: () => void;
   @Input() wrapWith = 'div';
@@ -34,14 +34,13 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     this.addThingToDo('mount', () => {
-      const mountParcel = this.mountParcel; // this.props.mountParcel ||
+      const mountParcel = this.mountParcel;
       if (!mountParcel) {
         throw new Error(`
-				  <Parcel /> was not passed a mountParcel prop.
-				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop
+				  <parcel> was not passed a mountParcel prop.
+				  If you are using <parcel> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <parcel> as a mountParcel prop
 				`);
       }
-      const elRef = new Date().valueOf() + '';
       let domElement: HTMLElement;
 
       if (this.appendTo) {
@@ -49,11 +48,10 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         this.appendTo.appendChild(domElement);
       } else {
         this.createdDomElement = domElement = document.createElement(this.wrapWith);
-        domElement.id = elRef;
         this.parcelDiv.nativeElement.appendChild(domElement);
       }
 
-      this.parcel = mountParcel(this.config, { domElement, ...this.customProps, elRef });
+      this.parcel = mountParcel(this.config, { domElement, ...this.customProps });
 
       if (this.onParcelMount) {
         this.parcel.mountPromise.then(this.onParcelMount);

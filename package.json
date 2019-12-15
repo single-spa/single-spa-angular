@@ -35,7 +35,6 @@
     "@angular-devkit/architect": ">=0.10.0",
     "@angular-devkit/build-angular": ">=0.10.0",
     "@angular-devkit/core": ">=0.10.0",
-    "@angular/common": ">=7.0.0",
     "@angular/compiler": ">=2",
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
@@ -70,7 +69,6 @@
     "webpack": "^4.29.6"
   },
   "dependencies": {
-    "@angular/common": "^7.2.0",
     "semver": "^6.2.0",
     "single-spa": "^4.4.1"
   }
