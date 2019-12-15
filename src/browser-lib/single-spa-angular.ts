@@ -51,12 +51,12 @@ function bootstrap(opts, props) {
     // https://github.com/CanopyTax/single-spa-angular/issues/47,
     // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
     // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-    opts.NgZone.isInAngularZone = function () {
+    opts.NgZone.isInAngularZone = function() {
       // @ts-ignore
       return window.Zone.current._properties[opts.zoneIdentifier] === true;
     }
 
-    opts.routingEventListener = function () {
+    opts.routingEventListener = function() {
       opts.bootstrappedNgZone.run(() => {
         // See https://github.com/CanopyTax/single-spa-angular/issues/86
         // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
