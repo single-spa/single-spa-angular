@@ -92,7 +92,7 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
     this.nextThingToDo = (this.nextThingToDo || Promise.resolve())
       .then((...args) => {
         if (this.unmounted && action !== 'unmount') {
-          // Never do anything once the react component unmounts
+          // Never do anything once the angular component unmounts
           return
         }
 
