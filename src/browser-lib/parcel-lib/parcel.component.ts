@@ -30,7 +30,7 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     if (!this.config) {
-      throw new Error(`single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-react`)
+      throw new Error(`single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-angular`)
     }
 
     this.addThingToDo('mount', () => {
