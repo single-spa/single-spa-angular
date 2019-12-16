@@ -12,7 +12,6 @@
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib",
-    "packagr": "ng-packagr -p ./ng-package.json",
     "parcel": "ngc -p tsconfig.parcel.json",
     "spa": "tsc -p tsconfig.spa.json",
     "node": "tsc -p tsconfig.node.json"
@@ -61,7 +60,6 @@
     "cpx": "^1.5.0",
     "eslint": "^5.15.2",
     "jest": "^24.5.0",
-    "ng-packagr": "^5.7.1",
     "rimraf": "^2.6.2",
     "single-spa": "^4.4.1",
     "ts-jest": "^24.0.0",
@@ -70,6 +68,6 @@
   },
   "dependencies": {
     "semver": "^6.2.0",
-    "single-spa": "^4.4.1"
+    "single-spa": ">= 4.0.0"
   }
 }
