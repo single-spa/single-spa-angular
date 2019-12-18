@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2015",
+    "outDir": "./parcel",
+    "rootDir": "src/browser-lib/parcel-lib"
+  },
+  "include": [
+    "src/browser-lib/parcel-lib/**/*"
+  ],
+  "angularCompilerOptions": {
+    "skipTemplateCodegen": true
+  }
+}

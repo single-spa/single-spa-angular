@@ -7,11 +7,14 @@
   "schematics": "./schematics.json",
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",
-    "build": "npm run clean && tsc -p tsconfig.node.json && tsc -p tsconfig.browser.json && npm run :copy-schematic-files",
-    "clean": "rimraf lib",
+    "build": "npm run clean && npm run node && npm run parcel && npm run spa && npm run :copy-schematic-files",
+    "clean": "rimraf lib parcel",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
-    ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib"
+    ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib",
+    "parcel": "ngc -p tsconfig.parcel.json",
+    "spa": "tsc -p tsconfig.spa.json",
+    "node": "tsc -p tsconfig.node.json"
   },
   "repository": {
     "type": "git",
@@ -28,15 +31,17 @@
   },
   "homepage": "https://github.com/CanopyTax/single-spa-angular#readme",
   "peerDependencies": {
-    "@angular-devkit/architect": ">= 0.10.0",
-    "@angular-devkit/build-angular": ">= 0.10.0",
-    "@angular-devkit/core": ">= 0.10.0",
+    "@angular-devkit/architect": ">=0.10.0",
+    "@angular-devkit/build-angular": ">=0.10.0",
+    "@angular-devkit/core": ">=0.10.0",
     "@angular/compiler": ">=2",
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
-    "rxjs": ">= 6.0.0",
+    "rxjs": ">=6.0.0",
     "webpack": ">=4.6.0",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "semver": ">=6.2.0",
+    "single-spa": ">=4.0.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.13.6",
@@ -56,7 +61,7 @@
     "eslint": "^5.15.2",
     "jest": "^24.5.0",
     "rimraf": "^2.6.2",
-    "single-spa": "^4.3.5",
+    "single-spa": "^4.4.1",
     "ts-jest": "^24.0.0",
     "typescript": "3.2.4",
     "webpack": "^4.29.6"

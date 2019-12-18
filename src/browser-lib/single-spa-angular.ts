@@ -91,7 +91,7 @@ function mount(opts, props) {
         opts.bootstrappedNgZone = module.injector.get(opts.NgZone)
         opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
         window.addEventListener('single-spa:routing-event', opts.routingEventListener)
-        
+
         opts.bootstrappedModule = module;
         return module;
       });

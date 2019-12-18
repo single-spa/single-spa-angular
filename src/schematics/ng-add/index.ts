@@ -153,7 +153,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
   return { name: project!, workspace: clientProject };
 }
 
-
 function atLeastAngular8(): boolean {
   const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
   return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
