@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CanopyTax/single-spa-angular.git"
+    "url": "git+https://github.com/single-spa/single-spa-angular.git"
   },
   "keywords": [
     "single-spa",
@@ -27,9 +27,9 @@
   "author": "Joel Denning",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/CanopyTax/single-spa-angular/issues"
+    "url": "https://github.com/single-spa/single-spa-angular/issues"
   },
-  "homepage": "https://github.com/CanopyTax/single-spa-angular#readme",
+  "homepage": "https://github.com/single-spa/single-spa-angular#readme",
   "peerDependencies": {
     "@angular-devkit/architect": ">=0.10.0",
     "@angular-devkit/build-angular": ">=0.10.0",
