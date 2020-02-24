@@ -48,7 +48,7 @@ function bootstrap(opts, props) {
 
     // This is a hack, since NgZone doesn't allow you to configure the property that identifies your zone.
     // See https://github.com/PlaceMe-SAS/single-spa-angular-cli/issues/33,
-    // https://github.com/CanopyTax/single-spa-angular/issues/47,
+    // https://github.com/single-spa/single-spa-angular/issues/47,
     // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
     // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
     opts.NgZone.isInAngularZone = function() {
@@ -58,7 +58,7 @@ function bootstrap(opts, props) {
 
     opts.routingEventListener = function() {
       opts.bootstrappedNgZone.run(() => {
-        // See https://github.com/CanopyTax/single-spa-angular/issues/86
+        // See https://github.com/single-spa/single-spa-angular/issues/86
         // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
         // unless we tell Zone that something happened
       })

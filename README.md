@@ -1,5 +1,5 @@
 # single-spa-angular
-Helpers for building [single-spa](https://github.com/CanopyTax/single-spa) applications which use Angular.
+Helpers for building [single-spa](https://github.com/single-spa/single-spa) applications which use Angular.
 
 This lets you have multiple Angular microfrontends coexist within the same page.
 
