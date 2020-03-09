@@ -67,6 +67,7 @@
     "webpack": "^4.29.6"
   },
   "dependencies": {
-    "semver": "^6.2.0"
+    "semver": "^6.2.0",
+    "single-spa": ">= 5.1.1"
   }
 }
