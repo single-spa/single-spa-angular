@@ -63,9 +63,7 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges() {
     this.addThingToDo('update', () => {
-      // @ts-ignore https://github.com/single-spa/single-spa/pull/468
       if (this.parcel && this.parcel.update) {
-        // @ts-ignore https://github.com/single-spa/single-spa/pull/468
         return this.parcel.update(this.customProps)
       }
     })
