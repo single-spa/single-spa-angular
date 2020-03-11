@@ -10,6 +10,7 @@ const defaultOpts = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   AnimationEngine: undefined,
+  updateFunction: () => Promise.resolve()
 };
 
 export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
@@ -38,6 +39,7 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
     bootstrap: bootstrap.bind(null, opts),
     mount: mount.bind(null, opts),
     unmount: unmount.bind(null, opts),
+    update: opts.updateFunction
   };
 }
 
@@ -179,6 +181,7 @@ function defaultDomElementGetter(name) {
 type SingleSpaAngularOpts = {
   NgZone: any;
   bootstrapFunction(props: AppProps): Promise<any>;
+  updateFunction?(props: AppProps): Promise<any>;
   template: string;
   Router?: any;
   domElementGetter?(): HTMLElement;
