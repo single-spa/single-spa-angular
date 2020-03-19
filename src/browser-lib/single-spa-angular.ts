@@ -9,8 +9,10 @@ const defaultOpts = {
   // optional opts
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
+  domElementMaxRetry: 3,
+  domElementRetryInterval: 100, // in ms
   AnimationEngine: undefined,
-  updateFunction: () => Promise.resolve()
+  updateFunction: () => Promise.resolve(),
 };
 
 export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
@@ -53,12 +55,12 @@ function bootstrap(opts, props) {
     // https://github.com/single-spa/single-spa-angular/issues/47,
     // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
     // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-    opts.NgZone.isInAngularZone = function() {
+    opts.NgZone.isInAngularZone = function () {
       // @ts-ignore
       return window.Zone.current._properties[opts.zoneIdentifier] === true;
     }
 
-    opts.routingEventListener = function() {
+    opts.routingEventListener = function () {
       opts.bootstrappedNgZone.run(() => {
         // See https://github.com/single-spa/single-spa-angular/issues/86
         // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
@@ -76,11 +78,11 @@ function mount(opts, props) {
       if (!domElementGetter) {
         throw Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
       }
-
-      const containerEl = getContainerEl(domElementGetter);
-      containerEl.innerHTML = opts.template;
+      return getContainerEl(domElementGetter);
     })
-    .then(() => {
+    .then(containerEl => {
+      containerEl.innerHTML = opts.template;
+
       const bootstrapPromise = opts.bootstrapFunction(props)
       if (!(bootstrapPromise instanceof Promise)) {
         throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
@@ -142,13 +144,33 @@ function unmount(opts, props) {
   });
 }
 
-function getContainerEl(domElementGetter) {
-  const element = domElementGetter();
-  if (!element) {
-    throw Error("domElementGetter did not return a valid dom element");
-  }
+async function getContainerEl(domElementGetter) {
+  let element = domElementGetter();
+  if (element) { return Promise.resolve(element); }
 
-  return element;
+  const { domElementMaxRetry, domElementRetryInterval } = defaultOpts;
+
+  return new Promise(resolve => {
+    let retryCount = 0;
+    const interval = setInterval(() => {
+      element = domElementGetter();
+
+      if (element) {
+        resolve(element);
+        clearInterval(interval);
+        return true;
+      }
+
+      if (retryCount < domElementMaxRetry) {
+        retryCount++;
+        return null;
+      }
+
+      if (retryCount === domElementMaxRetry) {
+        throw Error(`domElementGetter did not return a valid dom element after ${domElementMaxRetry * domElementRetryInterval}ms`);
+      }
+    }, domElementRetryInterval);
+  });
 }
 
 function chooseDomElementGetter(opts, props) {
@@ -186,4 +208,6 @@ type SingleSpaAngularOpts = {
   Router?: any;
   domElementGetter?(): HTMLElement;
   AnimationEngine?: any;
+  domElementMaxRetry?: number;
+  domElementRetryInterval?: number;
 }
