@@ -109,7 +109,6 @@ function unmount(opts, props) {
       routerRef.dispose();
     }
     window.removeEventListener('single-spa:routing-event', opts.routingEventListener)
-    opts.bootstrappedModule.destroy();
     if (opts.AnimationEngine) {
       /*
       The BrowserAnimationsModule does not clean up after itself :'(. When you unmount/destroy the main module, the
@@ -138,11 +137,38 @@ function unmount(opts, props) {
       const animationEngine = opts.bootstrappedModule.injector.get(opts.AnimationEngine);
       animationEngine._transitionEngine.flush();
     }
+    opts.bootstrappedModule.destroy();
     delete opts.bootstrappedModule;
+
+    if (ivyEnabled()) {
+      removeApplicationFromDOMIfIvyEnabled(opts, props);
+    }
   });
 }
 
-function getContainerEl(domElementGetter) {
+function ivyEnabled(): boolean {
+  try {
+    // `ɵivyEnabled` variable is exposed starting from version 8.
+    // We use `require` here except of a single `import { ɵivyEnabled }` because the
+    // developer can use Angular version that doesn't expose it (all versions <8).
+    // The `catch` statement will handle those cases.
+    const { ɵivyEnabled } = require('@angular/core');
+    return !!ɵivyEnabled;
+  } catch {
+    return false;
+  }
+}
+
+function removeApplicationFromDOMIfIvyEnabled(opts, props): void {
+  const domElementGetter = chooseDomElementGetter(opts, props);
+  const domElement = getContainerEl(domElementGetter);
+  // View Engine removes all nodes automatically when calling `NgModuleRef.destroy()`,
+  // which calls `ComponentRef.destroy()`.
+  // Basically this will remove `app-root` or any other selector from the container element.
+  while (domElement.firstChild) domElement.removeChild(domElement.firstChild);
+}
+
+function getContainerEl(domElementGetter): never | HTMLElement {
   const element = domElementGetter();
   if (!element) {
     throw Error("domElementGetter did not return a valid dom element");
@@ -151,7 +177,7 @@ function getContainerEl(domElementGetter) {
   return element;
 }
 
-function chooseDomElementGetter(opts, props) {
+function chooseDomElementGetter(opts, props): () => HTMLElement {
   props = props && props.customProps ? props.customProps : props
   if (props.domElement) {
     return () => props.domElement
