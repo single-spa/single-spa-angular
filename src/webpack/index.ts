@@ -42,6 +42,14 @@ export default (config, options) => {
   }
 
   // Remove bundles
+
+  // Since Angular 8 supports differential loading it also
+  // add `polyfills-es5` to Webpack entries. This is a fix for:
+  // https://github.com/single-spa/single-spa-angular/issues/148
+  if (mergedConfig.entry['polyfills-es5']) {
+    delete mergedConfig.entry['polyfills-es5'];
+  }
+
   delete mergedConfig.entry.polyfills;
   delete mergedConfig.entry.styles;
   delete mergedConfig.optimization.runtimeChunk;
