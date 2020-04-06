@@ -1,0 +1,28 @@
+version: '3.7'
+
+x-default: &default
+  image: pierrezemb/gostatic
+  networks:
+    - default
+
+services:
+  shop:
+    <<: *default
+    container_name: single-spa-angular.shop
+    volumes:
+      # It will take a lot of time to build images with Angular
+      # assets inside, since `ngcc` compiler is super slow inside Docker containers.
+      # Thus we build it locally and then just mount a volume.
+      - ./shop/dist:/srv/http
+    command: --port 4200 --append-header Access-Control-Allow-Origin:*
+    ports:
+      - 4200:4200
+
+  portal:
+    <<: *default
+    container_name: single-spa-angular.portal
+    volumes:
+      - ./portal/dist:/srv/http
+    command: --port 8080 --fallback index.html
+    ports:
+      - 8080:8080
