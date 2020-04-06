@@ -3,7 +3,6 @@
   "version": "3.3.0",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "main": "lib/browser-lib/single-spa-angular.js",
-  "builders": "builders.json",
   "schematics": "./schematics.json",
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",
