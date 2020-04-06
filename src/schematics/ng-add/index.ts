@@ -9,7 +9,7 @@ import {
   mergeWith,
   move,
   applyTemplates,
-  SchematicsException
+  SchematicsException,
 } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
@@ -18,8 +18,8 @@ import { Schema as NgAddOptions } from './schema';
 import * as versions from '../library-versions';
 import { normalize, join } from 'path';
 import { addPackageToPackageJson } from '../utils';
-import { WorkspaceProject } from '@angular-devkit/core/src/workspace';
 import * as semver from 'semver'
+import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
 
 export default function (options: NgAddOptions): Rule {
   return chain([
@@ -77,9 +77,10 @@ export function updateConfiguration(options: NgAddOptions) {
     const workspacePath = getWorkspacePath(host);
 
     if (atLeastAngular8()) {
-      updateProjectNewAngular(context, clientProject)
+      updateProjectNewAngular(context, clientProject);
+      updateTSConfig(host, clientProject);
     } else {
-      updateProjectOldAngular(context, clientProject, project)
+      updateProjectOldAngular(context, clientProject, project);
     }
 
     host.overwrite(workspacePath, JSON.stringify(workspace, null, 2));
@@ -119,6 +120,16 @@ function updateProjectNewAngular(context, clientProject) {
   clientProject.architect.serve.builder = '@angular-builders/custom-webpack:dev-server';
 }
 
+function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
+  const tsConfigFileName = clientProject.architect!.build.options.tsConfig;
+  const tsConfig = host.read(tsConfigFileName)!.toString('utf-8');
+  const json = JSON.parse(tsConfig);
+  json.files = ['src/main.single-spa.ts'];
+  // The "files" property will only contain path to `main.single-spa.ts` file,
+  // because we remove `polyfills` from Webpack `entry` property.
+  host.overwrite(tsConfigFileName, JSON.stringify(json, null, 2));
+}
+
 export function addNPMScripts(options: NgAddOptions) {
   return (host: Tree, context: SchematicContext) => {
     const pkgPath = '/package.json';
@@ -154,6 +165,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
+  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '9';
+  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8');
 }
