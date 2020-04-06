@@ -4,7 +4,6 @@
     "target": "es2016",
   },
   "include": [
-    "src/builders/**/*",
     "src/webpack/*",
     "src/schematics/**/*"
   ]
