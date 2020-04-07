@@ -12,7 +12,7 @@ const collectionPath = join(__dirname, '../../../schematics.json');
 const workspaceOptions = {
   name: 'ss-workspace',
   newProjectRoot: 'projects',
-  version: '6.0.0',
+  version: '9.0.0',
 };
 
 const defaultApplicationOptions = {
@@ -130,11 +130,16 @@ describe('ng-add', () => {
     expect(ssApp.architect.build.builder).toBe(
       '@angular-builders/custom-webpack:browser'
     );
-    expect(ssApp.architect.build.options.main).toContain('main.single-spa.ts');
-    expect(ssApp.architect.build.options.customWebpackConfig).toBeDefined();
     expect(ssApp.architect.serve.builder).toBe(
       '@angular-builders/custom-webpack:dev-server'
     );
+
+    expect(ssApp.architect.build.options.main).toEqual(
+      'projects/ss-angular-cli-app/src/main.single-spa.ts'
+    );
+    expect(ssApp.architect.build.options.customWebpackConfig).toEqual({
+      path: 'projects/ss-angular-cli-app/extra-webpack.config.js',
+    });
   });
 
   test('should add build:single-spa npm script', async () => {
