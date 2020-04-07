@@ -13,13 +13,19 @@ import {
 } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
+import { normalize, join } from 'path';
+import * as semver from 'semver';
+import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
 
 import { Schema as NgAddOptions } from './schema';
 import * as versions from '../library-versions';
-import { normalize, join } from 'path';
 import { addPackageToPackageJson } from '../utils';
-import * as semver from 'semver'
-import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
+
+interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
+  customWebpackConfig: {
+    path: string;
+  };
+}
 
 export default function (options: NgAddOptions): Rule {
   return chain([
@@ -41,7 +47,7 @@ export function addDependencies(options: NgAddOptions) {
   }
 }
 
-export function createMainEntry(options: NgAddOptions) {
+export function createMainEntry(options: NgAddOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
 
     const project = getClientProject(host, options);
@@ -106,22 +112,24 @@ function updateProjectOldAngular(context, clientProject, project) {
   clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 }
 
-function updateProjectNewAngular(context, clientProject) {
-  context.logger.info('Using @angular-devkit/custom-webpack builder.')
-  // @ts-ignore
-  clientProject.architect.build.builder = '@angular-builders/custom-webpack:browser'
-  // @ts-ignore
-  clientProject.architect.build.options.customWebpackConfig = {
-    path: "./extra-webpack.config.js"
-  }
-  // @ts-ignore
-  clientProject.architect.build.options.main = 'src/main.single-spa.ts'
-  // @ts-ignore
-  clientProject.architect.serve.builder = '@angular-builders/custom-webpack:dev-server';
+function updateProjectNewAngular(context: SchematicContext, clientProject: WorkspaceProject): void {
+  context.logger.info('Using @angular-devkit/custom-webpack builder.');
+
+  const buildTarget = clientProject.architect!.build!;
+  const browserBuilder = '@angular-builders/custom-webpack:browser' as Builders.Browser
+
+  buildTarget.builder = browserBuilder;
+  buildTarget.options.main = join(clientProject.root, 'src/main.single-spa.ts');
+  (buildTarget.options as CustomWebpackBuilderOptions).customWebpackConfig = {
+    path: join(clientProject.root, 'extra-webpack.config.js')
+  };
+
+  const devServerBuilder = '@angular-builders/custom-webpack:dev-server' as Builders.DevServer;
+  clientProject.architect!.serve!.builder = devServerBuilder;
 }
 
 function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
-  const tsConfigFileName = clientProject.architect!.build.options.tsConfig;
+  const tsConfigFileName = clientProject.architect!.build!.options.tsConfig;
   const tsConfig = host.read(tsConfigFileName)!.toString('utf-8');
   const json = JSON.parse(tsConfig);
   json.files = ['src/main.single-spa.ts'];
