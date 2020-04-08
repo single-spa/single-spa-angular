@@ -50,10 +50,9 @@
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
     "rxjs": ">=6.0.0",
-    "semver": ">=6.2.0",
-    "single-spa": ">=4.0.0",
     "webpack": ">=4.6.0",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "single-spa": ">=4.0.0"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "~9.1.0",
@@ -92,8 +91,6 @@
     "zone.js": "~0.10.3"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "semver": "^6.2.0",
     "single-spa": ">= 5.1.1"
   },
   "prettier": {
