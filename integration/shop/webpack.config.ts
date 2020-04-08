@@ -6,10 +6,6 @@ export default (angularWebpackConfig, options) => {
     options
   );
 
-  if (singleSpaWebpackConfig.entry['polyfills-es5']) {
-    delete singleSpaWebpackConfig.entry['polyfills-es5'];
-  }
-
   singleSpaWebpackConfig.output.library = 'shop';
 
   return singleSpaWebpackConfig;

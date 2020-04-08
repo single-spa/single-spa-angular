@@ -5,8 +5,8 @@
   "main": "lib/browser-lib/single-spa-angular.js",
   "schematics": "./schematics.json",
   "scripts": {
-    "prepublishOnly": "npm run build && npm run test",
-    "build": "npm run clean && npm run node && npm run parcel && npm run spa && npm run :copy-schematic-files",
+    "prepublishOnly": "yarn build && yarn test",
+    "build": "yarn clean && yarn node && yarn parcel && yarn spa && yarn :copy-schematic-files",
     "clean": "rimraf lib parcel",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
@@ -50,9 +50,8 @@
     "@angular/compiler-cli": ">=2",
     "@angular/core": ">=2",
     "rxjs": ">=6.0.0",
-    "webpack": ">=4.6.0",
-    "webpack-merge": "^4.2.1",
-    "single-spa": ">=4.0.0"
+    "single-spa": ">=4.0.0",
+    "webpack-merge": "^4.2.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "~9.1.0",
@@ -86,8 +85,6 @@
     "ts-jest": "^24.0.0",
     "tslib": "^1.11.1",
     "typescript": "3.7.5",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.11",
     "zone.js": "~0.10.3"
   },
   "dependencies": {
@@ -97,6 +94,7 @@
     "singleQuote": true,
     "arrowParens": "avoid",
     "endOfLine": "lf",
-    "printWidth": 100
+    "printWidth": 100,
+    "trailingComma": "all"
   }
 }
