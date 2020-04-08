@@ -3,7 +3,7 @@ import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/
 
 const LATEST_COMPATIBLE_CUSTOM_WEBPACK_VERSIONS = {
   // `8.4.1` is the latest version of `@angular-builders/custom-webpack`
-  // that is compatible with Angular 8 and will not change anymore becase
+  // that is compatible with Angular 8 and will not change anymore because
   // 9 version is in active development. We will need to consider choosing
   // `@angular-builders/custom-webpack` based on the currently used Angular
   // version.
@@ -11,8 +11,8 @@ const LATEST_COMPATIBLE_CUSTOM_WEBPACK_VERSIONS = {
 };
 
 /**
- * Actually, there is the `latest-version` NPM package that does the
- * same things, but we'd want these schematics to be lightweight and
+ * Actually, there is the `latest-version` package that does the
+ * same stuff, but we'd want these schematics to be lightweight and
  * less dependent on other packages.
  */
 function getLatestNodeVersion(name: string) {
@@ -60,15 +60,14 @@ export async function getSingleSpaAngularDependency(): Promise<NodeDependency> {
 
 /**
  * We have to install `@angular-builders/custom-webpack` version compatible with the current
- * version of Angular. If Angular is 8 then `custom-webpack@8.*` has to be installed.
+ * version of Angular. If Angular is 8 then `custom-webpack@8.4.1` has to be installed.
  */
 export async function getAngularBuildersCustomWebpackDependency(): Promise<NodeDependency> {
   const { VERSION } = require('@angular/core');
-  const angularVersion = Number(VERSION.major);
   const name = '@angular-builders/custom-webpack';
 
   const version =
-    LATEST_COMPATIBLE_CUSTOM_WEBPACK_VERSIONS[angularVersion] || (await getLatestNodeVersion(name));
+    LATEST_COMPATIBLE_CUSTOM_WEBPACK_VERSIONS[VERSION.major] || (await getLatestNodeVersion(name));
 
   return {
     name,
