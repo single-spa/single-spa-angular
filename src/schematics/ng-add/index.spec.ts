@@ -58,12 +58,20 @@ describe('ng-add', () => {
     expect(tree.files).toBeDefined();
   });
 
-  test('should add single-spa dependency', async () => {
+  test('should add single-spa to dependencies', async () => {
     const tree = await testRunner
       .runSchematicAsync<NgAddOptions>('ng-add', {}, defaultAppTree)
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.dependencies['single-spa-angular']).toBeDefined();
+  });
+
+  test('should add @angular-builders/custom-webpack to devDependencies', async () => {
+    const tree = await testRunner
+      .runSchematicAsync<NgAddOptions>('ng-add', {}, defaultAppTree)
+      .toPromise();
+    const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
+    expect(packageJSON.devDependencies['@angular-builders/custom-webpack']).toBeDefined();
   });
 
   test('should add main-single-spa.ts', async () => {
