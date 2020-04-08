@@ -17,6 +17,7 @@ class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
       // `history.back|forward` which dispatch `popstate` event. Since `single-spa`
       // overrides `history.replaceState` Angular's zone cannot intercept this event.
       // Only the root zone is able to intercept all events.
+      // See https://github.com/single-spa/single-spa-angular/issues/94 for more detail
       ngZone.run(() => fn(event));
     });
   }
