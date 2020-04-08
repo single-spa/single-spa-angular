@@ -1,6 +1,8 @@
 import { NgZone, Type, NgModuleRef } from '@angular/core';
 import { AppProps, LifeCycles } from 'single-spa';
 
+import { SingleSpaPlatformLocation } from './extra-providers';
+
 const defaultOpts = {
   // Required opts that will be set by the library consumer.
   NgZone: null!,
@@ -98,9 +100,22 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     );
   }
 
-  const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
+  const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
+    SingleSpaPlatformLocation,
+    null
+  );
 
-  bootstrappedOpts.bootstrappedNgZone = module.injector.get(NgZone);
+  if (singleSpaPlatformLocation === null) {
+    throw new Error(`
+      single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?
+    `);
+  }
+
+  const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
+  const ngZone: NgZone = module.injector.get(NgZone);
+
+  singleSpaPlatformLocation.setNgZone(ngZone);
+  bootstrappedOpts.bootstrappedNgZone = ngZone;
   bootstrappedOpts.bootstrappedNgZone['_inner']._properties[bootstrappedOpts.zoneIdentifier] = true;
   window.addEventListener('single-spa:routing-event', bootstrappedOpts.routingEventListener);
 
@@ -238,4 +253,4 @@ interface BootstrappedSingleSpaAngularOpts extends SingleSpaAngularOpts {
   zoneIdentifier: string;
 }
 
-export * from './extra-providers';
+export { getSingleSpaExtraProviders } from './extra-providers';

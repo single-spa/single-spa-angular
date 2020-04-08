@@ -1,4 +1,4 @@
-import { Injectable, inject, NgZone, StaticProvider, Inject } from '@angular/core';
+import { Injectable, NgZone, StaticProvider, Inject } from '@angular/core';
 import {
   ɵBrowserPlatformLocation,
   PlatformLocation,
@@ -7,10 +7,15 @@ import {
 } from '@angular/common';
 
 @Injectable()
-class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
-  onPopState(fn: (event: LocationChangeEvent) => void): void {
-    const ngZone = inject(NgZone);
+export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
+  /**
+   * We could use the `inject` function from `@angular/core` which resolves
+   * dependencies from the currently active injector, but it's a feature
+   * of Angular 8+. Should be used when we drop support for older versions.
+   */
+  private ngZone: NgZone;
 
+  onPopState(fn: (event: LocationChangeEvent) => void): void {
     super.onPopState(event => {
       // Wrap any event listener into zone that is specific to some application.
       // The main issue is `back/forward` buttons of browsers, because they invoke
@@ -18,8 +23,12 @@ class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
       // overrides `history.replaceState` Angular's zone cannot intercept this event.
       // Only the root zone is able to intercept all events.
       // See https://github.com/single-spa/single-spa-angular/issues/94 for more detail
-      ngZone.run(() => fn(event));
+      this.ngZone.run(() => fn(event));
     });
+  }
+
+  setNgZone(ngZone: NgZone): void {
+    this.ngZone = ngZone;
   }
 }
 
@@ -31,13 +40,13 @@ class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
 export function getSingleSpaExtraProviders(): StaticProvider[] {
   return [
     {
-      provide: PlatformLocation,
+      provide: SingleSpaPlatformLocation,
       useClass: SingleSpaPlatformLocation,
       deps: [[new Inject(DOCUMENT)]],
     },
+    {
+      provide: PlatformLocation,
+      useExisting: SingleSpaPlatformLocation,
+    },
   ];
 }
-
-// Providers have to be exported but we don't want our users to consume
-// this class because it's meant to be private.
-export { SingleSpaPlatformLocation as ɵSingleSpaPlatformLocation };
