@@ -14,7 +14,6 @@ import {
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
 import { normalize, join } from 'path';
-import * as semver from 'semver';
 import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
 
 import { Schema as NgAddOptions } from './schema';
@@ -173,6 +172,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '9';
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8');
+  const { VERSION } = require('@angular/core');
+  return Number(VERSION.major) >= 8;
 }
