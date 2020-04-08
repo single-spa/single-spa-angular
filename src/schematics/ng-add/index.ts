@@ -17,7 +17,6 @@ import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/conf
 import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
 
 import { normalize, join } from 'path';
-import * as semver from 'semver';
 
 import { Schema as NgAddOptions } from './schema';
 import { getSingleSpaAngularDependency, getAngularBuildersCustomWebpackDependency } from './npm';
@@ -177,6 +176,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '9';
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8');
+  const { VERSION } = require('@angular/core');
+  return Number(VERSION.major) >= 8;
 }
