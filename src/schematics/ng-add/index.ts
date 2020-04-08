@@ -12,14 +12,14 @@ import {
   SchematicsException,
 } from '@angular-devkit/schematics';
 
-import { addPackageJsonDependency } from '@schematics/angular/utility/dependencies';
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
+import { addPackageJsonDependency, NodeDependency } from '@schematics/angular/utility/dependencies';
 import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
 
 import { normalize, join } from 'path';
 
 import { Schema as NgAddOptions } from './schema';
-import { getSingleSpaAngularDependency, getAngularBuildersCustomWebpackDependency } from './npm';
+import { getSingleSpaAngularDependency, getAngularBuildersCustomWebpackDependency } from './dependencies';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
@@ -37,13 +37,13 @@ export default function (options: NgAddOptions): Rule {
 }
 
 export function addDependencies(): Rule {
-  const dependencies = [
+  const dependencies: NodeDependency[] = [
     getSingleSpaAngularDependency(),
     getAngularBuildersCustomWebpackDependency(),
   ];
 
-  return async (tree: Tree, context: SchematicContext) => {
-    for await (const dependency of dependencies) {
+  return (tree: Tree, context: SchematicContext) => {
+    for (const dependency of dependencies) {
       addPackageJsonDependency(tree, dependency);
       context.logger.info(`Added '${dependency.name}' as a dependency`);
     }
