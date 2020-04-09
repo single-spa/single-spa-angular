@@ -11,15 +11,15 @@ import {
   applyTemplates,
   SchematicsException,
 } from '@angular-devkit/schematics';
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
+
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
-import { normalize, join } from 'path';
-import * as semver from 'semver';
+import { addPackageJsonDependency, NodeDependency } from '@schematics/angular/utility/dependencies';
 import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
 
+import { normalize, join } from 'path';
+
 import { Schema as NgAddOptions } from './schema';
-import * as versions from '../library-versions';
-import { addPackageToPackageJson } from '../utils';
+import { getSingleSpaAngularDependency, getAngularBuildersCustomWebpackDependency } from './dependencies';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
@@ -29,22 +29,25 @@ interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
 
 export default function (options: NgAddOptions): Rule {
   return chain([
-    addDependencies(options),
+    addDependencies(),
     createMainEntry(options),
     updateConfiguration(options),
     addNPMScripts(options),
   ]);
 }
 
-export function addDependencies(options: NgAddOptions) {
-  return (host: Tree, context: SchematicContext) => {
-    addPackageToPackageJson(host, 'single-spa-angular', versions.singleSpaAngular);
-    if (atLeastAngular8()) {
-      addPackageToPackageJson(host, '@angular-builders/custom-webpack', versions.angularBuilderCustomWebpack);
+export function addDependencies(): Rule {
+  const dependencies: NodeDependency[] = [
+    getSingleSpaAngularDependency(),
+    getAngularBuildersCustomWebpackDependency(),
+  ];
+
+  return (tree: Tree, context: SchematicContext) => {
+    for (const dependency of dependencies) {
+      addPackageJsonDependency(tree, dependency);
+      context.logger.info(`Added '${dependency.name}' as a dependency`);
     }
-    context.addTask(new NodePackageInstallTask());
-    context.logger.info(`Added 'single-spa-angular' as a dependency`);
-  }
+  };
 }
 
 export function createMainEntry(options: NgAddOptions): Rule {
@@ -173,6 +176,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '9';
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8');
+  const { VERSION } = require('@angular/core');
+  return Number(VERSION.major) >= 8;
 }

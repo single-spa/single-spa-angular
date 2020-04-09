@@ -1,0 +1,10 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "video": false,
+  "responseTimeout": 60000,
+  "pageLoadTimeout": 120000,
+  "ignoreTestFiles": [
+    "**/plugins/**.js",
+    "**/tsconfig.json"
+  ]
+}
