@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "single-spa-angular": ["../../src/browser-lib/single-spa-angular.ts"]
+    },
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "lib": ["es2018", "dom"],
+    "typeRoots": ["node_modules/@types"],
+    "sourceMap": true,
+    "declaration": false,
+    "importHelpers": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
+}
