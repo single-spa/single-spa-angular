@@ -46,8 +46,6 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
 }
 
 async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Promise<void> {
-  await Promise.resolve();
-
   // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
   opts.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
 
@@ -71,9 +69,8 @@ async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Pr
 }
 
 async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRef<any>> {
-  await Promise.resolve();
-
   const domElementGetter = chooseDomElementGetter(opts, props);
+
   if (!domElementGetter) {
     throw Error(
       `cannot mount angular application '${
@@ -105,7 +102,9 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     null
   );
 
-  if (singleSpaPlatformLocation === null) {
+  // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
+  // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
+  if (opts.Router && singleSpaPlatformLocation === null) {
     throw new Error(`
       single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?
     `);
@@ -125,8 +124,6 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function unmount(opts: BootstrappedSingleSpaAngularOpts, props: any): Promise<void> {
-  await Promise.resolve();
-
   if (opts.Router) {
     // Workaround for https://github.com/angular/angular/issues/19079
     const router = opts.bootstrappedModule.injector.get(opts.Router);
