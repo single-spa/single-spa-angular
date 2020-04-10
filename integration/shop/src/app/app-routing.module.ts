@@ -10,7 +10,7 @@ const routes: Routes = [
     path: 'transmission/:id',
     loadChildren: () =>
       import('./pages/transmission-details/transmission-details.module').then(
-        m => m.TransmissionDetailsModule
+        m => m.TransmissionDetailsModule,
       ),
   },
 ];

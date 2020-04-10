@@ -3,10 +3,6 @@
   "compilerOptions": {
     "types": ["node"]
   },
-  "files": [
-    "src/main.single-spa.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ]
+  "files": ["src/main.single-spa.ts"],
+  "include": ["src/**/*.d.ts"]
 }

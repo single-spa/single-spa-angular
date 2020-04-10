@@ -14,6 +14,7 @@
     "parcel": "ngc -p tsconfig.parcel.json",
     "spa": "tsc -p tsconfig.spa.json",
     "build:webpack": "tsc -p tsconfig.node.json",
+    "format": "prettier './**/*' --write",
     "// - INTEGRATION INSTALLS": "Install packages for integration apps",
     "install:integration:shop": "yarn --cwd integration/shop install",
     "install:integration:portal": "yarn --cwd integration/portal install",

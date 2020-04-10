@@ -1,7 +1,4 @@
-import {
-  SchematicTestRunner,
-  UnitTestTree,
-} from '@angular-devkit/schematics/testing';
+import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { getFileContent } from '@schematics/angular/utility/test';
 import { join } from 'path';
 
@@ -27,34 +24,25 @@ const defaultApplicationOptions = {
 
 describe('ng-add', () => {
   let defaultAppTree: UnitTestTree;
-  const testRunner = new SchematicTestRunner(
-    'single-spa-angular',
-    collectionPath
-  );
+  const testRunner = new SchematicTestRunner('single-spa-angular', collectionPath);
 
   beforeAll(async () => {
     // Generate a basic Angular CLI application
     const workspaceTree = await testRunner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'workspace',
-        workspaceOptions
-      )
+      .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
       .toPromise();
     defaultAppTree = await testRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
         'application',
         defaultApplicationOptions,
-        workspaceTree
+        workspaceTree,
       )
       .toPromise();
   });
 
   test('should run ng-add', async () => {
-    const tree = await testRunner
-      .runSchematicAsync('ng-add', {}, defaultAppTree)
-      .toPromise();
+    const tree = await testRunner.runSchematicAsync('ng-add', {}, defaultAppTree).toPromise();
     expect(tree.files).toBeDefined();
   });
 
@@ -79,7 +67,7 @@ describe('ng-add', () => {
       .runSchematicAsync<NgAddOptions>('ng-add', {}, defaultAppTree)
       .toPromise();
     expect(
-      tree.files.indexOf('/projects/ss-angular-cli-app/src/main.single-spa.ts')
+      tree.files.indexOf('/projects/ss-angular-cli-app/src/main.single-spa.ts'),
     ).toBeGreaterThan(-1);
   });
 
@@ -89,37 +77,29 @@ describe('ng-add', () => {
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
-      '/projects/ss-angular-cli-app/src/main.single-spa.ts'
+      '/projects/ss-angular-cli-app/src/main.single-spa.ts',
     );
     expect(mainModuleContent.indexOf('<test-root />')).toBeGreaterThan(-1);
   });
 
   test('should not add router dependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>(
-        'ng-add',
-        { routing: false },
-        defaultAppTree
-      )
+      .runSchematicAsync<NgAddOptions>('ng-add', { routing: false }, defaultAppTree)
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
-      '/projects/ss-angular-cli-app/src/main.single-spa.ts'
+      '/projects/ss-angular-cli-app/src/main.single-spa.ts',
     );
     expect(mainModuleContent.indexOf('@angular/router')).toBe(-1);
   });
 
   test('should add router dependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>(
-        'ng-add',
-        { routing: true },
-        defaultAppTree
-      )
+      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, defaultAppTree)
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
-      '/projects/ss-angular-cli-app/src/main.single-spa.ts'
+      '/projects/ss-angular-cli-app/src/main.single-spa.ts',
     );
     expect(mainModuleContent.indexOf('@angular/router')).toBeGreaterThan(-1);
   });
@@ -129,21 +109,17 @@ describe('ng-add', () => {
       .runSchematicAsync<NgAddOptions>(
         'ng-add',
         { routing: true, project: 'ss-angular-cli-app' },
-        defaultAppTree
+        defaultAppTree,
       )
       .toPromise();
     const angularJSON = JSON.parse(getFileContent(tree, '/angular.json'));
     const ssApp = angularJSON.projects['ss-angular-cli-app'];
 
-    expect(ssApp.architect.build.builder).toBe(
-      '@angular-builders/custom-webpack:browser'
-    );
-    expect(ssApp.architect.serve.builder).toBe(
-      '@angular-builders/custom-webpack:dev-server'
-    );
+    expect(ssApp.architect.build.builder).toBe('@angular-builders/custom-webpack:browser');
+    expect(ssApp.architect.serve.builder).toBe('@angular-builders/custom-webpack:dev-server');
 
     expect(ssApp.architect.build.options.main).toEqual(
-      'projects/ss-angular-cli-app/src/main.single-spa.ts'
+      'projects/ss-angular-cli-app/src/main.single-spa.ts',
     );
     expect(ssApp.architect.build.options.customWebpackConfig).toEqual({
       path: 'projects/ss-angular-cli-app/extra-webpack.config.js',
@@ -152,11 +128,7 @@ describe('ng-add', () => {
 
   test('should add build:single-spa npm script', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>(
-        'ng-add',
-        { routing: true },
-        defaultAppTree
-      )
+      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, defaultAppTree)
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.scripts['build:single-spa']).toBeDefined();
@@ -166,15 +138,11 @@ describe('ng-add', () => {
   // https://github.com/single-spa/single-spa-angular/issues/128
   test('should update `tsconfig.app.json` and add `main.single-spa.ts` to `files`', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>(
-        'ng-add',
-        { routing: true },
-        defaultAppTree
-      )
+      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, defaultAppTree)
       .toPromise();
 
     const tsConfigAppJSON = JSON.parse(
-      getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json')
+      getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json'),
     );
 
     expect(tsConfigAppJSON.files).toEqual(['src/main.single-spa.ts']);
