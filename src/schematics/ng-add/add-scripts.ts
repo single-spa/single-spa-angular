@@ -81,10 +81,7 @@ function collectExistingServeSingleSpaScripts(scripts: any): string[] {
   const collectedScripts: string[] = [];
 
   for (const key of Object.keys(scripts)) {
-    // Note that we have an additional `:` at the end,
-    // that means that we're searching for scripts bound to specific project,
-    // e.g. `serve:single-spa:first-cool-app`.
-    if (key.startsWith('serve:single-spa:')) {
+    if (key.startsWith('serve:single-spa')) {
       collectedScripts.push(scripts[key]);
     }
   }
