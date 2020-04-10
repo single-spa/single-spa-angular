@@ -10,7 +10,7 @@ registerApplication(
     await loadAngularScript(SHOP_APP_URL);
     return window.shop;
   },
-  () => true
+  () => true,
 );
 
 start();

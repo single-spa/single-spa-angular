@@ -14,7 +14,7 @@
     "declaration": false,
     "importHelpers": true,
     "downlevelIteration": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

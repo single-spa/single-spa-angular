@@ -1,12 +1,17 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  OnChanges,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { Parcel, ParcelConfig } from 'single-spa';
-
 
 @Component({
   selector: 'parcel',
-  template: `
-  <div #parcelDiv></div>
-  `
+  template: ` <div #parcelDiv></div> `,
 })
 export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('parcelDiv') parcelDiv: ElementRef;
@@ -18,19 +23,19 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() appendTo: any;
   @Input() handleError = err => console.error(err);
 
-
   createdDomElement: any;
   hasError: boolean;
   unmounted: any;
   nextThingToDo: Promise<any>;
   parcel: Parcel;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     if (!this.config) {
-      throw new Error(`single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-angular`)
+      throw new Error(
+        `single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-angular`,
+      );
     }
 
     this.addThingToDo('mount', () => {
@@ -58,63 +63,64 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.unmounted = false;
       return this.parcel.mountPromise;
-    })
+    });
   }
 
   ngOnChanges() {
     this.addThingToDo('update', () => {
       if (this.parcel && this.parcel.update) {
-        return this.parcel.update(this.customProps)
+        return this.parcel.update(this.customProps);
       }
-    })
+    });
   }
 
   ngOnDestroy() {
     this.addThingToDo('unmount', () => {
-      if (this.parcel && this.parcel.getStatus() === "MOUNTED") {
-        return this.parcel.unmount()
+      if (this.parcel && this.parcel.getStatus() === 'MOUNTED') {
+        return this.parcel.unmount();
       }
-    })
+    });
 
     if (this.createdDomElement) {
-      this.createdDomElement.parentNode.removeChild(this.createdDomElement)
+      this.createdDomElement.parentNode.removeChild(this.createdDomElement);
     }
 
-    this.unmounted = true
+    this.unmounted = true;
   }
 
   addThingToDo(action, thing) {
     if (this.hasError && action !== 'unmount') {
       // In an error state, we don't do anything anymore except for unmounting
-      return
+      return;
     }
 
     this.nextThingToDo = (this.nextThingToDo || Promise.resolve())
       .then((...args) => {
         if (this.unmounted && action !== 'unmount') {
           // Never do anything once the angular component unmounts
-          return
+          return;
         }
 
-        return thing(...args)
+        return thing(...args);
       })
       .catch(err => {
-        this.nextThingToDo = Promise.resolve() // reset so we don't .then() the bad promise again
+        this.nextThingToDo = Promise.resolve(); // reset so we don't .then() the bad promise again
         this.hasError = true;
 
         if (err && err.message) {
-          err.message = `During '${action}', parcel threw an error: ${err.message}`
+          err.message = `During '${action}', parcel threw an error: ${err.message}`;
         }
 
         if (this.handleError) {
-          this.handleError(err)
+          this.handleError(err);
         } else {
-          setTimeout(() => { throw err })
+          setTimeout(() => {
+            throw err;
+          });
         }
 
         // No more things to do should be done -- the parcel is in an error state
-        throw err
-      })
+        throw err;
+      });
   }
-
 }

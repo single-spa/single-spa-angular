@@ -10,12 +10,12 @@ const defaultOpts = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   AnimationEngine: undefined,
-  updateFunction: () => Promise.resolve()
+  updateFunction: () => Promise.resolve(),
 };
 
 export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
-  if (typeof userOpts !== "object") {
-    throw Error("single-spa-angular requires a configuration object");
+  if (typeof userOpts !== 'object') {
+    throw Error('single-spa-angular requires a configuration object');
   }
 
   const opts: SingleSpaAngularOpts = {
@@ -24,11 +24,11 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
   };
 
   if (typeof opts.bootstrapFunction !== 'function') {
-    throw Error("single-spa-angular must be passed an opts.bootstrapFunction");
+    throw Error('single-spa-angular must be passed an opts.bootstrapFunction');
   }
 
-  if (typeof opts.template !== "string") {
-    throw Error("single-spa-angular must be passed opts.template string");
+  if (typeof opts.template !== 'string') {
+    throw Error('single-spa-angular must be passed opts.template string');
   }
 
   if (!opts.NgZone) {
@@ -39,7 +39,7 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
     bootstrap: bootstrap.bind(null, opts),
     mount: mount.bind(null, opts),
     unmount: unmount.bind(null, opts),
-    update: opts.updateFunction
+    update: opts.updateFunction,
   };
 }
 
@@ -53,12 +53,12 @@ function bootstrap(opts, props) {
     // https://github.com/single-spa/single-spa-angular/issues/47,
     // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
     // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-    opts.NgZone.isInAngularZone = function() {
+    opts.NgZone.isInAngularZone = function () {
       // @ts-ignore
       return window.Zone.current._properties[opts.zoneIdentifier] === true;
     };
 
-    opts.routingEventListener = function() {
+    opts.routingEventListener = function () {
       opts.bootstrappedNgZone.run(() => {
         // See https://github.com/single-spa/single-spa-angular/issues/86
         // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
@@ -69,12 +69,15 @@ function bootstrap(opts, props) {
 }
 
 function mount(opts, props) {
-  return Promise
-    .resolve()
+  return Promise.resolve()
     .then(() => {
       const domElementGetter = chooseDomElementGetter(opts, props);
       if (!domElementGetter) {
-        throw Error(`cannot mount angular application '${props.name || props.appName}' without a domElementGetter provided either as an opt or a prop`);
+        throw Error(
+          `cannot mount angular application '${
+            props.name || props.appName
+          }' without a domElementGetter provided either as an opt or a prop`,
+        );
       }
 
       const containerEl = getContainerEl(domElementGetter);
@@ -83,12 +86,16 @@ function mount(opts, props) {
     .then(() => {
       const bootstrapPromise = opts.bootstrapFunction(props);
       if (!(bootstrapPromise instanceof Promise)) {
-        throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
+        throw Error(
+          `single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`,
+        );
       }
 
       return bootstrapPromise.then(module => {
         if (!module || typeof module.destroy !== 'function') {
-          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`);
+          throw Error(
+            `single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`,
+          );
         }
         opts.bootstrappedNgZone = module.injector.get(opts.NgZone);
         opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
