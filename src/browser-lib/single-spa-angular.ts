@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { AppProps, LifeCycles } from 'single-spa'
+import { AppProps, LifeCycles } from 'single-spa';
 
 const defaultOpts = {
   // required opts
@@ -24,7 +24,7 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
   };
 
   if (typeof opts.bootstrapFunction !== 'function') {
-    throw Error("single-spa-angular must be passed an opts.bootstrapFunction")
+    throw Error("single-spa-angular must be passed an opts.bootstrapFunction");
   }
 
   if (typeof opts.template !== "string") {
@@ -56,15 +56,15 @@ function bootstrap(opts, props) {
     opts.NgZone.isInAngularZone = function() {
       // @ts-ignore
       return window.Zone.current._properties[opts.zoneIdentifier] === true;
-    }
+    };
 
     opts.routingEventListener = function() {
       opts.bootstrappedNgZone.run(() => {
         // See https://github.com/single-spa/single-spa-angular/issues/86
         // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
         // unless we tell Zone that something happened
-      })
-    }
+      });
+    };
   });
 }
 
@@ -81,18 +81,18 @@ function mount(opts, props) {
       containerEl.innerHTML = opts.template;
     })
     .then(() => {
-      const bootstrapPromise = opts.bootstrapFunction(props)
+      const bootstrapPromise = opts.bootstrapFunction(props);
       if (!(bootstrapPromise instanceof Promise)) {
         throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
       }
 
       return bootstrapPromise.then(module => {
         if (!module || typeof module.destroy !== 'function') {
-          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
+          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`);
         }
-        opts.bootstrappedNgZone = module.injector.get(opts.NgZone)
+        opts.bootstrappedNgZone = module.injector.get(opts.NgZone);
         opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
-        window.addEventListener('single-spa:routing-event', opts.routingEventListener)
+        window.addEventListener('single-spa:routing-event', opts.routingEventListener);
 
         opts.bootstrappedModule = module;
         return module;
@@ -108,7 +108,7 @@ function unmount(opts, props) {
       const routerRef = opts.bootstrappedModule.injector.get(opts.Router);
       routerRef.dispose();
     }
-    window.removeEventListener('single-spa:routing-event', opts.routingEventListener)
+    window.removeEventListener('single-spa:routing-event', opts.routingEventListener);
     if (opts.AnimationEngine) {
       /*
       The BrowserAnimationsModule does not clean up after itself :'(. When you unmount/destroy the main module, the
@@ -152,6 +152,7 @@ function ivyEnabled(): boolean {
     // We use `require` here except of a single `import { ɵivyEnabled }` because the
     // developer can use Angular version that doesn't expose it (all versions <8).
     // The `catch` statement will handle those cases.
+    // eslint-disable-next-line
     const { ɵivyEnabled } = require('@angular/core');
     return !!ɵivyEnabled;
   } catch {
@@ -171,22 +172,22 @@ function removeApplicationFromDOMIfIvyEnabled(opts, props): void {
 function getContainerEl(domElementGetter): never | HTMLElement {
   const element = domElementGetter();
   if (!element) {
-    throw Error("domElementGetter did not return a valid dom element");
+    throw Error('domElementGetter did not return a valid dom element');
   }
 
   return element;
 }
 
 function chooseDomElementGetter(opts, props): () => HTMLElement {
-  props = props && props.customProps ? props.customProps : props
+  props = props && props.customProps ? props.customProps : props;
   if (props.domElement) {
-    return () => props.domElement
+    return () => props.domElement;
   } else if (props.domElementGetter) {
-    return props.domElementGetter
+    return props.domElementGetter;
   } else if (opts.domElementGetter) {
-    return opts.domElementGetter
+    return opts.domElementGetter;
   } else {
-    return defaultDomElementGetter(props.name)
+    return defaultDomElementGetter(props.name);
   }
 }
 
@@ -201,10 +202,10 @@ function defaultDomElementGetter(name) {
     }
 
     return domElement;
-  }
+  };
 }
 
-type SingleSpaAngularOpts = {
+interface SingleSpaAngularOpts {
   NgZone: any;
   bootstrapFunction(props: AppProps): Promise<any>;
   updateFunction?(props: AppProps): Promise<any>;
