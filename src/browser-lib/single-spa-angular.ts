@@ -113,7 +113,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
   const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
   const ngZone: NgZone = module.injector.get(opts.NgZone);
 
-  singleSpaPlatformLocation.setNgZone(ngZone);
+  singleSpaPlatformLocation!.setNgZone(ngZone);
   bootstrappedOpts.bootstrappedNgZone = ngZone;
   bootstrappedOpts.bootstrappedNgZone['_inner']._properties[bootstrappedOpts.zoneIdentifier] = true;
   window.addEventListener('single-spa:routing-event', bootstrappedOpts.routingEventListener);
