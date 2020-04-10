@@ -6,15 +6,20 @@
   "schematics": "./schematics.json",
   "scripts": {
     "prepublishOnly": "yarn build && yarn test",
-    "build": "yarn clean && yarn node && yarn parcel && yarn spa && yarn :copy-schematic-files",
+    "build": "yarn clean && yarn build:webpack && yarn parcel && yarn spa && yarn :copy-schematic-files",
     "clean": "rimraf lib parcel",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib",
     "parcel": "ngc -p tsconfig.parcel.json",
     "spa": "tsc -p tsconfig.spa.json",
-    "node": "tsc -p tsconfig.node.json",
-    "// - INTEGRATION BUILDS": "Build apps that are required for E2E testing",
+    "build:webpack": "tsc -p tsconfig.node.json",
+    "format": "prettier './**/*' --write",
+    "// - INTEGRATION INSTALLS": "Install packages for integration apps",
+    "install:integration:shop": "yarn --cwd integration/shop install",
+    "install:integration:portal": "yarn --cwd integration/portal install",
+    "install:integration": "yarn install:integration:shop && yarn install:integration:portal",
+    "// - INTEGRATION BUILDS": "Build apps that are required for E2E testing #requires yarn install:integration",
     "build:integration:shop": "yarn --cwd integration/shop build:single-spa",
     "build:integration:portal": "yarn --cwd integration/portal build:prod",
     "build:integration": "yarn build:integration:shop && yarn build:integration:portal",
@@ -27,7 +32,7 @@
     "cy:run": "cypress run --config integrationFolder=cypress/integration",
     "cy:run:chrome": "yarn cy:run --browser chrome",
     "cy:run:chromium": "yarn cy:run --browser chromium",
-    "// - CI": "CI testing",
+    "// - CI": "CI testing #requires yarn start:integration",
     "test:ci": "jest --runInBand",
     "test:ci:integration": "yarn start-test start:integration 8080 cy:run"
   },
@@ -73,6 +78,8 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@schematics/angular": "~9.1.0",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.11.3",
@@ -83,7 +90,11 @@
     "cpx": "^1.5.0",
     "cypress": "^4.3.0",
     "eslint": "^5.15.2",
+    "eslint-plugin-prefer-arrow": "^1.2.0",
+    "husky": "^4.2.5",
     "jest": "^24.5.0",
+    "lint-staged": "^10.1.3",
+    "prettier": "^2.0.4",
     "rimraf": "^2.6.2",
     "rxjs": "~6.5.5",
     "serve": "^11.3.0",
@@ -97,10 +108,24 @@
     "single-spa": ">= 5.1.1"
   },
   "prettier": {
+    "semi": true,
     "singleQuote": true,
     "arrowParens": "avoid",
     "endOfLine": "lf",
     "printWidth": 100,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "bracketSpacing": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,html,scss,md,yml}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

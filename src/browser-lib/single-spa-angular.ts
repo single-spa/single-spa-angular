@@ -75,7 +75,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     throw Error(
       `cannot mount angular application '${
         props.name || props.appName
-      }' without a domElementGetter provided either as an opt or a prop`
+      }' without a domElementGetter provided either as an opt or a prop`,
     );
   }
 
@@ -85,7 +85,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
   if (!(bootstrapPromise instanceof Promise)) {
     throw Error(
-      `single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`
+      `single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`,
     );
   }
 
@@ -93,13 +93,13 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
   if (!module || typeof module.destroy !== 'function') {
     throw Error(
-      `single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`
+      `single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`,
     );
   }
 
   const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
     SingleSpaPlatformLocation,
-    null
+    null,
   );
 
   // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
@@ -177,6 +177,7 @@ function ivyEnabled(): boolean {
     // We use `require` here except of a single `import { ɵivyEnabled }` because the
     // developer can use Angular version that doesn't expose it (all versions <8).
     // The `catch` statement will handle those cases.
+    // eslint-disable-next-line
     const { ɵivyEnabled } = require('@angular/core');
     return !!ɵivyEnabled;
   } catch {

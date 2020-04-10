@@ -1,0 +1,14 @@
+lib
+parcel
+node_modules
+.gitignore
+.prettierignore
+.gitkeep
+.npmignore
+.editorconfig
+*.template
+yarn.lock
+yarn-error.log
+LICENSE
+browserslist
+*.ico

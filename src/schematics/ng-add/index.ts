@@ -14,12 +14,19 @@ import {
 
 import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
 import { addPackageJsonDependency, NodeDependency } from '@schematics/angular/utility/dependencies';
-import { WorkspaceProject, Builders, BrowserBuilderOptions } from '@schematics/angular/utility/workspace-models';
+import {
+  WorkspaceProject,
+  Builders,
+  BrowserBuilderOptions,
+} from '@schematics/angular/utility/workspace-models';
 
 import { normalize, join } from 'path';
 
 import { Schema as NgAddOptions } from './schema';
-import { getSingleSpaAngularDependency, getAngularBuildersCustomWebpackDependency } from './dependencies';
+import {
+  getSingleSpaAngularDependency,
+  getAngularBuildersCustomWebpackDependency,
+} from './dependencies';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
@@ -52,7 +59,6 @@ export function addDependencies(): Rule {
 
 export function createMainEntry(options: NgAddOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-
     const project = getClientProject(host, options);
     const path = normalize(project.workspace.root);
 
@@ -63,7 +69,7 @@ export function createMainEntry(options: NgAddOptions): Rule {
         routing: options.routing,
         usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
       }),
-      move(path)
+      move(path),
     ]);
     const rule = mergeWith(templateSource, MergeStrategy.Overwrite);
     context.logger.info(`Generated 'main.single-spa.ts`);
@@ -71,7 +77,7 @@ export function createMainEntry(options: NgAddOptions): Rule {
     context.logger.info(`Generated asset-url.ts`);
     context.logger.info(`Generated extra-webpack.config.js`);
     return rule(host, context);
-  }
+  };
 }
 
 export function updateConfiguration(options: NgAddOptions) {
@@ -96,18 +102,20 @@ export function updateConfiguration(options: NgAddOptions) {
 
     context.logger.info(`Updated angular.json configuration`);
     // @ts-ignore
-    context.logger.info(clientProject.architect.build.builder)
+    context.logger.info(clientProject.architect.build.builder);
     return host;
   };
 }
 
 function updateProjectOldAngular(context, clientProject, project) {
-  context.logger.info('Using single-spa-angular builder for Angular versions before 8')
+  context.logger.info('Using single-spa-angular builder for Angular versions before 8');
 
   // Copy configuration from build architect
   clientProject.architect['single-spa'] = clientProject.architect.build;
   clientProject.architect['single-spa'].builder = 'single-spa-angular:build';
-  clientProject.architect['single-spa'].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
+  clientProject.architect[
+    'single-spa'
+  ].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
 
   // Copy configuration from the serve architect
   clientProject.architect['single-spa-serve'] = clientProject.architect.serve;
@@ -119,12 +127,12 @@ function updateProjectNewAngular(context: SchematicContext, clientProject: Works
   context.logger.info('Using @angular-devkit/custom-webpack builder.');
 
   const buildTarget = clientProject.architect!.build!;
-  const browserBuilder = '@angular-builders/custom-webpack:browser' as Builders.Browser
+  const browserBuilder = '@angular-builders/custom-webpack:browser' as Builders.Browser;
 
   buildTarget.builder = browserBuilder;
   buildTarget.options.main = join(clientProject.root, 'src/main.single-spa.ts');
   (buildTarget.options as CustomWebpackBuilderOptions).customWebpackConfig = {
-    path: join(clientProject.root, 'extra-webpack.config.js')
+    path: join(clientProject.root, 'extra-webpack.config.js'),
   };
 
   const devServerBuilder = '@angular-builders/custom-webpack:dev-server' as Builders.DevServer;
@@ -154,13 +162,18 @@ export function addNPMScripts(options: NgAddOptions) {
 
     pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:4200/`;
 
-    pkg.scripts['serve:single-spa'] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false`
+    pkg.scripts[
+      'serve:single-spa'
+    ] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
   };
 }
 
-function getClientProject(host: Tree, options: NgAddOptions): { name: string, workspace: WorkspaceProject } {
+function getClientProject(
+  host: Tree,
+  options: NgAddOptions,
+): { name: string; workspace: WorkspaceProject } {
   const workspace = getWorkspace(host);
   let project = options.project;
   if (!options.project) {
