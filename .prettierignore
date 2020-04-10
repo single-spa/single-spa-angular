@@ -12,3 +12,5 @@ yarn-error.log
 LICENSE
 browserslist
 *.ico
+dist
+.cache

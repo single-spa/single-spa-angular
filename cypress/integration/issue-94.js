@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('https://github.com/single-spa/single-spa-angular/issues/94', () => {
-  it('should navigate using back button and change detection should stop working', () => {
+  it('should navigate using back button and change detection should continue working', () => {
     cy.visit('/shop');
 
     cy.get('button').click();
@@ -24,7 +24,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/94', () => {
     // Let's click the button again.
     cy.get('button').click();
 
-    // And ensure that element is not projected anymore because change detection is not run.
-    cy.get('input[type=search]').should('not.exist');
+    // And ensure that element IS project because change detection is working.
+    cy.get('input[type=search]').should('exist');
   });
 });

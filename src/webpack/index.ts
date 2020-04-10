@@ -31,9 +31,7 @@ export default (config, options) => {
   // @ts-ignore
   const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removeMiniCssExtract(mergedConfig);
 
   if (Array.isArray(mergedConfig.entry.styles)) {

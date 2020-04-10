@@ -18,9 +18,13 @@ jobs:
       - uses: actions/cache@v1
         id: yarn-cache
         with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn
+          # We also specify `~/.cache` because Cypress binary is installed
+          # in that location.
+          path: |
+            node_modules
+            ~/.cache
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-v1
 
       - uses: actions/setup-node@v1
         with:
