@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "single-spa-angular": ["../../src/browser-lib/single-spa-angular.ts"]
+      "single-spa-angular": ["./lib/single-spa-angular.ts"],
     },
     "module": "esnext",
     "moduleResolution": "node",
