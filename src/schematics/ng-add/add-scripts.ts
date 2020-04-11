@@ -2,6 +2,10 @@ import { Tree } from '@angular-devkit/schematics';
 
 const DEFAULT_PORT = 4200;
 
+interface Scripts {
+  [script: string]: string;
+}
+
 /**
  * The user can have multiple applications inside the same workspace.
  * E.g. consider following commands:
@@ -63,7 +67,7 @@ function addDefaultScripts(pkg: any): void {
   ] = `ng s --disable-host-check --port ${DEFAULT_PORT} --deploy-url http://localhost:${DEFAULT_PORT}/ --live-reload false`;
 }
 
-function parseExistingScriptsAndChoosePort(scripts: any): number {
+function parseExistingScriptsAndChoosePort(scripts: Scripts): number {
   const collectedScripts: string[] = collectExistingServeSingleSpaScripts(scripts);
   // For instance `[4200, 4201, 4202]`.
   const ports: number[] = getPortsFromCollectedScripts(collectedScripts);
@@ -77,35 +81,29 @@ function parseExistingScriptsAndChoosePort(scripts: any): number {
   return lastPort! + 1;
 }
 
-function collectExistingServeSingleSpaScripts(scripts: any): string[] {
-  const collectedScripts: string[] = [];
-
-  for (const key of Object.keys(scripts)) {
-    if (key.startsWith('serve:single-spa')) {
-      collectedScripts.push(scripts[key]);
-    }
-  }
-
-  return collectedScripts;
+function collectExistingServeSingleSpaScripts(scripts: Scripts): string[] {
+  return Object.keys(scripts)
+    .filter(key => key.startsWith('serve:single-spa'))
+    .map(key => scripts[key]);
 }
 
 function getPortsFromCollectedScripts(collectedScripts: string[]): number[] {
-  const ports: number[] = [];
+  return (
+    collectedScripts
+      .reduce((ports: number[], script: string) => {
+        const match: RegExpMatchArray | null = script.match(/--port \d+/);
 
-  for (const script of collectedScripts) {
-    const match: RegExpMatchArray | null = script.match(/--port \d{4}/);
+        if (match !== null) {
+          // `match[0]` will be a string e.g. `--port 4200`,
+          // we split by space to get that `4200`.
+          const [, port] = match[0].split(' ');
+          ports.push(+port);
+        }
 
-    if (match === null) {
-      continue;
-    }
-
-    // `match[0]` will be a string e.g. `--port 4200`,
-    // we split by space to get that `4200`.
-    const [, port] = match[0].split(' ');
-    ports.push(+port);
-  }
-
-  // Sorts all numbers for ascending order. For example we will get
-  // `[4200, 4201, 4202]` sorted numbers. We will need `4202` to get next port.
-  return ports.sort((a, b) => a - b);
+        return ports;
+      }, <number[]>[])
+      // Sorts all numbers for ascending order. For example we will get
+      // `[4200, 4201, 4202]` sorted numbers. We will need `4202` to get next port.
+      .sort((a, b) => a - b)
+  );
 }
