@@ -22,6 +22,7 @@ import {
 
 import { normalize, join } from 'path';
 
+import { addScripts } from './add-scripts';
 import { Schema as NgAddOptions } from './schema';
 import {
   getSingleSpaAngularDependency,
@@ -149,7 +150,7 @@ function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
   host.overwrite(tsConfigFileName, JSON.stringify(json, null, 2));
 }
 
-export function addNPMScripts(options: NgAddOptions) {
+export function addNPMScripts(options: NgAddOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const pkgPath = '/package.json';
     const buffer = host.read(pkgPath);
@@ -158,15 +159,7 @@ export function addNPMScripts(options: NgAddOptions) {
       throw new SchematicsException('Could not find package.json');
     }
 
-    const pkg = JSON.parse(buffer.toString());
-
-    pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:4200/`;
-
-    pkg.scripts[
-      'serve:single-spa'
-    ] = `ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false`;
-
-    host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
+    addScripts(host, pkgPath, JSON.parse(buffer.toString()), options.project);
   };
 }
 
