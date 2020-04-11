@@ -104,6 +104,6 @@ function getPortsFromCollectedScripts(collectedScripts: string[]): number[] {
       }, <number[]>[])
       // Sorts all numbers for ascending order. For example we will get
       // `[4200, 4201, 4202]` sorted numbers. We will need `4202` to get next port.
-      .sort((a, b) => a - b)
+      .sort()
   );
 }
