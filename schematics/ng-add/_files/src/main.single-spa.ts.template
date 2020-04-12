@@ -5,8 +5,8 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if
 import { Router } from '@angular/router';<% } if (usingBrowserAnimationsModule) { %>
 import { ɵAnimationEngine as AnimationEngine } from '@angular/animations/browser';<% } %>
 
-<% if (routing) { %>import singleSpaAngular, { getSingleSpaExtraProviders } from 'single-spa-angular';
-<% } else { %>import singleSpaAngular from 'single-spa-angular';<% } %>
+<% if (routing) { %>import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
+<% } else { %>import { singleSpaAngular } from 'single-spa-angular';<% } %>
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

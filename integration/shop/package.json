@@ -7,6 +7,7 @@
     "build": "ng build",
     "build:single-spa": "ng build --prod --deploy-url http://localhost:4200/",
     "serve:single-spa": "ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false",
+    "preinstall": "yarn --cwd ../../ cpx -v -C \"lib/**/*\" ./integration/shop/node_modules/single-spa-angular",
     "postinstall": "ngcc"
   },
   "private": true,
@@ -19,7 +20,7 @@
     "@angular/platform-browser": "file:../../node_modules/@angular/platform-browser",
     "@angular/platform-browser-dynamic": "file:../../node_modules/@angular/platform-browser-dynamic",
     "@angular/router": "file:../../node_modules/@angular/router",
-    "single-spa-angular": "file:../../lib",
+    "single-spa-angular": "file:./node_modules/single-spa-angular",
     "rxjs": "file:../../node_modules/rxjs",
     "tslib": "file:../../node_modules/tslib",
     "zone.js": "file:../../node_modules/zone.js"

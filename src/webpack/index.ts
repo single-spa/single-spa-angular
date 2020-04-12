@@ -1,15 +1,13 @@
 import * as webpackMerge from 'webpack-merge';
 import * as path from 'path';
 
-export default (config: any, options: any) => {
+export default (config: any) => {
   const singleSpaConfig: any = {
     output: {
       library: 'app3',
       libraryTarget: 'umd',
     },
-    externals: {
-      'zone.js': 'Zone',
-    },
+    externals: ['zone.js'],
     devServer: {
       historyApiFallback: false,
       contentBase: path.resolve(process.cwd(), 'src'),

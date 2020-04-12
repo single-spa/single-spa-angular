@@ -23,9 +23,9 @@
   "private": true,
   "scripts": {
     "prepublishOnly": "yarn build && yarn test",
-    "prebuild": "rimraf lib parcel",
-    "build": "run-s build:single-spa-angular build:webpack build:schematics",
-    "test": "jest",
+    "clean": "rimraf lib pacel",
+    "build": "run-s clean build:single-spa-angular build:webpack build:schematics",
+    "test": "yarn clean && yarn jest",
     "lint": "eslint ./src/**/*.ts",
     ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib",
     "parcel": "ngc -p tsconfig.parcel.json",

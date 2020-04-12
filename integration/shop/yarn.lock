@@ -6553,7 +6553,7 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-"single-spa-angular@file:../../lib":
+"single-spa-angular@file:./node_modules/single-spa-angular":
   version "3.3.0"
 
 slash@^1.0.0:
