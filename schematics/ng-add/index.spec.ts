@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import { Schema as NgAddOptions } from './schema';
 
-const collectionPath = join(__dirname, '../../../schematics.json');
+const collectionPath = join(__dirname, '../schematics.json');
 
 const workspaceOptions = {
   name: 'ss-workspace',

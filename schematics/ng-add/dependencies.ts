@@ -3,7 +3,7 @@ import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/
 export function getSingleSpaAngularDependency(): NodeDependency {
   return {
     name: 'single-spa-angular',
-    version: require('../../../package.json').version,
+    version: require('../../package.json').version,
     overwrite: false,
     type: NodeDependencyType.Default,
   };

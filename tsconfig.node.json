@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "target": "es2016"
-  },
-  "include": ["src/webpack/*", "src/schematics/**/*"]
-}

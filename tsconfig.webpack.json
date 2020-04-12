@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib/lib/webpack",
+    "target": "ES2015",
+    "module": "CommonJS",
+    "types": ["node"]
+  },
+  "include": ["./src/webpack/index.ts"]
+}

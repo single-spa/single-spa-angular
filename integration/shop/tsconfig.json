@@ -2,9 +2,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "single-spa-angular": ["./lib/single-spa-angular.ts"],
-    },
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2015",

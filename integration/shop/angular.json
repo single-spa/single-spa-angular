@@ -42,7 +42,7 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "customWebpackConfig": {
-              "path": "./webpack.config.ts"
+              "path": "./webpack.config.js"
             },
             "outputPath": "dist",
             "index": "src/index.html",
