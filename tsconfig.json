@@ -1,0 +1,18 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es5",
+    "lib": ["es2018", "dom"],
+    "moduleResolution": "node",
+    "typeRoots": ["node_modules/@types"],
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "noEmitOnError": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "exclude": ["cypress"]
+}

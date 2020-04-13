@@ -108,20 +108,24 @@ export function updateConfiguration(options: NgAddOptions) {
   };
 }
 
-function updateProjectOldAngular(context, clientProject, project) {
+function updateProjectOldAngular(
+  context: SchematicContext,
+  clientProject: WorkspaceProject,
+  project: any,
+) {
   context.logger.info('Using single-spa-angular builder for Angular versions before 8');
 
   // Copy configuration from build architect
-  clientProject.architect['single-spa'] = clientProject.architect.build;
-  clientProject.architect['single-spa'].builder = 'single-spa-angular:build';
-  clientProject.architect[
+  clientProject!.architect!['single-spa'] = clientProject.architect!.build;
+  clientProject!.architect!['single-spa'].builder = 'single-spa-angular:build';
+  clientProject!.architect![
     'single-spa'
   ].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
 
   // Copy configuration from the serve architect
-  clientProject.architect['single-spa-serve'] = clientProject.architect.serve;
-  clientProject.architect['single-spa-serve'].builder = 'single-spa-angular:dev-server';
-  clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
+  clientProject.architect!['single-spa-serve'] = clientProject.architect!.serve;
+  clientProject.architect!['single-spa-serve'].builder = 'single-spa-angular:dev-server';
+  clientProject.architect!['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 }
 
 function updateProjectNewAngular(context: SchematicContext, clientProject: WorkspaceProject): void {

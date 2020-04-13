@@ -1,0 +1,10 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Adds single-spa-angular to application",
+      "schema": "./ng-add/schema.json",
+      "factory": "./ng-add"
+    }
+  }
+}

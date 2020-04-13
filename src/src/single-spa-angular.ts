@@ -15,7 +15,7 @@ const defaultOpts = {
   updateFunction: () => Promise.resolve(),
 };
 
-export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
+export function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
   if (typeof userOpts !== 'object') {
     throw Error('single-spa-angular requires a configuration object');
   }
@@ -38,9 +38,9 @@ export default function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCy
   }
 
   return {
-    bootstrap: bootstrap.bind(null, opts),
+    bootstrap: bootstrap.bind(null, opts as BootstrappedSingleSpaAngularOpts),
     mount: mount.bind(null, opts),
-    unmount: unmount.bind(null, opts),
+    unmount: unmount.bind(null, opts as BootstrappedSingleSpaAngularOpts),
     update: opts.updateFunction,
   };
 }
@@ -250,5 +250,3 @@ interface BootstrappedSingleSpaAngularOpts extends SingleSpaAngularOpts {
   routingEventListener: () => void;
   zoneIdentifier: string;
 }
-
-export { getSingleSpaExtraProviders } from './extra-providers';

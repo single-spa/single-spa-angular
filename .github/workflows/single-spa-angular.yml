@@ -39,11 +39,11 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
-      - name: Build packages
-        run: yarn build
-
       - name: Run Jest
         run: yarn test:ci
+
+      - name: Build packages
+        run: yarn build
 
       - name: Install and build integration apps
         run: |

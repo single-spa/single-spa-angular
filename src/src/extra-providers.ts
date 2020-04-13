@@ -13,7 +13,7 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
    * dependencies from the currently active injector, but it's a feature
    * of Angular 8+. Should be used when we drop support for older versions.
    */
-  private ngZone: NgZone;
+  private ngZone!: NgZone;
 
   onPopState(fn: (event: LocationChangeEvent) => void): void {
     super.onPopState(event => {

@@ -1,7 +1,7 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { join } from 'path';
 
-const collectionPath = join(__dirname, '../../../schematics.json');
+const collectionPath = join(__dirname, '../schematics.json');
 
 const workspaceOptions = {
   name: 'workspace',
@@ -51,7 +51,7 @@ describe('ng-add', () => {
       .runSchematicAsync('ng-add', { project: 'second-cool-app' }, workspaceTree)
       .toPromise();
 
-    const { scripts } = JSON.parse(tree.get('/package.json').content.toString());
+    const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
     // Assert
     expect(scripts['build:single-spa:first-cool-app']).toBe(
@@ -80,7 +80,7 @@ describe('ng-add', () => {
       .runSchematicAsync('ng-add', { project: 'additional-project' }, workspaceTree)
       .toPromise();
 
-    const { scripts } = JSON.parse(tree.get('/package.json').content.toString());
+    const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
     // Arrange
     expect(scripts['build:single-spa']).toBe('ng build --prod --deploy-url http://localhost:4200/');

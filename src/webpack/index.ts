@@ -1,15 +1,13 @@
 import * as webpackMerge from 'webpack-merge';
 import * as path from 'path';
 
-export default (config, options) => {
-  const singleSpaConfig = {
+export default (config: any) => {
+  const singleSpaConfig: any = {
     output: {
       library: 'app3',
       libraryTarget: 'umd',
     },
-    externals: {
-      'zone.js': 'Zone',
-    },
+    externals: ['zone.js'],
     devServer: {
       historyApiFallback: false,
       contentBase: path.resolve(process.cwd(), 'src'),
@@ -28,7 +26,6 @@ export default (config, options) => {
     },
   };
 
-  // @ts-ignore
   const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
 
   removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
@@ -58,19 +55,19 @@ export default (config, options) => {
   return mergedConfig;
 };
 
-function removePluginByName(plugins, name) {
+function removePluginByName(plugins: any[], name: string) {
   const pluginIndex = plugins.findIndex(plugin => plugin.constructor.name === name);
   if (pluginIndex > -1) {
     plugins.splice(pluginIndex, 1);
   }
 }
 
-function removeMiniCssExtract(config) {
+function removeMiniCssExtract(config: any) {
   removePluginByName(config.plugins, 'MiniCssExtractPlugin');
-  config.module.rules.forEach(rule => {
+  config.module.rules.forEach((rule: any) => {
     if (rule.use) {
       const cssMiniExtractIndex = rule.use.findIndex(
-        use => typeof use === 'string' && use.includes('mini-css-extract-plugin'),
+        (use: any) => typeof use === 'string' && use.includes('mini-css-extract-plugin'),
       );
       if (cssMiniExtractIndex >= 0) {
         rule.use[cssMiniExtractIndex] = { loader: 'style-loader' };
