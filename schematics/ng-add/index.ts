@@ -140,6 +140,8 @@ function updateProjectNewAngular(context: SchematicContext, clientProject: Works
     path: join(clientProject.root, 'extra-webpack.config.js'),
   };
 
+  updateConfigurationsAndDisableOutputHashing(clientProject);
+
   const devServerBuilder = '@angular-builders/custom-webpack:dev-server' as Builders.DevServer;
   clientProject.architect!.serve!.builder = devServerBuilder;
 }
@@ -155,7 +157,7 @@ function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
 }
 
 export function addNPMScripts(options: NgAddOptions): Rule {
-  return (host: Tree, context: SchematicContext) => {
+  return (host: Tree) => {
     const pkgPath = '/package.json';
     const buffer = host.read(pkgPath);
 
@@ -188,4 +190,17 @@ function getClientProject(
 function atLeastAngular8(): boolean {
   const { VERSION } = require('@angular/core');
   return Number(VERSION.major) >= 8;
+}
+
+function updateConfigurationsAndDisableOutputHashing(clientProject: WorkspaceProject): void {
+  const configurations = clientProject.architect!.build!.configurations;
+
+  // If the user doesn't have any `configurations` then just skip this step.
+  if (typeof configurations !== 'object') {
+    return;
+  }
+
+  for (const configuration of Object.values(configurations)) {
+    configuration.outputHashing = 'none';
+  }
 }
