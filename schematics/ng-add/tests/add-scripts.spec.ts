@@ -1,7 +1,7 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { join } from 'path';
 
-const collectionPath = join(__dirname, '../schematics.json');
+const collectionPath = join(__dirname, '../../schematics.json');
 
 const workspaceOptions = {
   name: 'workspace',
