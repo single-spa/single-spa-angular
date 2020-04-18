@@ -24,11 +24,11 @@
   "scripts": {
     "prepublishOnly": "yarn build && yarn test",
     "clean": "rimraf lib",
-    "build": "yarn clean && yarn build:single-spa-angular && concurrently yarn:build:schematics build:webpack",
+    "build": "yarn clean && yarn build:single-spa-angular && concurrently yarn:build:schematics yarn:build:webpack",
     "test": "yarn clean && jest",
     "lint": "eslint src --ext ts",
     "// - SINGLE-SPA-ANGULAR": "Scripts for building single-spa-angular",
-    "build:single-spa-angular": "yarn ts-node tools/build",
+    "build:single-spa-angular": "ng-packagr -p src/package.json",
     "// - WEBPACK": "Scripts for building Webpack config transformer",
     "prebuild:webpack": "rimraf lib/lib",
     "build:webpack": "tsc -p tsconfig.webpack.json",
