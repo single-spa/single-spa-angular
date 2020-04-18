@@ -11,12 +11,12 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() onParcelMount: (() => void) | null = null;
   @Input() wrapWith = 'div';
   @Input() customProps: object = {};
-  @Input() appendTo?: Node | null = null;
+  @Input() appendTo: Node | null = null;
   @Input() handleError = (error: Error) => console.error(error);
 
   createdDomElement: HTMLElement | null = null;
   hasError = false;
-  unmounted = false;
+  unmounted = true;
   nextThingToDo!: Promise<any>;
   parcel!: Parcel;
 
