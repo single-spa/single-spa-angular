@@ -1,40 +1,32 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  Input,
-  OnChanges,
-  ViewChild,
-  ElementRef,
-} from '@angular/core';
-import { Parcel, ParcelConfig } from 'single-spa';
+import { Component, OnInit, OnDestroy, Input, OnChanges, ElementRef } from '@angular/core';
+import { Parcel, ParcelConfig, AppProps } from 'single-spa';
 
 @Component({
   selector: 'parcel',
-  template: ` <div #parcelDiv></div> `,
+  template: '<div></div>',
 })
 export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild('parcelDiv') parcelDiv: ElementRef;
-  @Input() config: ParcelConfig;
-  @Input() mountParcel: any;
-  @Input() onParcelMount: () => void;
+  @Input() config!: ParcelConfig;
+  @Input() mountParcel!: AppProps['mountParcel'];
+  @Input() onParcelMount: (() => void) | null = null;
   @Input() wrapWith = 'div';
-  @Input() customProps: any;
-  @Input() appendTo: any;
-  @Input() handleError = err => console.error(err);
+  @Input() customProps: object = {};
+  @Input() appendTo: Node | null = null;
+  @Input() handleError = (error: Error) => console.error(error);
 
-  createdDomElement: any;
-  hasError: boolean;
-  unmounted: any;
-  nextThingToDo: Promise<any>;
-  parcel: Parcel;
+  createdDomElement: HTMLElement | null = null;
+  hasError = false;
+  unmounted = true;
+  nextThingToDo!: Promise<any>;
+  parcel!: Parcel;
 
-  constructor() {}
+  // eslint-disable-next-line @typescript-eslint/no-parameter-properties
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
     if (!this.config) {
       throw new Error(
-        `single-spa-angular's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-angular`,
+        `single-spa-angular's Parcel component requires the [config] binding to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-angular`,
       );
     }
 
@@ -42,8 +34,8 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
       const mountParcel = this.mountParcel;
       if (!mountParcel) {
         throw new Error(`
-				  <parcel> was not passed a mountParcel prop.
-				  If you are using <parcel> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <parcel> as a mountParcel prop
+				  <parcel> was not passed a [mountParcel] binding.
+				  If you are using <parcel> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <parcel> as a [mountParcel] binding
 				`);
       }
       let domElement: HTMLElement;
@@ -53,7 +45,9 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
         this.appendTo.appendChild(domElement);
       } else {
         this.createdDomElement = domElement = document.createElement(this.wrapWith);
-        this.parcelDiv.nativeElement.appendChild(domElement);
+        // Except of having `@ViewChild` we can simply get the first child element.
+        const parcelDiv = this.host.nativeElement.children[0];
+        parcelDiv.appendChild(domElement);
       }
 
       this.parcel = mountParcel(this.config, { domElement, ...this.customProps });
@@ -82,13 +76,13 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     if (this.createdDomElement) {
-      this.createdDomElement.parentNode.removeChild(this.createdDomElement);
+      this.createdDomElement.parentNode!.removeChild(this.createdDomElement);
     }
 
     this.unmounted = true;
   }
 
-  addThingToDo(action, thing) {
+  addThingToDo(action: string, thing: Function) {
     if (this.hasError && action !== 'unmount') {
       // In an error state, we don't do anything anymore except for unmounting
       return;
@@ -103,24 +97,24 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
 
         return thing(...args);
       })
-      .catch(err => {
+      .catch(error => {
         this.nextThingToDo = Promise.resolve(); // reset so we don't .then() the bad promise again
         this.hasError = true;
 
-        if (err && err.message) {
-          err.message = `During '${action}', parcel threw an error: ${err.message}`;
+        if (error && error.message) {
+          error.message = `During '${action}', parcel threw an error: ${error.message}`;
         }
 
-        if (this.handleError) {
-          this.handleError(err);
+        if (typeof this.handleError === 'function') {
+          this.handleError(error);
         } else {
           setTimeout(() => {
-            throw err;
+            throw error;
           });
         }
 
         // No more things to do should be done -- the parcel is in an error state
-        throw err;
+        throw error;
       });
   }
 }
