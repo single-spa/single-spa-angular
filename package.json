@@ -24,7 +24,7 @@
   "scripts": {
     "prepublishOnly": "yarn build && yarn test",
     "clean": "rimraf lib parcel",
-    "build": "yarn clean && concurrently yarn:build:parcel yarn:build:single-spa-angular yarn:build:webpack yarn:build:schematics",
+    "build": "yarn clean && yarn build:single-spa-angular && concurrently yarn:build:parcel yarn:build:webpack yarn:build:schematics",
     "test": "yarn clean && jest",
     "lint": "eslint src --ext ts",
     "build:parcel": "ngc -p tsconfig.parcel.json",
