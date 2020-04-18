@@ -28,7 +28,7 @@
     "test": "yarn clean && jest",
     "lint": "eslint src --ext ts",
     "// - SINGLE-SPA-ANGULAR": "Scripts for building single-spa-angular",
-    "build:single-spa-angular": "ng-packagr -p src/package.json",
+    "build:single-spa-angular": "ng-packagr -p src/package.json && cpx README.md lib",
     "// - WEBPACK": "Scripts for building Webpack config transformer",
     "prebuild:webpack": "rimraf lib/lib",
     "build:webpack": "tsc -p tsconfig.webpack.json",
