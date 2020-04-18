@@ -88,7 +88,7 @@ export class ParcelComponent implements OnInit, OnDestroy, OnChanges {
     this.unmounted = true;
   }
 
-  addThingToDo(action, thing) {
+  addThingToDo(action: string, thing: Function) {
     if (this.hasError && action !== 'unmount') {
       // In an error state, we don't do anything anymore except for unmounting
       return;

@@ -23,11 +23,10 @@
   "private": true,
   "scripts": {
     "prepublishOnly": "yarn build && yarn test",
-    "clean": "rimraf lib parcel",
-    "build": "yarn clean && yarn build:single-spa-angular && concurrently yarn:build:parcel yarn:build:webpack yarn:build:schematics",
+    "clean": "rimraf lib",
+    "build": "yarn clean && yarn build:single-spa-angular && concurrently yarn:build:schematics build:webpack",
     "test": "yarn clean && jest",
     "lint": "eslint src --ext ts",
-    "build:parcel": "ngc -p tsconfig.parcel.json",
     "// - SINGLE-SPA-ANGULAR": "Scripts for building single-spa-angular",
     "build:single-spa-angular": "yarn ts-node tools/build",
     "// - WEBPACK": "Scripts for building Webpack config transformer",
