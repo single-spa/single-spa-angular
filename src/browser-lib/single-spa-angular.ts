@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { AppProps, LifeCycles } from 'single-spa'
 
+import { patchRouter } from './patch-router';
+
 const defaultOpts = {
   // required opts
   NgZone: null,
@@ -93,8 +95,8 @@ function mount(opts, props) {
         opts.bootstrappedNgZone = module.injector.get(opts.NgZone)
         opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
         window.addEventListener('single-spa:routing-event', opts.routingEventListener)
-
         opts.bootstrappedModule = module;
+        patchRouter(opts);
         return module;
       });
     });
