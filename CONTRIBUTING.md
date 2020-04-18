@@ -19,11 +19,14 @@ ng new
 ## This project uses yarn, so it's easiest to use yarn in your example project, too
 yarn install
 
-## Now install single-spa-angular from local file instead of npm, including running the schematics
 yarn link single-spa-angular
+
+## Run the schematics
 ng g single-spa-angular:ng-add
-# Relink single-spa-angular (yes, it's necessary)
-yarn link single-spa-angular
+
+## Install dependencies
+yarn add single-spa
+yarn add file:../single-spa-angular/lib
 
 ## Now try things out!
 yarn build
