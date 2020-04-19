@@ -1,5 +1,5 @@
 /**
- * This is very treaky bug fix for Angular 4-8 versions. The only thing we do here
+ * This is very tricky bug fix for Angular 4-8 versions. The only thing we do here
  * is just override the `Location` subscription and wrap `scheduleNavigation`
  * into `ngZone.run(...)`, thus `routed` components will be created inside Angular's zone.
  * The main issue is `back/forward` buttons of browsers, because they invoke
@@ -9,8 +9,8 @@
  * See https://github.com/single-spa/single-spa-angular/issues/94 for more detail
  */
 export function patchRouter(opts: any): void {
-  // If the user didn't provide `{ Router: Router }` then it likely means that he doesn't
-  // use routing in his application.
+  // If the user didn't provide `{ Router: Router }` then it likely means that they don't
+  // use routing in their application.
   if (opts.Router == null) {
     return;
   }
