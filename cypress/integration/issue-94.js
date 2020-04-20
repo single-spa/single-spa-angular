@@ -12,7 +12,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/94', () => {
 
     // Let's navigate by click `a` that will schedule navigation
     // inside the Angular's zone.
-    cy.get('a').first().click();
+    cy.get('shop-root a').first().click();
 
     // Ensure we're on the next page.
     cy.url().should('contain', '/shop/transmission/1');

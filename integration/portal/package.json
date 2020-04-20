@@ -7,8 +7,7 @@
     "build:prod": "webpack -p"
   },
   "dependencies": {
-    "single-spa": "^5.3.1",
-    "zone.js": "file:../../node_modules/zone.js"
+    "single-spa": "^5.3.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^4.0.4",

@@ -1,13 +1,13 @@
 {
-  "name": "angular-shop-application",
+  "name": "angular-chat-application",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:single-spa": "ng build --prod --deploy-url http://localhost:4200/",
-    "serve:single-spa": "ng serve --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false",
-    "preinstall": "yarn --cwd ../../ cpx -v -C \"lib/**/*\" ./integration/shop/node_modules/single-spa-angular",
+    "build:single-spa": "ng build --prod --deploy-url http://localhost:9000/",
+    "serve:single-spa": "ng serve --disable-host-check --port 9000 --deploy-url http://localhost:9000/ --live-reload false",
+    "preinstall": "yarn --cwd ../../ cpx -v -C \"lib/**/*\" ./integration/chat/node_modules/single-spa-angular",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
   },
   "private": true,
@@ -17,9 +17,8 @@
     "@angular/core": "file:../../node_modules/@angular/core",
     "@angular/platform-browser": "file:../../node_modules/@angular/platform-browser",
     "@angular/platform-browser-dynamic": "file:../../node_modules/@angular/platform-browser-dynamic",
-    "@angular/router": "file:../../node_modules/@angular/router",
-    "single-spa-angular": "file:./node_modules/single-spa-angular",
     "rxjs": "file:../../node_modules/rxjs",
+    "single-spa-angular": "file:./node_modules/single-spa-angular",
     "tslib": "file:../../node_modules/tslib",
     "zone.js": "file:../../node_modules/zone.js"
   },
