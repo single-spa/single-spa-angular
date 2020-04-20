@@ -22,6 +22,7 @@ jobs:
           # in that location.
           path: |
             node_modules
+            */*/node_modules
             ~/.cache
           key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
@@ -45,10 +46,14 @@ jobs:
       - name: Build packages
         run: yarn build
 
-      - name: Install and build integration apps
+      - name: Install packages for integration apps
         run: |
-          yarn install:integration
-          yarn build:integration
+          yarn install:integration:shop
+          yarn install:integration:chat
+          yarn install:integration:portal
+
+      - name: Build integration apps
+        run: yarn build:integration
 
       - name: Run end-to-end tests via Cypress
         run: yarn test:ci:integration

@@ -247,9 +247,6 @@
 "@angular/platform-browser@file:../../node_modules/@angular/platform-browser":
   version "9.1.0"
 
-"@angular/router@file:../../node_modules/@angular/router":
-  version "9.1.0"
-
 "@babel/code-frame@^7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"
