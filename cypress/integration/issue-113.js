@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+// Returning `false` prevents Cypress from failing the test because of `throw new Error`.
+Cypress.on('uncaught:exception', () => false);
+
 describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
   it('should navigate from /chat/groups to /chat/rooms and back to /chat/groups and SHOULD stuck in infinite redirects loop', () => {
     let urlChangedTimes = 0;
