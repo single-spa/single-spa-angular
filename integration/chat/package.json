@@ -17,6 +17,7 @@
     "@angular/core": "file:../../node_modules/@angular/core",
     "@angular/platform-browser": "file:../../node_modules/@angular/platform-browser",
     "@angular/platform-browser-dynamic": "file:../../node_modules/@angular/platform-browser-dynamic",
+    "@angular/router": "file:../../node_modules/@angular/router",
     "rxjs": "file:../../node_modules/rxjs",
     "single-spa-angular": "file:./node_modules/single-spa-angular",
     "tslib": "file:../../node_modules/tslib",
