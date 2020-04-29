@@ -2,6 +2,10 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "single-spa-angular": ["src/index.ts"],
+      "single-spa-angular/internals": ["src/internals/src/index.ts"]
+    },
     "target": "es5",
     "lib": ["es2018", "dom"],
     "moduleResolution": "node",

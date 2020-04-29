@@ -31,7 +31,10 @@
     "lib": {
       "umdId": "single-spa-angular",
       "flatModuleFile": "single-spa-angular",
-      "entryFile": "index.ts"
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "single-spa-angular/internals": "single-spa-angular-internals"
+      }
     },
     "dest": "../lib"
   }
