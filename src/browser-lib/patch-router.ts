@@ -1,3 +1,5 @@
+import { VERSION } from '@angular/core';
+
 /**
  * This is very tricky bug fix for Angular 4-8 versions. The only thing we do here
  * is just override the `Location` subscription and wrap `scheduleNavigation`
@@ -22,19 +24,29 @@ export function patchRouter(opts: any): void {
     return;
   }
 
+  const scheduleNavigation = scheduleNavigationFactory(router);
+
   router.locationSubscription.unsubscribe();
   router.locationSubscription = router.location.subscribe(change => {
     const rawUrlTree = router.parseUrl(change['url']);
     const source = change['type'] === 'popstate' ? 'popstate' : 'hashchange';
     const state = change.state && change.state.navigationId ? change.state : null;
+    const extras = {
+      replaceUrl: true
+    };
 
-    const scheduleNavigation = () =>
-      setTimeout(() => {
-        router.scheduleNavigation(rawUrlTree, source, state, {
-          replaceUrl: true,
-        });
-      });
-
-    opts.bootstrappedNgZone.run(scheduleNavigation);
+    opts.bootstrappedNgZone.run(() => 
+      setTimeout(() => scheduleNavigation(rawUrlTree, source, state, extras))
+    );
   });
+}
+
+function scheduleNavigationFactory(router) {
+  // Angular versions older than 6 have a different function signature
+  // for router.scheduleNavigation().
+  const olderThan6 = +VERSION.major < 6;
+  return (rawUrlTree, source, state, extras) =>
+    olderThan6
+      ? router.scheduleNavigation(rawUrlTree, source, extras)
+      : router.scheduleNavigation(rawUrlTree, source, state, extras);
 }
