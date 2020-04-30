@@ -1,5 +1,12 @@
-import { NgZone, Type, NgModuleRef } from '@angular/core';
-import { AppProps, LifeCycles } from 'single-spa';
+import { NgZone, NgModuleRef } from '@angular/core';
+import { LifeCycles } from 'single-spa';
+import {
+  getContainerEl,
+  chooseDomElementGetter,
+  removeApplicationFromDOMIfIvyEnabled,
+  SingleSpaAngularOpts,
+  BootstrappedSingleSpaAngularOpts,
+} from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
 
@@ -164,89 +171,7 @@ async function unmount(opts: BootstrappedSingleSpaAngularOpts, props: any): Prom
   opts.bootstrappedModule.destroy();
   delete opts.bootstrappedModule;
 
-  if (ivyEnabled()) {
-    // This is an issue. Issue has been created and Angular team is working on the fix:
-    // https://github.com/angular/angular/issues/36449
-    removeApplicationFromDOMIfIvyEnabled(opts, props);
-  }
-}
-
-function ivyEnabled(): boolean {
-  try {
-    // `ɵivyEnabled` variable is exposed starting from version 8.
-    // We use `require` here except of a single `import { ɵivyEnabled }` because the
-    // developer can use Angular version that doesn't expose it (all versions <8).
-    // The `catch` statement will handle those cases.
-    // eslint-disable-next-line
-    const { ɵivyEnabled } = require('@angular/core');
-    return !!ɵivyEnabled;
-  } catch {
-    return false;
-  }
-}
-
-function removeApplicationFromDOMIfIvyEnabled(opts: SingleSpaAngularOpts, props: any): void {
-  const domElementGetter = chooseDomElementGetter(opts, props);
-  const domElement = getContainerEl(domElementGetter);
-  // View Engine removes all nodes automatically when calling `NgModuleRef.destroy()`,
-  // which calls `ComponentRef.destroy()`.
-  // Basically this will remove `app-root` or any other selector from the container element.
-  while (domElement.firstChild) domElement.removeChild(domElement.firstChild);
-}
-
-function getContainerEl(domElementGetter: DomElementGetter): never | HTMLElement {
-  const element = domElementGetter();
-
-  if (!element) {
-    throw Error('domElementGetter did not return a valid dom element');
-  }
-
-  return element;
-}
-
-function chooseDomElementGetter(opts: SingleSpaAngularOpts, props: any): DomElementGetter {
-  props = props && props.customProps ? props.customProps : props;
-  if (props.domElement) {
-    return () => props.domElement;
-  } else if (props.domElementGetter) {
-    return props.domElementGetter;
-  } else if (opts.domElementGetter) {
-    return opts.domElementGetter;
-  } else {
-    return defaultDomElementGetter(props.name);
-  }
-}
-
-function defaultDomElementGetter(name: string): DomElementGetter {
-  return function getDefaultDomElement() {
-    const id = `single-spa-application:${name}`;
-    let domElement: HTMLElement | null = document.getElementById(id);
-
-    if (!domElement) {
-      domElement = document.createElement('div');
-      domElement.id = id;
-      document.body.appendChild(domElement);
-    }
-
-    return domElement;
-  };
-}
-
-type DomElementGetter = () => HTMLElement;
-
-interface SingleSpaAngularOpts {
-  NgZone: typeof NgZone;
-  bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
-  updateFunction?(props: AppProps): Promise<any>;
-  template: string;
-  Router?: Type<any>;
-  domElementGetter?(): HTMLElement;
-  AnimationEngine?: Type<any>;
-}
-
-interface BootstrappedSingleSpaAngularOpts extends SingleSpaAngularOpts {
-  bootstrappedNgZone: NgZone;
-  bootstrappedModule: NgModuleRef<any>;
-  routingEventListener: () => void;
-  zoneIdentifier: string;
+  // This is an issue. Issue has been created and Angular team is working on the fix:
+  // https://github.com/angular/angular/issues/36449
+  removeApplicationFromDOMIfIvyEnabled(opts, props);
 }
