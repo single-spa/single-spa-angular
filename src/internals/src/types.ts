@@ -1,10 +1,10 @@
-import { NgZone, NgModuleRef, Type } from '@angular/core';
+import { NgModuleRef, Type } from '@angular/core';
 import { AppProps } from 'single-spa';
 
 export type DomElementGetter = () => HTMLElement;
 
 export interface SingleSpaAngularOpts {
-  NgZone: typeof NgZone;
+  NgZone: typeof import('@angular/core').NgZone | 'noop';
   bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
   updateFunction?(props: AppProps): Promise<any>;
   template: string;
@@ -14,8 +14,8 @@ export interface SingleSpaAngularOpts {
 }
 
 export interface BootstrappedSingleSpaAngularOpts extends SingleSpaAngularOpts {
-  bootstrappedNgZone: NgZone;
+  bootstrappedNgZone?: import('@angular/core').NgZone;
   bootstrappedModule: NgModuleRef<any>;
-  routingEventListener: () => void;
-  zoneIdentifier: string;
+  routingEventListener?: () => void;
+  zoneIdentifier?: string;
 }

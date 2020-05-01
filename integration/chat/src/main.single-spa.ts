@@ -1,6 +1,7 @@
 import { enableProdMode, NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngular } from 'single-spa-angular';
+import { Router } from '@angular/router';
+import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -13,7 +14,9 @@ if (environment.production) {
 const lifecycles = singleSpaAngular({
   bootstrapFunction: async singleSpaProps => {
     singleSpaPropsSubject.next(singleSpaProps);
-    const ngModuleRef = await platformBrowserDynamic().bootstrapModule(AppModule);
+    const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
+      AppModule,
+    );
     ngModuleRef.onDestroy(() => {
       // This is used only for testing purposes.
       window.dispatchEvent(new CustomEvent('chatDestroyed'));
@@ -22,6 +25,7 @@ const lifecycles = singleSpaAngular({
   },
   template: '<chat-root />',
   NgZone,
+  Router,
 });
 
 export const bootstrap = lifecycles.bootstrap;
