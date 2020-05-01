@@ -154,8 +154,9 @@ async function unmount(opts: BootstrappedSingleSpaAngularOpts, props: any): Prom
     router.dispose();
   }
 
-  opts.routingEventListener &&
+  if (opts.routingEventListener) {
     window.removeEventListener('single-spa:routing-event', opts.routingEventListener);
+  }
 
   if (opts.AnimationEngine) {
     /*
