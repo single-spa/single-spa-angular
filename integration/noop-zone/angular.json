@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "shop": {
+    "noop-zone": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -87,16 +87,16 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "shop:build"
+            "browserTarget": "noop-zone:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "shop:build:production"
+              "browserTarget": "noop-zone:build:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "shop"
+  "defaultProject": "noop-zone"
 }
