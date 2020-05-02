@@ -1,0 +1,7 @@
+<button class="button is-info is-light" (click)="showImages()">Show images</button>
+
+<div *ngIf="imagesShown" class="images">
+  <figure *ngFor="let image of images" class="image is-96x96">
+    <img src="https://bulma.io/images/placeholders/96x96.png" />
+  </figure>
+</div>
