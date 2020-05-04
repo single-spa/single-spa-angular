@@ -50,6 +50,7 @@ jobs:
         run: |
           yarn install:integration:shop
           yarn install:integration:chat
+          yarn install:integration:noop-zone
           yarn install:integration:portal
 
       - name: Build integration apps
@@ -58,6 +59,7 @@ jobs:
         run: |
           yarn build:integration:shop
           yarn build:integration:chat
+          yarn build:integration:noop-zone
           yarn build:integration:portal
 
       - name: Run end-to-end tests via Cypress

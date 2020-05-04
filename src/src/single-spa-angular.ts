@@ -1,4 +1,4 @@
-import { NgZone, NgModuleRef } from '@angular/core';
+import { NgModuleRef } from '@angular/core';
 import { LifeCycles } from 'single-spa';
 import {
   getContainerEl,
@@ -53,6 +53,13 @@ export function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
 }
 
 async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Promise<void> {
+  // Angular provides an opportunity to develop `zone-less` application, where developers
+  // have to trigger change detection manually.
+  // See https://angular.io/guide/zone#noopzone
+  if (opts.NgZone === 'noop') {
+    return;
+  }
+
   // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
   opts.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
 
@@ -67,7 +74,7 @@ async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Pr
   };
 
   opts.routingEventListener = () => {
-    opts.bootstrappedNgZone.run(() => {
+    opts.bootstrappedNgZone!.run(() => {
       // See https://github.com/single-spa/single-spa-angular/issues/86
       // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
       // unless we tell Zone that something happened
@@ -109,23 +116,33 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     null,
   );
 
+  const ngZoneEnabled = opts.NgZone !== 'noop';
+
   // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
   // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
-  if (opts.Router && singleSpaPlatformLocation === null) {
+  // Also `getSingleSpaExtraProviders()` function should be called only if the doesn't use
+  // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
+  if (ngZoneEnabled && opts.Router && singleSpaPlatformLocation === null) {
     throw new Error(`	
       single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?	
     `);
   }
 
   const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
-  const ngZone: NgZone = module.injector.get(opts.NgZone);
 
-  singleSpaPlatformLocation!.setNgZone(ngZone);
-  bootstrappedOpts.bootstrappedNgZone = ngZone;
-  bootstrappedOpts.bootstrappedNgZone['_inner']._properties[bootstrappedOpts.zoneIdentifier] = true;
-  window.addEventListener('single-spa:routing-event', bootstrappedOpts.routingEventListener);
+  if (ngZoneEnabled) {
+    const ngZone: import('@angular/core').NgZone = module.injector.get(opts.NgZone);
+    // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
+    // function was not called.
+    singleSpaPlatformLocation?.setNgZone(ngZone);
+    bootstrappedOpts.bootstrappedNgZone = ngZone;
+    bootstrappedOpts.bootstrappedNgZone['_inner']._properties[
+      bootstrappedOpts.zoneIdentifier
+    ] = true;
+    window.addEventListener('single-spa:routing-event', bootstrappedOpts.routingEventListener!);
+  }
+
   bootstrappedOpts.bootstrappedModule = module;
-
   return module;
 }
 
@@ -137,7 +154,9 @@ async function unmount(opts: BootstrappedSingleSpaAngularOpts, props: any): Prom
     router.dispose();
   }
 
-  window.removeEventListener('single-spa:routing-event', opts.routingEventListener);
+  if (opts.routingEventListener) {
+    window.removeEventListener('single-spa:routing-event', opts.routingEventListener);
+  }
 
   if (opts.AnimationEngine) {
     /*
