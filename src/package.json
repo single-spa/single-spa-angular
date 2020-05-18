@@ -26,9 +26,6 @@
   "peerDependencies": {
     "@angular/core": ">=9"
   },
-  "dependencies": {
-    "single-spa": ">=4.0.0"
-  },
   "ngPackage": {
     "lib": {
       "umdId": "single-spa-angular",
