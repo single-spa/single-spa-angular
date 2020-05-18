@@ -111,7 +111,7 @@
     "zone.js": "~0.10.3"
   },
   "dependencies": {
-    "single-spa": ">= 4"
+    "single-spa": "^5.5.1"
   },
   "prettier": {
     "semi": true,

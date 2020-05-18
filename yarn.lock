@@ -10117,10 +10117,10 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-"single-spa@>= 4":
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/single-spa/-/single-spa-5.3.2.tgz#dfc0b97145819a77e7c2777ddcc9fb8fe639c234"
-  integrity sha512-3FKoXRkWbluoHI9eZ05KecsJqfXHaSSYeh3+Z0WlSwzm8YCpZYIyr8RM4U+5sp+q69X9wrY7+wEmnarvaiyO4A==
+single-spa@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/single-spa/-/single-spa-5.5.1.tgz#2d9bc2155e3698dab1a1ec97e94e33de193db53b"
+  integrity sha512-cGIQN5u4GQVVOSSbYdPM+a48HmZmbT64S/aLZ5tBM2keWHfZkKF6+NyfMXvW3ZQ3xs4Ugs5st+ZxgmAO3e/yCw==
 
 sisteransi@^1.0.4:
   version "1.0.5"
