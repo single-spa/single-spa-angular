@@ -107,11 +107,11 @@
     "ts-jest": "^24.0.0",
     "tsickle": "^0.38.1",
     "tslib": "^1.11.1",
-    "typescript": "3.7.5",
+    "typescript": "3.8.2",
     "zone.js": "~0.10.3"
   },
   "dependencies": {
-    "single-spa": ">= 4"
+    "single-spa": ">= 5.4"
   },
   "prettier": {
     "semi": true,

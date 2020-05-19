@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class GroupsComponent {
   constructor(private router: Router) {}
 
-  reproduce113Issue(): void {
+  tryToReproduce113Issue(): void {
     this.router.navigateByUrl('/rooms').then(() => this.router.navigateByUrl('/groups'));
   }
 }
