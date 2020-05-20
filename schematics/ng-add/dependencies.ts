@@ -1,9 +1,28 @@
 import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/dependencies';
 
+interface PackageJson {
+  version: string;
+  peerDependencies: string[];
+  dependencies: string[];
+}
+
+const { version, peerDependencies, dependencies }: PackageJson = require('../../package.json');
+
+export function getSingleSpaDependency(): NodeDependency {
+  const singleSpaVersion = peerDependencies['single-spa'] || dependencies['single-spa'];
+  console.log('single-spa dep version', singleSpaVersion);
+  return {
+    name: 'single-spa',
+    version: singleSpaVersion,
+    overwrite: true,
+    type: NodeDependencyType.Default,
+  };
+}
+
 export function getSingleSpaAngularDependency(): NodeDependency {
   return {
     name: 'single-spa-angular',
-    version: require('../../package.json').version,
+    version,
     overwrite: false,
     type: NodeDependencyType.Default,
   };
