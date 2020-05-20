@@ -35,6 +35,12 @@
         "single-spa-angular/internals": "single-spa-angular-internals"
       }
     },
+    "whitelistedNonPeerDependencies": [
+      "single-spa"
+    ],
     "dest": "../lib"
+  },
+  "dependencies": {
+    "single-spa": "^5.5.1"
   }
 }

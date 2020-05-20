@@ -110,9 +110,6 @@
     "typescript": "3.7.5",
     "zone.js": "~0.10.3"
   },
-  "dependencies": {
-    "single-spa": "^5.5.1"
-  },
   "prettier": {
     "semi": true,
     "singleQuote": true,
