@@ -2,15 +2,20 @@ import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/
 
 interface PackageJson {
   version: string;
-  peerDependencies: string[];
-  dependencies: string[];
+  peerDependencies?: {
+    'single-spa': string;
+  };
+  dependencies?: {
+    'single-spa': string;
+  };
 }
 
 const { version, peerDependencies, dependencies }: PackageJson = require('../../package.json');
 
 export function getSingleSpaDependency(): NodeDependency {
-  const singleSpaVersion = peerDependencies['single-spa'] || dependencies['single-spa'];
-  console.log('single-spa dep version', singleSpaVersion);
+  const singleSpaVersion =
+    peerDependencies?.['single-spa'] || dependencies?.['single-spa'] || 'latest';
+
   return {
     name: 'single-spa',
     version: singleSpaVersion,
