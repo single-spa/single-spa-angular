@@ -120,7 +120,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
   // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
   // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
-  // Also `getSingleSpaExtraProviders()` function should be called only if the doesn't use
+  // Also `getSingleSpaExtraProviders()` function should be called only if the user doesn't use
   // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
   if (ngZoneEnabled && opts.Router && singleSpaPlatformLocation === null) {
     throw new Error(`	
@@ -132,9 +132,16 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
   if (ngZoneEnabled) {
     const ngZone: import('@angular/core').NgZone = module.injector.get(opts.NgZone);
+
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
-    singleSpaPlatformLocation?.setNgZone(ngZone);
+    if (singleSpaPlatformLocation !== null) {
+      singleSpaPlatformLocation.setNgZone(ngZone);
+      // Cleanup resources, especially remove event listeners thus they will not be added
+      // twice when application gets bootstrapped the second time.
+      module.onDestroy(() => singleSpaPlatformLocation.destroy());
+    }
+
     bootstrappedOpts.bootstrappedNgZone = ngZone;
     bootstrappedOpts.bootstrappedNgZone['_inner']._properties[
       bootstrappedOpts.zoneIdentifier
