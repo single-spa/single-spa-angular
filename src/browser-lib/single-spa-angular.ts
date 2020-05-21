@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { AppProps, LifeCycles } from 'single-spa'
 
-import { patchRouter } from './patch-router';
+import { SingleSpaPlatformLocation } from './extra-providers';
 
 const defaultOpts = {
   // required opts
@@ -81,8 +81,7 @@ function mount(opts, props) {
 
       const containerEl = getContainerEl(domElementGetter);
       containerEl.innerHTML = opts.template;
-    })
-    .then(() => {
+
       const bootstrapPromise = opts.bootstrapFunction(props)
       if (!(bootstrapPromise instanceof Promise)) {
         throw Error(`single-spa-angular: the opts.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`);
@@ -92,11 +91,33 @@ function mount(opts, props) {
         if (!module || typeof module.destroy !== 'function') {
           throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`)
         }
-        opts.bootstrappedNgZone = module.injector.get(opts.NgZone)
+
+        const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
+          SingleSpaPlatformLocation,
+          null,
+        );
+
+        // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
+        // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
+        if (opts.Router && singleSpaPlatformLocation === null) {
+          throw new Error(`	
+            single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?	
+          `);
+        }
+
+        const ngZone = module.injector.get(opts.NgZone);
+
+        if (singleSpaPlatformLocation !== null) {
+          singleSpaPlatformLocation.setNgZone(ngZone);
+          // Cleanup resources, especially remove event listeners thus they will not be added
+          // twice when application gets bootstrapped the second time.
+          module.onDestroy(() => singleSpaPlatformLocation.destroy());
+        }
+
+        opts.bootstrappedNgZone = ngZone;
         opts.bootstrappedNgZone._inner._properties[opts.zoneIdentifier] = true;
         window.addEventListener('single-spa:routing-event', opts.routingEventListener)
         opts.bootstrappedModule = module;
-        patchRouter(opts);
         return module;
       });
     });
@@ -189,3 +210,5 @@ type SingleSpaAngularOpts = {
   domElementGetter?(): HTMLElement;
   AnimationEngine?: any;
 }
+
+export { getSingleSpaExtraProviders } from './extra-providers';
