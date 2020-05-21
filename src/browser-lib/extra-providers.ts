@@ -25,6 +25,11 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
     for (const onPopStateListener of this.onPopStateListeners) {
       window.removeEventListener('popstate', onPopStateListener);
     }
+
+    // We do this because the `SingleSpaPlatformLocation` is a part of PLATFORM_INJECTOR,
+    // which means it's created only once and will not be garbage collected, since the PLATFORM_INJECTOR
+    // will keep reference to its instance.
+    this.onPopStateListeners = [];
   }
 
   pushState(state: any, title: string, url: string): void {
