@@ -25,6 +25,7 @@ import { normalize, join } from 'path';
 import { addScripts } from './add-scripts';
 import { Schema as NgAddOptions } from './schema';
 import {
+  getSingleSpaDependency,
   getSingleSpaAngularDependency,
   getAngularBuildersCustomWebpackDependency,
 } from './dependencies';
@@ -46,6 +47,7 @@ export default function (options: NgAddOptions): Rule {
 
 export function addDependencies(): Rule {
   const dependencies: NodeDependency[] = [
+    getSingleSpaDependency(),
     getSingleSpaAngularDependency(),
     getAngularBuildersCustomWebpackDependency(),
   ];
