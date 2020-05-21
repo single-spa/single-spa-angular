@@ -107,7 +107,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 
   if (!module || typeof module.destroy !== 'function') {
     throw Error(
-      `single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`,
+      `single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
     );
   }
 
@@ -124,7 +124,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
   // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
   if (ngZoneEnabled && opts.Router && singleSpaPlatformLocation === null) {
     throw new Error(`	
-      single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?	
+      single-spa-angular: could not retrieve extra providers from the platform injector. Did you call platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule()?
     `);
   }
 
