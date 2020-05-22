@@ -2,7 +2,9 @@
   "name": "single-spa-angular",
   "version": "3.4.1",
   "description": "Helpers for building single-spa applications which use Angular 2",
-  "main": "lib/browser-lib/single-spa-angular.js",
+  "main": "lib/browser-lib/cjs/single-spa-angular.js",
+  "module": "lib/browser-lib/esm/single-spa-angular.js",
+  "types": "lib/browser-lib/single-spa-angular.d.ts",
   "builders": "builders.json",
   "schematics": "./schematics.json",
   "scripts": {
@@ -13,7 +15,7 @@
     "lint": "eslint ./src/**/*.ts",
     ":copy-schematic-files": "cpx \"src/**/_files/**/**\" lib",
     "parcel": "ngc -p tsconfig.parcel.json",
-    "spa": "tsc -p tsconfig.spa.json",
+    "spa": "rollup -c rollup.config.js",
     "node": "tsc -p tsconfig.node.json"
   },
   "repository": {
@@ -64,13 +66,11 @@
     "eslint-plugin-prefer-arrow": "^1.2.1",
     "jest": "^24.5.0",
     "rimraf": "^2.6.2",
-    "single-spa": "^5.1.1",
+    "rollup": "^2.10.7",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "single-spa": "^5.5.1",
     "ts-jest": "^24.0.0",
     "typescript": "3.2.4",
     "webpack": "^4.29.6"
-  },
-  "dependencies": {
-    "semver": "^6.2.0",
-    "single-spa": ">= 5.1.1"
   }
 }

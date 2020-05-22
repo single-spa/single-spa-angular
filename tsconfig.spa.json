@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es5",
+    "module": "ES2015",
+    "declaration": true,
+    "declarationDir": "lib"
   },
   "include": [
     "src/browser-lib/**/*"

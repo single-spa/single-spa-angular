@@ -19,7 +19,6 @@ import * as versions from '../library-versions';
 import { normalize, join } from 'path';
 import { addPackageToPackageJson } from '../utils';
 import { WorkspaceProject } from '@angular-devkit/core/src/workspace';
-import * as semver from 'semver'
 
 export default function (options: NgAddOptions): Rule {
   return chain([
@@ -154,6 +153,6 @@ function getClientProject(host: Tree, options: NgAddOptions): { name: string, wo
 }
 
 function atLeastAngular8(): boolean {
-  const angularCoreVersion = require(join(process.cwd(), 'package.json')).dependencies['@angular/core'] || '7'
-  return semver.satisfies(semver.minVersion(angularCoreVersion), '>=8')
+  const { VERSION } = require('@angular/core');
+  return Number(VERSION.major) >= 8;
 }
