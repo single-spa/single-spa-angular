@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack';
-import { getSystemPath, Path, tags } from '@angular-devkit/core'
+import { getSystemPath, Path } from '@angular-devkit/core';
 import { BuilderContext } from '@angular-devkit/architect';
 import * as webpackMerge from 'webpack-merge';
 
@@ -23,13 +23,15 @@ export function buildWebpackConfig(root: Path, config: string, baseWebpackConfig
         }
       ]
     }
-  }
+  };
 
   const customWebpackConfig = config ? require(`${getSystemPath(root)}/${config}`) : {};
 
   const mergedConfig: any = webpackMerge.smart(baseWebpackConfig, singleSpaConfig, customWebpackConfig);
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removeMiniCssExtract(mergedConfig);
 
   if (Array.isArray(mergedConfig.entry.styles)) {
@@ -61,7 +63,7 @@ function removeMiniCssExtract(config) {
     if (rule.use) {
       const cssMiniExtractIndex = rule.use.findIndex(use => typeof use === 'string' && use.includes('mini-css-extract-plugin'));
       if (cssMiniExtractIndex >= 0) {
-        rule.use[cssMiniExtractIndex] = {loader: 'style-loader'}
+        rule.use[cssMiniExtractIndex] = {loader: 'style-loader'};
       }
     }
   });
