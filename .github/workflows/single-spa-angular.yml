@@ -1,0 +1,43 @@
+name: single-spa-angular
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v1
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm
+
+      - uses: actions/setup-node@v1
+        with:
+          # Currently used `node-sass` version is not available for Node 12
+          # and `actions/setup-node` provides only LTS version, that means
+          # there is no Node 11.
+          node-version: 10.x
+
+      - name: Install dependencies
+        if: steps.npm-cache.output.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Run Jest
+        run: npm run test
