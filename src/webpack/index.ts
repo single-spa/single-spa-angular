@@ -1,5 +1,5 @@
 import * as webpackMerge from 'webpack-merge';
-import * as path from 'path'
+import * as path from 'path';
 
 export default (config, options) => {
   const singleSpaConfig = {
@@ -14,7 +14,7 @@ export default (config, options) => {
       historyApiFallback: false,
       contentBase: path.resolve(process.cwd(), 'src'),
       headers: {
-          'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Headers': '*',
       },
     },
     module: {
@@ -26,12 +26,14 @@ export default (config, options) => {
         }
       ]
     }
-  }
+  };
 
   // @ts-ignore
-  const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig)
+  const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   removeMiniCssExtract(mergedConfig);
 
   if (Array.isArray(mergedConfig.entry.styles)) {
@@ -48,7 +50,7 @@ export default (config, options) => {
   delete mergedConfig.optimization.splitChunks;
 
   return mergedConfig;
-}
+};
 
 function removePluginByName(plugins, name) {
   const pluginIndex = plugins.findIndex(plugin => plugin.constructor.name === name);
@@ -63,7 +65,7 @@ function removeMiniCssExtract(config) {
     if (rule.use) {
       const cssMiniExtractIndex = rule.use.findIndex(use => typeof use === 'string' && use.includes('mini-css-extract-plugin'));
       if (cssMiniExtractIndex >= 0) {
-        rule.use[cssMiniExtractIndex] = {loader: 'style-loader'}
+        rule.use[cssMiniExtractIndex] = {loader: 'style-loader'};
       }
     }
   });
