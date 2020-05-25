@@ -89,7 +89,7 @@ function mount(opts, props) {
 
       return bootstrapPromise.then(module => {
         if (!module || typeof module.destroy !== 'function') {
-          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowser().bootstrapModuleFactory() correctly?`);
+          throw Error(`single-spa-angular: the opts.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowserDynamic().bootstrapModule() correctly?`);
         }
 
         const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
@@ -101,7 +101,7 @@ function mount(opts, props) {
         // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
         if (opts.Router && singleSpaPlatformLocation === null) {
           throw new Error(`	
-            single-spa-angular: could not retrieve extra providers from the platform injector. Did you call getSingleSpaExtraProviders() when creating platform?	
+            single-spa-angular: could not retrieve extra providers from the platform injector. Did you call platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule() when creating platform?	
           `);
         }
 
