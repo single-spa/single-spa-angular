@@ -1,6 +1,5 @@
 # Don't ignore lib
 
-src
 node_modules
 .editorconfig
 .eslintrc
