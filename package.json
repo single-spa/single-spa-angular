@@ -26,6 +26,11 @@
     "single-spa",
     "angular"
   ],
+  "files": [
+    "lib",
+    "parcel",
+    "src/schematics/ng-add/schema.json"
+  ],
   "author": "Joel Denning",
   "license": "Apache-2.0",
   "bugs": {
