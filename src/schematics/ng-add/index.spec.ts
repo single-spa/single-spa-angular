@@ -66,6 +66,12 @@ describe('ng-add', () => {
     expect(mainModuleContent.indexOf('@angular/router')).toBeGreaterThan(-1);
   });
 
+  test('should include getSingleSpaExtraProviders if routing is enabled', () => {
+    const tree = testRunner.runSchematic<NgAddOptions>('ng-add', { routing: true }, defaultAppTree);
+    const mainModuleContent = getFileContent(tree, '/projects/ss-angular-cli-app/src/main.single-spa.ts');
+    expect(mainModuleContent.indexOf('getSingleSpaExtraProviders()')).toBeGreaterThan(-1);
+  });
+
   test('should modify angular.json', () => {
     const tree = testRunner.runSchematic<NgAddOptions>('ng-add', { routing: true, project: 'ss-angular-cli-app' }, defaultAppTree);
     const angularJSON = JSON.parse(getFileContent(tree, '/angular.json'));
