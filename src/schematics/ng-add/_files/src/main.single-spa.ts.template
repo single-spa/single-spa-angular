@@ -1,6 +1,5 @@
 <% if (!atLeastAngular8) { %>import 'core-js/es7/reflect';<% } %>
-<% if (routing) { %>import { enableProdMode, NgZone } from '@angular/core';<% } %>
-<% if (!routing) { %>import { enableProdMode, NgZone } from '@angular/core';<% } %>
+import { enableProdMode, NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if (routing) { %>
 import { Router } from '@angular/router';<% } if (usingBrowserAnimationsModule) { %>
 import { ɵAnimationEngine as AnimationEngine } from '@angular/animations/browser'; <% } %>
