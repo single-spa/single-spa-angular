@@ -44,13 +44,13 @@
     "install:integration:chat": "yarn --cwd integration/chat install",
     "install:integration:noop-zone": "yarn --cwd integration/noop-zone install",
     "install:integration:portal": "yarn --cwd integration/portal install",
-    "install:integration": "concurrently yarn:install:integration:shop yarn:install:integration:chat yarn:install:integration:portal",
+    "install:integration": "run-s install:integration:*",
     "// - INTEGRATION BUILDS": "Build apps that are required for E2E testing #requires yarn install:integration",
     "build:integration:shop": "yarn --cwd integration/shop build:single-spa",
     "build:integration:chat": "yarn --cwd integration/chat build:single-spa",
     "build:integration:noop-zone": "yarn --cwd integration/noop-zone build:single-spa",
     "build:integration:portal": "yarn --cwd integration/portal build:prod",
-    "build:integration": "concurrently yarn:build:integration:shop yarn:build:integration:chat yarn:build:integration:portal",
+    "build:integration": "run-s build:integration:*",
     "// - APPS": "Serve apps that are required for E2E testing #requires yarn build:integration",
     "start:integration": "concurrently -n w: yarn:start:integration:*",
     "start:integration:shop": "serve integration/shop/dist -s -l 4200 --cors",
@@ -99,6 +99,7 @@
     "jest": "^24.5.0",
     "lint-staged": "^10.1.3",
     "ng-packagr": "^9.1.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "rimraf": "^2.6.2",
     "rxjs": "~6.5.5",
@@ -107,11 +108,11 @@
     "ts-jest": "^24.0.0",
     "tsickle": "^0.38.1",
     "tslib": "^1.11.1",
-    "typescript": "3.7.5",
+    "typescript": "3.8.2",
     "zone.js": "~0.10.3"
   },
   "dependencies": {
-    "single-spa": ">= 4"
+    "single-spa": ">= 5.4"
   },
   "prettier": {
     "semi": true,

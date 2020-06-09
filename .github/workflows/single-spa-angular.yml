@@ -47,20 +47,12 @@ jobs:
         run: yarn build
 
       - name: Install packages for integration apps
-        run: |
-          yarn install:integration:shop
-          yarn install:integration:chat
-          yarn install:integration:noop-zone
-          yarn install:integration:portal
+        run: yarn install:integration
 
       - name: Build integration apps
         # Parallel builds are currently not supported.
         # https://github.com/angular/angular/issues/32431
-        run: |
-          yarn build:integration:shop
-          yarn build:integration:chat
-          yarn build:integration:noop-zone
-          yarn build:integration:portal
+        run: yarn build:integration
 
       - name: Run end-to-end tests via Cypress
         run: yarn test:ci:integration
