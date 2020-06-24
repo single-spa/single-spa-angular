@@ -29,7 +29,7 @@
   "files": [
     "lib",
     "parcel",
-    "src/schematics/ng-add/schema.json",
+    "src/**/schema.json",
     "builders.json",
     "schematics.json"
   ],
