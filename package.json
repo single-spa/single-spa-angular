@@ -29,7 +29,9 @@
   "files": [
     "lib",
     "parcel",
-    "src/schematics/ng-add/schema.json"
+    "src/**/schema.json",
+    "builders.json",
+    "schematics.json"
   ],
   "author": "Joel Denning",
   "license": "Apache-2.0",
