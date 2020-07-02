@@ -115,7 +115,7 @@ function getProjectNameFromAngularJson(): string | null {
   const angularJson = JSON.parse(fs.readFileSync(angularJsonPath, 'utf8'));
   if (!angularJson.projects) return null;
 
-  var projects = Object.keys(angularJson.projects);
+  const projects = Object.keys(angularJson.projects);
 
   // if there is exactly one project in the workspace, then that must be this one.
   if (projects.length === 1) return projects[0];
