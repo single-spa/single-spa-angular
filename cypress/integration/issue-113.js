@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+Cypress.Screenshot.defaults({
+  screenshotOnRunFailure: false,
+});
+
 describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
   it('should navigate from /chat/groups to /chat/rooms and back to /chat/groups and SHOULD NOT stuck in infinite redirects loop', () => {
     let urlChangedTimes = 0;
