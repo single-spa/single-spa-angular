@@ -33,6 +33,8 @@ import {
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
     path: string;
+    libraryName?: string;
+    libraryTarget?: string;
   };
 }
 
@@ -95,7 +97,7 @@ export function updateConfiguration(options: NgAddOptions) {
     const workspacePath = getWorkspacePath(host);
 
     if (atLeastAngular8()) {
-      updateProjectNewAngular(context, clientProject);
+      updateProjectNewAngular(context, clientProject, project.name);
       updateTSConfig(host, clientProject);
     } else {
       updateProjectOldAngular(context, clientProject, project);
@@ -130,7 +132,11 @@ function updateProjectOldAngular(
   clientProject.architect!['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 }
 
-function updateProjectNewAngular(context: SchematicContext, clientProject: WorkspaceProject): void {
+function updateProjectNewAngular(
+  context: SchematicContext,
+  clientProject: WorkspaceProject,
+  projectName: string,
+): void {
   context.logger.info('Using @angular-devkit/custom-webpack builder.');
 
   const buildTarget = clientProject.architect!.build!;
@@ -140,6 +146,8 @@ function updateProjectNewAngular(context: SchematicContext, clientProject: Works
   buildTarget.options.main = join(clientProject.root, 'src/main.single-spa.ts');
   (buildTarget.options as CustomWebpackBuilderOptions).customWebpackConfig = {
     path: join(clientProject.root, 'extra-webpack.config.js'),
+    libraryName: projectName,
+    libraryTarget: 'umd',
   };
 
   updateConfigurationsAndDisableOutputHashing(clientProject);

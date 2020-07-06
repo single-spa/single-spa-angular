@@ -129,7 +129,11 @@ describe('ng-add', () => {
     const expectedCustomWebpackConfigPath = normalize(
       'projects/ss-angular-cli-app/extra-webpack.config.js',
     );
-    expect(customWebpackConfigPath).toEqual(expectedCustomWebpackConfigPath);
+    expect(ssApp.architect.build.options.customWebpackConfig).toEqual({
+      libraryName: 'ss-angular-cli-app',
+      libraryTarget: 'umd',
+      path: expectedCustomWebpackConfigPath,
+    });
   });
 
   test('should add build:single-spa npm script', async () => {
