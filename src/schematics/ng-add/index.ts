@@ -52,6 +52,7 @@ export function createMainEntry(options: NgAddOptions) {
         prefix: project.workspace.prefix,
         routing: options.routing,
         usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
+        projectName: project.name,
       }),
       move(path)
     ]);
@@ -76,7 +77,7 @@ export function updateConfiguration(options: NgAddOptions) {
     const workspacePath = getWorkspacePath(host);
 
     if (atLeastAngular8()) {
-      updateProjectNewAngular(context, clientProject)
+      updateProjectNewAngular(context, clientProject, project.name)
     } else {
       updateProjectOldAngular(context, clientProject, project)
     }
@@ -104,13 +105,15 @@ function updateProjectOldAngular(context, clientProject, project) {
   clientProject.architect['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 }
 
-function updateProjectNewAngular(context, clientProject) {
+function updateProjectNewAngular(context, clientProject, projectName) {
   context.logger.info('Using @angular-devkit/custom-webpack builder.')
   // @ts-ignore
   clientProject.architect.build.builder = '@angular-builders/custom-webpack:browser'
   // @ts-ignore
   clientProject.architect.build.options.customWebpackConfig = {
-    path: "./extra-webpack.config.js"
+    path: "./extra-webpack.config.js",
+    libraryName: projectName,
+    libraryTarget: 'umd',
   }
   // @ts-ignore
   clientProject.architect.build.options.main = 'src/main.single-spa.ts'
