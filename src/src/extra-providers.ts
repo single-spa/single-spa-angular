@@ -12,7 +12,7 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
 
   // This is a simple marker that helps us to ignore PopStateEvents
   // that was not dispatched by the browser.
-  private skipNextPopState = false;
+  private skipNextPopState = 0;
 
   private onPopStateListeners: ((event: LocationChangeEvent) => void)[] = [];
 
@@ -34,12 +34,12 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
   }
 
   pushState(state: any, title: string, url: string): void {
-    this.skipNextPopState = true;
+    this.skipNextPopState++;
     super.pushState(state, title, url);
   }
 
   replaceState(state: any, title: string, url: string): void {
-    this.skipNextPopState = true;
+    this.skipNextPopState++;
     super.replaceState(state, title, url);
   }
 
@@ -52,8 +52,8 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
         .singleSpa;
 
       if (this.skipNextPopState && popStateEventWasDispatchedBySingleSpa) {
-        this.skipNextPopState = false;
-      } else {
+        this.skipNextPopState++;
+      } else if (this.skipNextPopState === 0) {
         // Wrap any event listener into zone that is specific to some application.
         // The main issue is `back/forward` buttons of browsers, because they invoke
         // `history.back|forward` which dispatch `popstate` event. Since `single-spa`
