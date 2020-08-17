@@ -29,6 +29,12 @@ import {
   getSingleSpaAngularDependency,
   getAngularBuildersCustomWebpackDependency,
 } from './dependencies';
+import {
+  findPropertyInAstObject,
+  insertPropertyInAstObjectInOrder,
+  removePropertyInAstObject,
+} from '@schematics/angular/utility/json-utils';
+import { JsonParseMode, parseJsonAst } from '@angular-devkit/core';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
@@ -158,12 +164,29 @@ function updateProjectNewAngular(
 
 function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
   const tsConfigFileName = clientProject.architect!.build!.options.tsConfig;
-  const tsConfig = host.read(tsConfigFileName)!.toString('utf-8');
-  const json = JSON.parse(tsConfig);
-  json.files = ['src/main.single-spa.ts'];
+  const buffer = host.read(tsConfigFileName);
+  if (!buffer) {
+    return;
+  }
+
+  const tsCfgAst = parseJsonAst(buffer.toString(), JsonParseMode.Loose);
+  if (tsCfgAst.kind !== 'object') {
+    return;
+  }
+
+  const files = findPropertyInAstObject(tsCfgAst, 'files');
+  if (files && files.kind !== 'array') {
+    return;
+  }
+
   // The "files" property will only contain path to `main.single-spa.ts` file,
   // because we remove `polyfills` from Webpack `entry` property.
-  host.overwrite(tsConfigFileName, JSON.stringify(json, null, 2));
+  const recorder = host.beginUpdate(tsConfigFileName);
+  if (files) {
+    removePropertyInAstObject(recorder, tsCfgAst, 'files');
+  }
+  insertPropertyInAstObjectInOrder(recorder, tsCfgAst, 'files', ['src/main.single-spa.ts'], 2);
+  host.commitUpdate(recorder);
 }
 
 export function addNPMScripts(options: NgAddOptions): Rule {
