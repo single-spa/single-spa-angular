@@ -1,14 +1,13 @@
 import { NgModuleRef } from '@angular/core';
 import { LifeCycles } from 'single-spa';
 import {
-  getContainerEl,
+  getContainerElement,
   chooseDomElementGetter,
   removeApplicationFromDOMIfIvyEnabled,
-  SingleSpaAngularOpts,
-  BootstrappedSingleSpaAngularOpts,
 } from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
+import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
 
 const defaultOpts = {
   // Required opts that will be set by the library consumer.
@@ -22,12 +21,12 @@ const defaultOpts = {
   updateFunction: () => Promise.resolve(),
 };
 
-export function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
+export function singleSpaAngular(userOpts: SingleSpaAngularOptions): LifeCycles {
   if (typeof userOpts !== 'object') {
     throw Error('single-spa-angular requires a configuration object');
   }
 
-  const opts: SingleSpaAngularOpts = {
+  const opts: SingleSpaAngularOptions = {
     ...defaultOpts,
     ...userOpts,
   };
@@ -45,14 +44,14 @@ export function singleSpaAngular(userOpts: SingleSpaAngularOpts): LifeCycles {
   }
 
   return {
-    bootstrap: bootstrap.bind(null, opts as BootstrappedSingleSpaAngularOpts),
+    bootstrap: bootstrap.bind(null, opts as BootstrappedSingleSpaAngularOptions),
     mount: mount.bind(null, opts),
-    unmount: unmount.bind(null, opts as BootstrappedSingleSpaAngularOpts),
+    unmount: unmount.bind(null, opts as BootstrappedSingleSpaAngularOptions),
     update: opts.updateFunction,
   };
 }
 
-async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Promise<void> {
+async function bootstrap(opts: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
   // Angular provides an opportunity to develop `zone-less` application, where developers
   // have to trigger change detection manually.
   // See https://angular.io/guide/zone#noopzone
@@ -82,7 +81,7 @@ async function bootstrap(opts: BootstrappedSingleSpaAngularOpts, props: any): Pr
   };
 }
 
-async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRef<any>> {
+async function mount(opts: SingleSpaAngularOptions, props: any): Promise<NgModuleRef<any>> {
   const domElementGetter = chooseDomElementGetter(opts, props);
 
   if (!domElementGetter) {
@@ -93,7 +92,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     );
   }
 
-  const containerEl = getContainerEl(domElementGetter);
+  const containerEl = getContainerElement(domElementGetter);
   containerEl.innerHTML = opts.template;
   const bootstrapPromise = opts.bootstrapFunction(props);
 
@@ -128,7 +127,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
     `);
   }
 
-  const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
+  const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOptions;
 
   if (ngZoneEnabled) {
     const ngZone: import('@angular/core').NgZone = module.injector.get(opts.NgZone);
@@ -154,7 +153,7 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function unmount(opts: BootstrappedSingleSpaAngularOpts, props: any): Promise<void> {
+async function unmount(opts: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
   if (opts.Router) {
     // Workaround for https://github.com/angular/angular/issues/19079
     const router = opts.bootstrappedModule.injector.get(opts.Router);

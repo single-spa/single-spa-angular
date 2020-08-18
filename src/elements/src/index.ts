@@ -1,5 +1,6 @@
 import { LifeCycles } from 'single-spa';
 import { NgElement } from '@angular/elements';
+import { chooseDomElementGetter, getContainerElement } from 'single-spa-angular/internals';
 
 import {
   SingleSpaAngularElementsOptions,
@@ -7,7 +8,8 @@ import {
 } from './types';
 
 const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
-  element: null!,
+  element: null,
+  template: null!,
   ngModuleRef: null,
   bootstrapFunction: null!,
   withProperties: undefined,
@@ -25,30 +27,42 @@ async function bootstrap(options: BootstrappedSingleSpaAngularElementsOptions) {
   options.ngModuleRef = await options.bootstrapFunction();
 }
 
-async function mount(options: BootstrappedSingleSpaAngularElementsOptions) {
+async function mount(options: BootstrappedSingleSpaAngularElementsOptions, props: any) {
+  const domElementGetter = chooseDomElementGetter(options, props);
+
+  if (!domElementGetter) {
+    throw Error(
+      `cannot mount angular application '${
+        props.name || props.appName
+      }' without a domElementGetter provided either as an opt or a prop`,
+    );
+  }
+
+  const containerElement: HTMLElement = getContainerElement(domElementGetter);
+  containerElement.innerHTML = options.template;
+
+  // `options.element` which can be `<app-element />` is not a valid selector
+  // for `document.querySelector`, thus we retrieve this custom element
+  // via this property.
+  options.element = containerElement.firstElementChild as NgElement;
+
   if (typeof options.withProperties !== 'function') {
     return;
   }
 
   const properties = await options.withProperties(options.ngModuleRef!);
-  const element = document.querySelector(options.element) as NgElement;
 
   for (const [property, value] of Object.entries(properties)) {
-    element[property] = value;
+    options.element[property] = value;
   }
 }
 
-function unmount(options: BootstrappedSingleSpaAngularElementsOptions) {
+function unmount(options: BootstrappedSingleSpaAngularElementsOptions): Promise<void> {
   return Promise.resolve().then(() => {
-    const node: HTMLElement | null = document.querySelector(options.element);
-
-    if (node !== null) {
-      // Removing custom element from DOM is enough since it will trigger
-      // `disconnectedCallback()` and Angular will dispose all resources.
-      node.parentElement!.removeChild(node);
-    } else {
-      throw Error(`Could not find Angular element with selector ${options.element}`);
-    }
+    // Removing custom element from DOM is enough since it will trigger
+    // `disconnectedCallback()` and Angular will dispose all resources.
+    options.element!.parentElement!.removeChild(options.element!);
+    options.element = null;
   });
 }
 
