@@ -19,26 +19,37 @@ async function bootstrap(options: BootstrappedSingleSpaAngularElementsOptions) {
     return;
   }
 
+  // We call `bootstrapFunction()` inside the bootstrap lifecycle hook
+  // because Angular modules that expose custom elements should be
+  // bootstrapped only once.
   options.ngModuleRef = await options.bootstrapFunction();
 }
 
 async function mount(options: BootstrappedSingleSpaAngularElementsOptions) {
-  if (typeof options.withProperties === 'function') {
-    const properties = await options.withProperties(options.ngModuleRef!);
-    const element = document.querySelector(options.element) as NgElement;
+  if (typeof options.withProperties !== 'function') {
+    return;
+  }
 
-    for (const [property, value] of Object.entries(properties)) {
-      element[property] = value;
-    }
+  const properties = await options.withProperties(options.ngModuleRef!);
+  const element = document.querySelector(options.element) as NgElement;
+
+  for (const [property, value] of Object.entries(properties)) {
+    element[property] = value;
   }
 }
 
 function unmount(options: BootstrappedSingleSpaAngularElementsOptions) {
-  const node = document.querySelector(options.element);
-  // Removing custom element from DOM is enough since it will trigger
-  // `disconnectedCallback()` and Angular will dispose all resources.
-  node?.parentElement?.removeChild(node);
-  return Promise.resolve();
+  return Promise.resolve().then(() => {
+    const node: HTMLElement | null = document.querySelector(options.element);
+
+    if (node !== null) {
+      // Removing custom element from DOM is enough since it will trigger
+      // `disconnectedCallback()` and Angular will dispose all resources.
+      node.parentElement!.removeChild(node);
+    } else {
+      throw Error(`Could not find Angular element with selector ${options.element}`);
+    }
+  });
 }
 
 export function singleSpaAngularElements(userOptions: SingleSpaAngularElementsOptions): LifeCycles {
