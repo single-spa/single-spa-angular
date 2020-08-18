@@ -1,4 +1,4 @@
-import { NgModuleRef } from '@angular/core';
+import { NgModuleRef, NgZone } from '@angular/core';
 import { LifeCycles } from 'single-spa';
 import {
   getContainerEl,
@@ -131,21 +131,19 @@ async function mount(opts: SingleSpaAngularOpts, props: any): Promise<NgModuleRe
   const bootstrappedOpts = opts as BootstrappedSingleSpaAngularOpts;
 
   if (ngZoneEnabled) {
-    const ngZone: import('@angular/core').NgZone = module.injector.get(opts.NgZone);
+    const ngZone: NgZone = module.injector.get(opts.NgZone);
+    const zoneIdentifier: string = bootstrappedOpts.zoneIdentifier!;
 
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
-      singleSpaPlatformLocation.setNgZone(ngZone);
       // Cleanup resources, especially remove event listeners thus they will not be added
       // twice when application gets bootstrapped the second time.
-      module.onDestroy(() => singleSpaPlatformLocation.destroy());
+      module.onDestroy(() => singleSpaPlatformLocation.destroyApplication(zoneIdentifier));
     }
 
     bootstrappedOpts.bootstrappedNgZone = ngZone;
-    bootstrappedOpts.bootstrappedNgZone['_inner']._properties[
-      bootstrappedOpts.zoneIdentifier
-    ] = true;
+    bootstrappedOpts.bootstrappedNgZone['_inner']._properties[zoneIdentifier] = true;
     window.addEventListener('single-spa:routing-event', bootstrappedOpts.routingEventListener!);
   }
 
