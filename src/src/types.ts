@@ -6,10 +6,8 @@ export interface SingleSpaAngularOptions extends BaseSingleSpaAngularOptions {
   // This might be `noop` if the root module is bootstrapped
   // with `{ ngZone: 'noop' }` options.
   NgZone: typeof NgZone | 'noop';
-  bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
   updateFunction?(props: AppProps): Promise<any>;
   Router?: Type<any>;
-  domElementGetter?(): HTMLElement;
   AnimationEngine?: Type<any>;
 }
 

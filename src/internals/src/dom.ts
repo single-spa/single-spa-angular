@@ -14,7 +14,26 @@ export function removeApplicationFromDOMIfIvyEnabled<T extends BaseSingleSpaAngu
   }
 }
 
-export function getContainerElement(domElementGetter: DomElementGetter): never | HTMLElement {
+export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngularOptions>(
+  options: T,
+  props: any,
+): HTMLElement {
+  const domElementGetter = chooseDomElementGetter(options, props);
+
+  if (!domElementGetter) {
+    throw Error(
+      `Cannot mount angular application '${
+        props.name || props.appName
+      }' without a domElementGetter provided either as an opt or a prop`,
+    );
+  }
+
+  const containerElement = getContainerElement(domElementGetter);
+  containerElement.innerHTML = options.template;
+  return containerElement;
+}
+
+function getContainerElement(domElementGetter: DomElementGetter): never | HTMLElement {
   const element = domElementGetter();
 
   if (!element) {
@@ -24,7 +43,7 @@ export function getContainerElement(domElementGetter: DomElementGetter): never |
   return element;
 }
 
-export function chooseDomElementGetter<T extends BaseSingleSpaAngularOptions>(
+function chooseDomElementGetter<T extends BaseSingleSpaAngularOptions>(
   opts: T,
   props: any,
 ): DomElementGetter {

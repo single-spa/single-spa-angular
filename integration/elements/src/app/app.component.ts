@@ -2,11 +2,10 @@ import {
   Component,
   ChangeDetectionStrategy,
   OnDestroy,
-  Input,
   ChangeDetectorRef,
-  OnChanges,
-  SimpleChanges,
+  OnInit,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 interface User {
   id: string;
@@ -20,15 +19,16 @@ interface User {
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnChanges, OnDestroy {
-  @Input() users: User[] = [];
+export class AppComponent implements OnInit, OnDestroy {
+  users: User[] = [];
 
-  constructor(private ref: ChangeDetectorRef) {}
+  constructor(private ref: ChangeDetectorRef, private http: HttpClient) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.users) {
+  ngOnInit(): void {
+    this.http.get<User[]>('https://jsonplaceholder.typicode.com/users').subscribe(users => {
+      this.users = users;
       this.ref.detectChanges();
-    }
+    });
   }
 
   ngOnDestroy(): void {

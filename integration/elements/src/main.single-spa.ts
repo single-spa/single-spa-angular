@@ -1,6 +1,5 @@
-import { enableProdMode, NgModuleRef } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { HttpClient } from '@angular/common/http';
 import { singleSpaAngularElements } from 'single-spa-angular/elements';
 
 import { AppModule } from './app/app.module';
@@ -12,12 +11,7 @@ if (environment.production) {
 
 const lifecycles = singleSpaAngularElements({
   template: '<elements-root />',
-  bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
-  withProperties: async (ngModuleRef: NgModuleRef<AppModule>) => {
-    const http = ngModuleRef.injector.get(HttpClient);
-    const users = await http.get('https://jsonplaceholder.typicode.com/users').toPromise();
-    return { users };
-  },
+  bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule, { ngZone: 'noop' }),
 });
 
 export const bootstrap = lifecycles.bootstrap;
