@@ -73,8 +73,6 @@ describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
       throw new Error("'files' field of tsconfig should be an array.");
     }
 
-    console.log(tsConfigAst.text);
-
     expect(files.value).toStrictEqual(['src/main.single-spa.ts']);
   });
 });
