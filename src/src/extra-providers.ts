@@ -19,6 +19,14 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
   // The key here is an actual forked `Zone` of some specific application.
   // We will be able to find the specific zone when application gets destroyed
   // by application `name`.
+  // The reason of that the `onPopState` method is invoked during `bootstrapModule`
+  // and we can't know what application has invoked it. Why should we know the application
+  // that has invoked `onPopState`? When application gets destroyed in a `sharing dependencies mode`
+  // (when there is a single platform per all applications) we want to remove application
+  // specific `popstate` listeners. E.g. if there are 2 applications:
+  // * shop application adds `popstate` listener
+  // * navbar application adds `popstate` listener
+  // When shop application gets destroyed we want to remove only its `popstate` listener.
   private zoneToOnPopStateListenersMap = new Map<any, OnPopStateListener[]>();
 
   // This is used only to make `Zone.wrap` happy, since it requires 2 arguments
