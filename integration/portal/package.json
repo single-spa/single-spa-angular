@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "webpack-dev-server",
-    "prebuild:prod": "rm -rf dist",
+    "prebuild:prod": "rimraf dist",
     "build:prod": "webpack -p"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "typescript": "file:../../node_modules/typescript",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "rimraf": "^2.6.2"
   }
 }

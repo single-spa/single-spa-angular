@@ -1,0 +1,14 @@
+<div class="columns is-multiline">
+  <div class="column is-one-third" *ngFor="let user of users">
+    <div class="card">
+      <div class="card-content">
+        <p class="title">
+          {{ user.name }}
+        </p>
+        <p class="subtitle">
+          {{ user.email }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

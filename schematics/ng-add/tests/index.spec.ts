@@ -1,8 +1,11 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { getFileContent } from '@schematics/angular/utility/test';
-import { join } from 'path';
+import { join, normalize } from 'path';
 
 import { Schema as NgAddOptions } from '../schema';
+import { JsonParseMode, parseJsonAst } from '@angular-devkit/core';
+import { findPropertyInAstObject } from '@schematics/angular/utility/json-utils';
+import { JsonAstObject } from '@angular-devkit/core/src/json/interface';
 
 const collectionPath = join(__dirname, '../../schematics.json');
 
@@ -22,6 +25,16 @@ const defaultApplicationOptions = {
   style: 'scss',
 };
 
+const angular10Comment = '/* Unexpected comment from Angular */';
+
+// Simulate what angular 10 is doing adding a comment to the tsconfig file
+// https://github.com/single-spa/single-spa-angular/issues/249
+function appendCommentToTsConfig(tree: UnitTestTree) {
+  let content = getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json');
+  content = angular10Comment + '\n' + content;
+  tree.overwrite('/projects/ss-angular-cli-app/tsconfig.app.json', content);
+}
+
 describe('ng-add', () => {
   let defaultAppTree: UnitTestTree;
   const testRunner = new SchematicTestRunner('single-spa-angular', collectionPath);
@@ -39,6 +52,8 @@ describe('ng-add', () => {
         workspaceTree,
       )
       .toPromise();
+
+    appendCommentToTsConfig(defaultAppTree);
   });
 
   test('should run ng-add', async () => {
@@ -119,11 +134,20 @@ describe('ng-add', () => {
     expect(ssApp.architect.build.builder).toBe('@angular-builders/custom-webpack:browser');
     expect(ssApp.architect.serve.builder).toBe('@angular-builders/custom-webpack:dev-server');
 
-    expect(ssApp.architect.build.options.main).toEqual(
-      'projects/ss-angular-cli-app/src/main.single-spa.ts',
+    const main = normalize(ssApp.architect.build.options.main);
+    const expectedMain = normalize('projects/ss-angular-cli-app/src/main.single-spa.ts');
+    expect(main).toEqual(expectedMain);
+
+    const customWebpackConfigPath = normalize(
+      ssApp.architect.build.options.customWebpackConfig.path,
+    );
+    const expectedCustomWebpackConfigPath = normalize(
+      'projects/ss-angular-cli-app/extra-webpack.config.js',
     );
     expect(ssApp.architect.build.options.customWebpackConfig).toEqual({
-      path: 'projects/ss-angular-cli-app/extra-webpack.config.js',
+      libraryName: 'ss-angular-cli-app',
+      libraryTarget: 'umd',
+      path: expectedCustomWebpackConfigPath,
     });
   });
 
@@ -142,10 +166,33 @@ describe('ng-add', () => {
       .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, defaultAppTree)
       .toPromise();
 
-    const tsConfigAppJSON = JSON.parse(
-      getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json'),
-    );
+    const expectedTsConfigPath = normalize('projects/ss-angular-cli-app/tsconfig.app.json');
+    const buffer = defaultAppTree.read(expectedTsConfigPath);
+    if (!buffer) {
+      throw new Error('Failed to read the tsconfig');
+    }
 
-    expect(tsConfigAppJSON.files).toEqual(['src/main.single-spa.ts']);
+    const tsCfgAst = parseJsonAst(buffer.toString(), JsonParseMode.Loose);
+    if (tsCfgAst.kind != 'object') {
+      throw new Error(`Root content of '${expectedTsConfigPath}' is not an object.`);
+    }
+
+    // We verify that we didn't erased the comment
+    if (tsCfgAst.comments === undefined) {
+      throw new Error(`No comment has been found in the '${expectedTsConfigPath}' file.`);
+    }
+    expect(tsCfgAst.comments).toHaveLength(1);
+    expect(tsCfgAst.comments[0].text).toBe(angular10Comment);
+
+    // We verify the files property
+    const files = findPropertyInAstObject(tsCfgAst, 'files');
+    if (!files) {
+      throw new Error("'files' field of tsconfig should exist.");
+    }
+    if (files.kind !== 'array') {
+      throw new Error("'files' field of tsconfig should be an array.");
+    }
+
+    expect(files.value).toStrictEqual(['src/main.single-spa.ts']);
   });
 });
