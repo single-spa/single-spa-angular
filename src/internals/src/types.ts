@@ -1,25 +1,10 @@
-import { NgModuleRef, Type } from '@angular/core';
 import { AppProps } from 'single-spa';
+import { NgModuleRef } from '@angular/core';
 
 export type DomElementGetter = () => HTMLElement;
 
-export interface SingleSpaAngularOpts {
-  // This might be `noop` if the root module is bootstrapped
-  // with `{ ngZone: 'noop' }` options.
-  NgZone: typeof import('@angular/core').NgZone | 'noop';
-  bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
-  updateFunction?(props: AppProps): Promise<any>;
+export interface BaseSingleSpaAngularOptions {
   template: string;
-  Router?: Type<any>;
   domElementGetter?(): HTMLElement;
-  AnimationEngine?: Type<any>;
-}
-
-export interface BootstrappedSingleSpaAngularOpts extends SingleSpaAngularOpts {
-  bootstrappedModule: NgModuleRef<any>;
-  // All below properties can be optional in case of
-  // `SingleSpaAngularOpts.NgZone` is a `noop` string and not an `NgZone` class.
-  bootstrappedNgZone?: import('@angular/core').NgZone;
-  routingEventListener?: () => void;
-  zoneIdentifier?: string;
+  bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
 }
