@@ -1,4 +1,4 @@
-import { NgModuleRef } from '@angular/core';
+import { NgModuleRef, NgZone } from '@angular/core';
 import { LifeCycles } from 'single-spa';
 import {
   getContainerElementAndSetTemplate,
@@ -13,7 +13,7 @@ const defaultOptions = {
   NgZone: null!,
   bootstrapFunction: null!,
   template: null!,
-  // Optional optiots
+  // Optional options
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   AnimationEngine: undefined,
@@ -66,7 +66,7 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: an
   // https://github.com/single-spa/single-spa-angular/issues/47,
   // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
   // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-  options.NgZone.isInAngularZone = function () {
+  options.NgZone.isInAngularZone = () => {
     // @ts-ignore
     return window.Zone.current._properties[options.zoneIdentifier] === true;
   };
@@ -119,21 +119,19 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
   const bootstrappedOptions = options as BootstrappedSingleSpaAngularOptions;
 
   if (ngZoneEnabled) {
-    const ngZone: import('@angular/core').NgZone = module.injector.get(options.NgZone);
+    const ngZone: NgZone = module.injector.get(options.NgZone);
+    const zoneIdentifier: string = bootstrappedOptions.zoneIdentifier!;
 
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
-      singleSpaPlatformLocation.setNgZone(ngZone);
       // Cleanup resources, especially remove event listeners thus they will not be added
       // twice when application gets bootstrapped the second time.
-      module.onDestroy(() => singleSpaPlatformLocation.destroy());
+      module.onDestroy(() => singleSpaPlatformLocation.destroyApplication(zoneIdentifier));
     }
 
     bootstrappedOptions.bootstrappedNgZone = ngZone;
-    bootstrappedOptions.bootstrappedNgZone['_inner']._properties[
-      bootstrappedOptions.zoneIdentifier
-    ] = true;
+    bootstrappedOptions.bootstrappedNgZone['_inner']._properties[zoneIdentifier] = true;
     window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
   }
 
