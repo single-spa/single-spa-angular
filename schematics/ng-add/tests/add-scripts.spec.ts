@@ -1,7 +1,6 @@
-import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { join } from 'path';
+import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
-const collectionPath = join(__dirname, '../../schematics.json');
+import { createTestRunner } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
@@ -12,7 +11,7 @@ const workspaceOptions = {
 
 describe('ng-add', () => {
   let workspaceTree: UnitTestTree;
-  const testRunner = new SchematicTestRunner('single-spa-angular', collectionPath);
+  const testRunner = createTestRunner();
 
   async function generateApplication(name: string, project?: string) {
     await testRunner
