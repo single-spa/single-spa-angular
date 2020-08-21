@@ -205,7 +205,7 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/elements@^10.0.11":
+"@angular/elements@~10.0.11":
   version "10.0.11"
   resolved "https://registry.yarnpkg.com/@angular/elements/-/elements-10.0.11.tgz#8ec3681767ef01e7ec30e69e0b8221076cc7ef0d"
   integrity sha512-B32SMZgDqGDfHeGLdnp7+plZE0Y6XoD38UcXSA+P/OZrqs/SVAqBJhVy5zoLf+11hLxfn27qJtkVkdXS3FC0qQ==
