@@ -77,7 +77,9 @@ function removeMiniCssExtract(config: any) {
   config.module.rules.forEach((rule: any) => {
     if (rule.use) {
       const cssMiniExtractIndex = rule.use.findIndex(
-        (use: any) => typeof use === 'string' && use.includes('mini-css-extract-plugin'),
+        (use: any) =>
+          (typeof use === 'string' && use.includes('mini-css-extract-plugin')) ||
+          (typeof use === 'object' && use.loader && use.loader.includes('mini-css-extract-plugin')),
       );
       if (cssMiniExtractIndex >= 0) {
         rule.use[cssMiniExtractIndex] = { loader: 'style-loader' };
