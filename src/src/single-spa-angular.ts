@@ -20,7 +20,7 @@ const defaultOptions = {
   updateFunction: () => Promise.resolve(),
 };
 
-export function singleSpaAngular(userOptions: SingleSpaAngularOptions): LifeCycles {
+export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): LifeCycles<T> {
   if (typeof userOptions !== 'object') {
     throw Error('single-spa-angular requires a configuration object');
   }
@@ -111,7 +111,7 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
   // Also `getSingleSpaExtraProviders()` function should be called only if the user doesn't use
   // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
   if (ngZoneEnabled && options.Router && singleSpaPlatformLocation === null) {
-    throw new Error(`	
+    throw new Error(`
       single-spa-angular: could not retrieve extra providers from the platform injector. Did you call platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule()?
     `);
   }
