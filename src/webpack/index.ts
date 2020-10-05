@@ -3,8 +3,16 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
 
-export default (config: any, options?: any) => {
+export interface DefaultExtraOpts {
+  removeMiniCssExtract: boolean;
+}
+const defaultExtraOpts = {
+  removeMiniCssExtract: true,
+};
+
+export default (config: any, options?: any, extraOptions?: DefaultExtraOpts) => {
   const libraryName = getLibraryName(options);
+  const extraOpts = { ...defaultExtraOpts, ...extraOptions };
 
   const singleSpaConfig: any = {
     output: {
@@ -39,7 +47,9 @@ export default (config: any, options?: any) => {
   }
 
   removePluginByName(mergedConfig.plugins, 'IndexHtmlWebpackPlugin');
-  removeMiniCssExtract(mergedConfig);
+  if (extraOpts.removeMiniCssExtract) {
+    removeMiniCssExtract(mergedConfig);
+  }
 
   if (Array.isArray(mergedConfig.entry.styles)) {
     // We want the global styles to be part of the "main" entry. The order of strings in this array

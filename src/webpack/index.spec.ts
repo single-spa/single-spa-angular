@@ -70,4 +70,24 @@ describe('Webpack config', () => {
       });
     });
   });
+
+  describe("Don't remove MiniCssExtractPlugin", () => {
+    test('should not remove the Mini Css Extract plugin', async () => {
+      // GIVEN
+      const config = { plugins: [new MiniCssExtractPlugin(), new AnotherPlugin()] };
+
+      // TEST
+      const singleSpaConfig = singleSpaAngularWebpack(
+        { ...defaultConfig, ...config },
+        {},
+        {
+          removeMiniCssExtract: false,
+        },
+      );
+
+      // EXPECT
+      expect(singleSpaConfig.plugins).toHaveLength(2);
+      expect(singleSpaConfig.plugins[0].constructor.name).toBe('MiniCssExtractPlugin');
+    });
+  });
 });
