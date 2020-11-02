@@ -1,6 +1,2 @@
-export { SingleSpaAngularOpts, BootstrappedSingleSpaAngularOpts } from './types';
-export {
-  getContainerEl,
-  chooseDomElementGetter,
-  removeApplicationFromDOMIfIvyEnabled,
-} from './dom';
+export * from './types';
+export { getContainerElementAndSetTemplate, removeApplicationFromDOMIfIvyEnabled } from './dom';

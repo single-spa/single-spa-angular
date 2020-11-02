@@ -1,9 +1,12 @@
-import { SingleSpaAngularOpts, DomElementGetter } from './types';
+import { DomElementGetter, BaseSingleSpaAngularOptions } from './types';
 
-export function removeApplicationFromDOMIfIvyEnabled(opts: SingleSpaAngularOpts, props: any): void {
+export function removeApplicationFromDOMIfIvyEnabled<T extends BaseSingleSpaAngularOptions>(
+  options: T,
+  props: any,
+): void {
   if (ivyEnabled()) {
-    const domElementGetter = chooseDomElementGetter(opts, props);
-    const domElement = getContainerEl(domElementGetter);
+    const domElementGetter = chooseDomElementGetter(options, props);
+    const domElement = getContainerElement(domElementGetter);
     // View Engine removes all nodes automatically when calling `NgModuleRef.destroy()`,
     // which calls `ComponentRef.destroy()`.
     // Basically this will remove `app-root` or any other selector from the container element.
@@ -11,7 +14,26 @@ export function removeApplicationFromDOMIfIvyEnabled(opts: SingleSpaAngularOpts,
   }
 }
 
-export function getContainerEl(domElementGetter: DomElementGetter): never | HTMLElement {
+export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngularOptions>(
+  options: T,
+  props: any,
+): HTMLElement {
+  const domElementGetter = chooseDomElementGetter(options, props);
+
+  if (!domElementGetter) {
+    throw Error(
+      `Cannot mount angular application '${
+        props.name || props.appName
+      }' without a domElementGetter provided either as an opt or a prop`,
+    );
+  }
+
+  const containerElement = getContainerElement(domElementGetter);
+  containerElement.innerHTML = options.template;
+  return containerElement;
+}
+
+function getContainerElement(domElementGetter: DomElementGetter): never | HTMLElement {
   const element = domElementGetter();
 
   if (!element) {
@@ -21,7 +43,10 @@ export function getContainerEl(domElementGetter: DomElementGetter): never | HTML
   return element;
 }
 
-export function chooseDomElementGetter(opts: SingleSpaAngularOpts, props: any): DomElementGetter {
+function chooseDomElementGetter<T extends BaseSingleSpaAngularOptions>(
+  opts: T,
+  props: any,
+): DomElementGetter {
   props = props?.customProps ?? props;
 
   if (props.domElement) {

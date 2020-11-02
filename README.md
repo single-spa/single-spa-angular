@@ -9,3 +9,7 @@ This lets you have multiple Angular microfrontends coexist within the same page.
 ## Documentation
 
 See [documentation on single-spa.js.org](https://single-spa.js.org/docs/ecosystem-angular.html).
+
+## Project Status
+
+This project needs new maintainers. The single-spa core team does not have the Angular expertise needed to continously support all versions of Angular, as none of us use single-spa-angular in any of our serious projects. We could use help keeping up with the six month release cadence of Angular, diagnosing problems in the issue queues, and providing support in the single-spa Slack workspace. Angular is the framework that is hardest to support in the single-spa ecosystem, and we rely on the community to help us with it. If you have interest in helping with the maintenance of this project, please let us know!
