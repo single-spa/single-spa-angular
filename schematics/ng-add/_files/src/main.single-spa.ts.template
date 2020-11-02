@@ -2,7 +2,7 @@
 <% if (routing) { %>import { enableProdMode, NgZone } from '@angular/core';<% } %>
 <% if (!routing) { %>import { enableProdMode, NgZone } from '@angular/core';<% } %>
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if (routing) { %>
-import { Router } from '@angular/router';<% } if (usingBrowserAnimationsModule) { %>
+import { Router, NavigationStart } from '@angular/router';<% } if (usingBrowserAnimationsModule) { %>
 import { ɵAnimationEngine as AnimationEngine } from '@angular/animations/browser';<% } %>
 
 <% if (routing) { %>import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
@@ -23,7 +23,8 @@ const lifecycles = singleSpaAngular({
     return platformBrowserDynamic().bootstrapModule(AppModule);<% } %>
   },
   template: '<<%= prefix %>-root />',<% if (routing) { %>
-  Router,<% } %>
+  Router,
+  NavigationStart,<% } %>
   NgZone,<% if (usingBrowserAnimationsModule) { %>
   AnimationEngine,<% } %>
 });

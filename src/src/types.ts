@@ -7,7 +7,9 @@ export interface SingleSpaAngularOptions<T = {}> extends BaseSingleSpaAngularOpt
   // with `{ ngZone: 'noop' }` options.
   NgZone: typeof NgZone | 'noop';
   updateFunction?(props: AppProps): Promise<any>;
+  // `Router` and `NavigationStart` should be always provided together.
   Router?: Type<any>;
+  NavigationStart?: Type<any>;
   AnimationEngine?: Type<any>;
   bootstrapFunction(props: AppProps & T): Promise<NgModuleRef<any>>;
 }

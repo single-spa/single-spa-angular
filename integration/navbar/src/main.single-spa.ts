@@ -5,25 +5,15 @@ import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { singleSpaPropsSubject } from './single-spa/single-spa-props';
 
 if (environment.production) {
   enableProdMode();
 }
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: async singleSpaProps => {
-    singleSpaPropsSubject.next(singleSpaProps);
-    const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
-      AppModule,
-    );
-    ngModuleRef.onDestroy(() => {
-      // This is used only for testing purposes.
-      window.dispatchEvent(new CustomEvent('chatDestroyed'));
-    });
-    return ngModuleRef;
-  },
-  template: '<chat-root />',
+  bootstrapFunction: () =>
+    platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
+  template: '<navbar-root />',
   NgZone,
   Router,
   NavigationStart,

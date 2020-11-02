@@ -1,5 +1,5 @@
 import { enableProdMode, ApplicationRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { singleSpaAngular } from 'single-spa-angular';
 
@@ -33,6 +33,7 @@ const lifecycles = singleSpaAngular({
   },
   template: '<noop-zone-root />',
   Router,
+  NavigationStart,
   NgZone: 'noop',
 });
 
