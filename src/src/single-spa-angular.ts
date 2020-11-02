@@ -44,7 +44,9 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
   }
 
   if (options.Router && !options.NavigationStart) {
-    throw new Error(`single-spa-angular must be passed the NavigationStart option`);
+    // We call `console.warn` except of throwing `new Error()` since this will not
+    // be a breaking change.
+    console.warn(`single-spa-angular must be passed the NavigationStart option`);
   }
 
   return {
@@ -130,12 +132,11 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
-      const subscription = skipLocationChangeOnNonImperativeRoutingTriggers(module, options);
+      skipLocationChangeOnNonImperativeRoutingTriggers(module, options);
 
       // Cleanup resources, especially remove event listeners thus they will not be added
       // twice when application gets bootstrapped the second time.
       module.onDestroy(() => {
-        subscription.unsubscribe();
         singleSpaPlatformLocation.destroyApplication(zoneIdentifier);
       });
     }
@@ -201,16 +202,32 @@ async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any)
 function skipLocationChangeOnNonImperativeRoutingTriggers(
   module: NgModuleRef<any>,
   options: SingleSpaAngularOptions,
-): Subscription {
-  const router = module.injector.get(options.Router);
+): void {
+  if (!options.NavigationStart) {
+    // As discussed we don't do anything right if the developer doesn't provide
+    // `options.NavigationStart` since this might be a breaking change.
+    return;
+  }
 
-  return router.events.subscribe((event: any) => {
+  const router = module.injector.get(options.Router);
+  const subscription: Subscription = router.events.subscribe((event: any) => {
     if (event instanceof options.NavigationStart!) {
       const currentNavigation = router.getCurrentNavigation();
+      // This listener will be set up for each Angular application
+      // that has routing capabilities.
+      // We set `skipLocationChange` for each non-imperative navigation,
+      // Angular router checks under the hood if it has to change
+      // the browser URL or not.
+      // If `skipLocationChange` is truthy then Angular router will not call
+      // `setBrowserUrl()` which calls `history.replaceState()` and dispatches `popstate` event.
       if (currentNavigation.trigger !== 'imperative') {
         currentNavigation.extras.skipLocationChange = true;
         currentNavigation.extras.replaceUrl = false;
       }
     }
+  });
+
+  module.onDestroy(() => {
+    subscription.unsubscribe();
   });
 }
