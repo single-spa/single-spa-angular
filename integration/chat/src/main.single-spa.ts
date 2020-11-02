@@ -1,6 +1,6 @@
 import { enableProdMode, NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Router } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
@@ -26,6 +26,7 @@ const lifecycles = singleSpaAngular({
   template: '<chat-root />',
   NgZone,
   Router,
+  NavigationStart,
 });
 
 export const bootstrap = lifecycles.bootstrap;

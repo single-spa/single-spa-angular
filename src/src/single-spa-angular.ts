@@ -1,4 +1,5 @@
 import { NgModuleRef, NgZone } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LifeCycles } from 'single-spa';
 import {
   getContainerElementAndSetTemplate,
@@ -40,6 +41,10 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
 
   if (!options.NgZone) {
     throw Error(`single-spa-angular must be passed the NgZone option`);
+  }
+
+  if (options.Router && !options.NavigationStart) {
+    throw new Error(`single-spa-angular must be passed the NavigationStart option`);
   }
 
   return {
@@ -125,16 +130,8 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
-      const router = module.injector.get(options.Router);
-      const subscription = router.events.subscribe((event: any) => {
-        if (event.constructor.name === 'NavigationStart') {
-          const currentNavigation = router.getCurrentNavigation();
-          if (currentNavigation.trigger !== 'imperative') {
-            currentNavigation.extras.skipLocationChange = true;
-            currentNavigation.extras.replaceUrl = false;
-          }
-        }
-      });
+      const subscription = skipLocationChangeOnNonImperativeRoutingTriggers(module, options);
+
       // Cleanup resources, especially remove event listeners thus they will not be added
       // twice when application gets bootstrapped the second time.
       module.onDestroy(() => {
@@ -199,4 +196,21 @@ async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any)
   // This is an issue. Issue has been created and Angular team is working on the fix:
   // https://github.com/angular/angular/issues/36449
   removeApplicationFromDOMIfIvyEnabled(options, props);
+}
+
+function skipLocationChangeOnNonImperativeRoutingTriggers(
+  module: NgModuleRef<any>,
+  options: SingleSpaAngularOptions,
+): Subscription {
+  const router = module.injector.get(options.Router);
+
+  return router.events.subscribe((event: any) => {
+    if (event instanceof options.NavigationStart!) {
+      const currentNavigation = router.getCurrentNavigation();
+      if (currentNavigation.trigger !== 'imperative') {
+        currentNavigation.extras.skipLocationChange = true;
+        currentNavigation.extras.replaceUrl = false;
+      }
+    }
+  });
 }

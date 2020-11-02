@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'chat-root',
@@ -7,14 +7,7 @@ import { NavigationStart, Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  constructor(private router: Router) {
-    router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        const currentNavigation = router.getCurrentNavigation();
-        console.log('chat currentNavigation.trigger = ', currentNavigation.trigger);
-      }
-    });
-  }
+  constructor(private router: Router) {}
 
   goToChatGroups(): void {
     this.router.navigateByUrl('/groups');
