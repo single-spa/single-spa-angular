@@ -25,6 +25,7 @@ export default (config: any, options?: any, extraOptions?: DefaultExtraOptions) 
       library: libraryName,
       libraryTarget: options?.customWebpackConfig?.libraryTarget ?? 'umd',
       jsonpFunction: 'webpackJsonp' + libraryName,
+      devtoolNamespace: libraryName,
     },
     externals: ['zone.js'],
     devServer: {
@@ -43,6 +44,7 @@ export default (config: any, options?: any, extraOptions?: DefaultExtraOptions) 
         },
       ],
     },
+    devtool: 'sourcemap',
   };
 
   const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
