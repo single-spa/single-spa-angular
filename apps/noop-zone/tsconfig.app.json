@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/main.single-spa.ts"]
+}
