@@ -1,0 +1,41 @@
+{
+  "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
+  "name": "single-spa-angular",
+  "version": "4.5.0",
+  "description": "Helpers for building single-spa applications which use Angular 2",
+  "schematics": "./schematics/schematics.json",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/single-spa/single-spa-angular.git"
+  },
+  "keywords": [
+    "single-spa",
+    "angular"
+  ],
+  "author": "Joel Denning",
+  "maintainers": [
+    "Joel Denning",
+    "Artur Androsovych"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/single-spa/single-spa-angular/issues"
+  },
+  "homepage": "https://github.com/single-spa/single-spa-angular#readme",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@angular/core": ">=9",
+    "single-spa": ">=4.0.0"
+  },
+  "ngPackage": {
+    "lib": {
+      "umdId": "single-spa-angular",
+      "flatModuleFile": "single-spa-angular",
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "single-spa-angular/internals": "single-spa-angular-internals"
+      }
+    },
+    "dest": "../../lib"
+  }
+}

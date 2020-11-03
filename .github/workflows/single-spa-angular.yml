@@ -22,7 +22,6 @@ jobs:
           # in that location.
           path: |
             node_modules
-            */*/node_modules
             ~/.cache
           key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
@@ -46,13 +45,8 @@ jobs:
       - name: Build packages
         run: yarn build
 
-      - name: Install packages for integration apps
-        run: yarn install:integration
-
       - name: Build integration apps
-        # Parallel builds are currently not supported.
-        # https://github.com/angular/angular/issues/32431
-        run: yarn build:integration
+        run: yarn build:all
 
       - name: Run end-to-end tests via Cypress
         run: yarn test:ci:integration

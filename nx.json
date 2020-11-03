@@ -1,0 +1,48 @@
+{
+  "npmScope": "single-spa-angular",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.base.json": "*",
+    "tslint.json": "*",
+    ".eslintrc.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "accessToken": "YmQwMTE3MTMtOTE0YS00ZjUwLTliN2ItMWI4N2NmMmQ1MTUzfHJlYWQtd3JpdGU=",
+        "cacheableOperations": ["build", "test", "lint", "e2e"],
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true
+      }
+    }
+  },
+  "projects": {
+    "shop": {
+      "tags": []
+    },
+    "chat": {
+      "tags": []
+    },
+    "navbar": {
+      "tags": []
+    },
+    "elements": {
+      "tags": []
+    },
+    "noop-zone": {
+      "tags": []
+    },
+    "single-spa-angular": {
+      "tags": []
+    }
+  }
+}
