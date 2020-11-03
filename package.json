@@ -119,6 +119,7 @@
     "tsickle": "^0.39.1",
     "tslib": "^2.0.1",
     "typescript": "3.9.7",
+    "webpack": "^5.4.0",
     "zone.js": "~0.10.3"
   },
   "dependencies": {
