@@ -1,9 +1,42 @@
+# Contributing to single-spa-angular
+
+Before doing any changes to the codebase you have to fork single-spa-angular repo and clone it. The next step is to install the dependencies inside of the single-spa-angular directory:
+
+```sh
+# Prepare for some noise, there is the `postinstall` script that runs `ngcc` compiler.
+yarn
+```
+
+Any changes to the codebase must be tested. We've got different applications inside the `apps` folder in which we make sure that the issues reported earlier are not reproduced. You can serve all of them in the development mode simultaneously by running the following command:
+
+```sh
+yarn serve:all
+```
+
+After that, you can make sure that all applications are running by going to the `http://localhost:8080`.
+
+If you fix a bug or add a feature, then you need to add integration tests as well, we use Cypress for that. There is a `cypress/integration` folder where we keep our integration tests. You can look at how other integration tests are implemented and create new tests following their example.
+
+When you have written a new test, you need to run it. You can do that by running the following command:
+
+```sh
+yarn cy:run
+```
+
+This will open the Cypress GUI and you can select the file in which to run the tests. Note that applications should also be running, so do it in different terminals.
+
+To run the final tests, you need to build all applications in production mode and run the Cypress again. This can be done by running the below commands:
+
+```sh
+yarn build:all
+yarn test:ci:integration
+```
+
+### Schematics
+
 To test out the angular schematics locally, run the following commands:
 
 ```sh
-# First, fork the single-spa-angular repo and clone it.
-# Then run the following commands inside of the single-spa-angular directory.
-yarn install
 yarn build
 
 ## Now link the built files
