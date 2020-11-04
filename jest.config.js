@@ -4,7 +4,7 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/', '/lib/', 'cypress'],
   globals: {
     'ts-jest': {
-      tsConfig: {
+      tsconfig: {
         downlevelIteration: false,
       },
     },
