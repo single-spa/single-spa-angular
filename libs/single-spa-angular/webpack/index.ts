@@ -2,6 +2,7 @@ import * as webpackMerge from 'webpack-merge';
 import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
+import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 
 export interface DefaultExtraOptions {
   removeMiniCssExtract: boolean;
@@ -10,13 +11,14 @@ const defaultExtraOptions = {
   removeMiniCssExtract: true,
 };
 
-/**
- * The `options` parameter is typed as `any` because it doesn't require
- * installing `@types/webpack-dev-server` and `karma`. If you need to know
- * what properties it might contain if it's not `undefined`,
- * then @see https://github.com/angular/angular-cli/blob/master/packages/angular_devkit/build_angular/src/browser/schema.json
- */
-export default (config: any, options?: any, extraOptions?: DefaultExtraOptions) => {
+interface Options extends Partial<BrowserBuilderOptions> {
+  customWebpackConfig?: {
+    libraryName?: string;
+    libraryTarget?: string;
+  };
+}
+
+export default (config: any, options?: Options, extraOptions?: DefaultExtraOptions) => {
   const libraryName = getLibraryName(options);
   extraOptions = { ...defaultExtraOptions, ...extraOptions };
 
@@ -25,6 +27,7 @@ export default (config: any, options?: any, extraOptions?: DefaultExtraOptions) 
       library: libraryName,
       libraryTarget: options?.customWebpackConfig?.libraryTarget ?? 'umd',
       jsonpFunction: 'webpackJsonp' + libraryName,
+      devtoolNamespace: libraryName,
     },
     externals: ['zone.js'],
     devServer: {
@@ -43,6 +46,7 @@ export default (config: any, options?: any, extraOptions?: DefaultExtraOptions) 
         },
       ],
     },
+    devtool: resolveDevtool(options),
   };
 
   const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
@@ -104,7 +108,7 @@ function removeMiniCssExtract(config: any) {
   });
 }
 
-function getLibraryName(options: any): string {
+function getLibraryName(options: Options | undefined): string {
   if (options?.customWebpackConfig?.libraryName) {
     return options.customWebpackConfig.libraryName;
   }
@@ -126,7 +130,7 @@ function getLibraryName(options: any): string {
   return 'angular_single_spa_project';
 }
 
-function getProjectNameFromAngularJson(options: any): string | null | undefined {
+function getProjectNameFromAngularJson(options: Options | undefined): string | null | undefined {
   const angularJsonPath = findUp(['angular.json', '.angular.json'], process.cwd());
   if (!angularJsonPath) return null;
 
@@ -149,11 +153,27 @@ function getProjectNameFromAngularJson(options: any): string | null | undefined 
     // in `angular.json` and each `architect` has `build` target, thus any application can be built
     // via `ng build application`.
     return projects.find(
-      project => angularJson.projects[project].architect.build.options.main === options.main,
+      project => angularJson.projects[project].architect.build.options.main === options!.main,
     );
   } catch {
     // If we reach here there are multiple (or zero) projects in angular.json
     // we cannot tell which one to use, so we will end up using the default.
     return null;
+  }
+}
+
+function resolveDevtool(options: Options | undefined): boolean | string {
+  // If `options.sourceMap = true` or `options.sourceMap.scripts = true` then
+  // source maps are enabled for all scripts by default.
+  const allSourceMapsEnabled = options?.sourceMap === true;
+  const scriptsSourceMapsEnabled =
+    typeof options?.sourceMap === 'object' && options.sourceMap.scripts === true;
+
+  if (allSourceMapsEnabled || scriptsSourceMapsEnabled) {
+    return 'sourcemap';
+  } else {
+    // If options are not provided then we shouldn't enable source maps since
+    // it can worsen the build time and the developer will not even know about it.
+    return false;
   }
 }
