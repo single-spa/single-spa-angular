@@ -41,6 +41,9 @@
     "noop-zone": {
       "tags": []
     },
+    "parcel": {
+      "tags": []
+    },
     "single-spa-angular": {
       "tags": []
     }

@@ -18,6 +18,10 @@ describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
       // `router.navigateByUrl('/rooms').then(() => router.navigateByUrl('/groups'))`.
       cy.get('button.try-to-reproduce-113-issue')
         .click()
+        // The `wait` command is used because Cypress on the CI level is slower than locally,
+        // basically it clicks the `<button>` and does assertion immediately, but `single-spa`
+        // hasn't loaded the `/chat/groups` chunk yet.
+        .wait(5000)
         .then(() => {
           // We have navigated 2 times: to `/rooms` and back to `/groups`.
           // Let's ensure that the queue was flushed and it's not stuck.
