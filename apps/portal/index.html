@@ -23,7 +23,8 @@
           "shop": "http://localhost:4200/main.js",
           "chat": "http://localhost:9000/main.js",
           "noop-zone": "http://localhost:8000/main.js",
-          "elements": "http://localhost:4000/main.js"
+          "elements": "http://localhost:4000/main.js",
+          "parcel": "http://localhost:4400/main.js"
         }
       }
     </script>
@@ -74,6 +75,12 @@
           name: 'elements',
           app: () => System.import('elements'),
           activeWhen: location => location.pathname.startsWith('/elements'),
+        });
+
+        registerApplication({
+          name: 'parcel',
+          app: () => System.import('parcel'),
+          activeWhen: location => location.pathname.startsWith('/parcel'),
         });
 
         start();

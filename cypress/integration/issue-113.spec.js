@@ -18,6 +18,10 @@ describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
       // `router.navigateByUrl('/rooms').then(() => router.navigateByUrl('/groups'))`.
       cy.get('button.try-to-reproduce-113-issue')
         .click()
+        // The `wait` command is used because Cypress on the CI level is slower than locally,
+        // basically it clicks the `<button>` and does assertion immediately, but `single-spa`
+        // hasn't loaded the `/chat/groups` chunk yet.
+        .wait(Cypress.env('timeout'))
         .then(() => {
           // We have navigated 2 times: to `/rooms` and back to `/groups`.
           // Let's ensure that the queue was flushed and it's not stuck.
@@ -32,7 +36,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
 
           // GitHub Actions CI is not as fast as the local setup, there can be some network delays,
           // timeout is used only for this purpose.
-          cy.get('shop-root', { timeout: 5000 }).should('exist');
+          cy.get('shop-root', { timeout: Cypress.env('timeout') }).should('exist');
         });
     });
   });
@@ -49,7 +53,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/113', () => {
           urls.push(url);
         });
 
-        cy.get('button.try-to-reproduce-113-issue', { timeout: 5000 })
+        cy.get('button.try-to-reproduce-113-issue', { timeout: Cypress.env('timeout') })
           .click()
           .then(() => {
             // We have navigated 2 times: to `/rooms` and back to `/groups`.

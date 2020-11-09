@@ -18,4 +18,15 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  // https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
+  const isCI = process.env.CI === 'true';
+
+  // The Cypress on the CI level is slower than locally,
+  // basically it does assertions immediately, but the `single-spa`
+  // hasn't loaded microfrontend yet and the logic hasn't been executed.
+  // `3000` (3 seconds) is a subjectively chosen timeout, since it should be
+  // enough for the CI to handle all network requests.
+  config.env.timeout = isCI ? 3000 : 0;
+  return config;
 };

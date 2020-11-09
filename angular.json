@@ -351,6 +351,77 @@
         }
       }
     },
+    "parcel": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/parcel",
+      "sourceRoot": "apps/parcel/src",
+      "prefix": "single-spa-angular",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "apps/parcel/webpack.config.ts"
+            },
+            "outputPath": "dist/apps/parcel",
+            "index": "apps/parcel/src/index.html",
+            "main": "apps/parcel/src/main.single-spa.ts",
+            "tsConfig": "apps/parcel/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/parcel/src/favicon.ico", "apps/parcel/src/assets"],
+            "styles": ["apps/parcel/src/styles.scss"],
+            "scripts": [],
+            "allowedCommonJsDependencies": ["react", "react-dom"]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/parcel/src/environments/environment.ts",
+                  "with": "apps/parcel/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "parcel:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "parcel:build:production"
+            }
+          }
+        }
+      }
+    },
     "single-spa-angular": {
       "projectType": "library",
       "root": "libs/single-spa-angular",

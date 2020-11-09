@@ -47,6 +47,7 @@
     "serve:app:navbar": "ng s navbar --disable-host-check --port 4300 --deploy-url http://localhost:4300/ --live-reload false",
     "serve:app:noop-zone": "ng s noop-zone --disable-host-check --port 8000 --deploy-url http://localhost:8000/ --live-reload false",
     "serve:app:elements": "ng s elements --disable-host-check --port 4000 --deploy-url http://localhost:4000/ --live-reload false",
+    "serve:app:parcel": "ng s parcel --disable-host-check --port 4400 --deploy-url http://localhost:4400/ --live-reload false",
     "serve:app:portal": "serve apps/portal -s -l 8080",
     "serve:all": "concurrently yarn:serve:app:*",
     "// - INTEGRATION BUILDS": "Build apps that are required for E2E testing #requires yarn install:integration",
@@ -55,6 +56,7 @@
     "build:app:navbar": "ng build navbar --prod --deploy-url http://localhost:4300/",
     "build:app:noop-zone": "ng build noop-zone --prod --deploy-url http://localhost:8000/",
     "build:app:elements": "ng build elements --prod --deploy-url http://localhost:4000/",
+    "build:app:parcel": "ng build parcel --prod --deploy-url http://localhost:4400/",
     "build:all": "concurrently yarn:build:app:*",
     "// - APPS": "Serve apps that are required for E2E testing #requires yarn build:integration",
     "start:all": "concurrently -n w: yarn:start:app:*",
@@ -63,6 +65,7 @@
     "start:app:navbar": "serve dist/apps/navbar -s -l 4300 --cors",
     "start:app:noop-zone": "serve dist/apps/noop-zone -s -l 8000 --cors",
     "start:app:elements": "serve dist/apps/elements -s -l 4000 --cors",
+    "start:app:parcel": "serve dist/apps/parcel -s -l 4400 --cors",
     "start:app:portal": "yarn serve:app:portal",
     "// - E2E": "E2E testing",
     "cy:open": "cypress open --config integrationFolder=cypress/integration",
@@ -99,6 +102,9 @@
     "@types/jest": "^26.0.10",
     "@types/karma": "^5.0.1",
     "@types/node": "^11.11.3",
+    "@types/react": "^16.9.56",
+    "@types/react-dom": "^16.9.9",
+    "@types/single-spa-react": "^2.12.0",
     "@types/webpack-dev-server": "^3.11.1",
     "@types/webpack-merge": "^4.1.3",
     "@typescript-eslint/eslint-plugin": "^1.4.2",
@@ -113,9 +119,12 @@
     "lint-staged": "^10.1.3",
     "ng-packagr": "^10.0.4",
     "prettier": "^2.0.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "rimraf": "^2.6.2",
     "rxjs": "~6.5.5",
     "serve": "^11.3.0",
+    "single-spa-react": "^3.1.0",
     "start-server-and-test": "^1.11.0",
     "ts-jest": "^26.2.0",
     "tsickle": "^0.39.1",
@@ -142,9 +151,6 @@
     }
   },
   "lint-staged": {
-    "*.{ts,html,scss,md,yml}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{ts,html,scss,md,yml}": ["prettier --write"]
   }
 }

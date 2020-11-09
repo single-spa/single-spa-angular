@@ -7,6 +7,29 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrimaryNavComponent {
+  links = [
+    {
+      label: 'Shop',
+      url: '/shop',
+    },
+    {
+      label: 'Chat',
+      url: '/chat',
+    },
+    {
+      label: 'Noop zone application',
+      url: '/noop-zone',
+    },
+    {
+      label: 'Custom element',
+      url: '/elements',
+    },
+    {
+      label: 'Angular parcel',
+      url: '/parcel',
+    },
+  ];
+
   constructor(private router: Router) {}
 
   route(url: string): void {
