@@ -48,10 +48,10 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
   ngOnInit(): void {
     this.scheduleTask(Action.Mount, () => {
       if (this.mountParcel === null) {
-        throw new Error(`
-				  <parcel> was not passed a [mountParcel] binding.
-				  If you are using <parcel> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <parcel> as a [mountParcel] binding
-				`);
+        const message =
+          '<parcel> was not passed a [mountParcel] binding.\n' +
+          'If you are using <parcel> within a module that is not a single-spa application, you will need to either (1) import mountRootParcel from single-spa or (2) use the `mountParcel` prop provided to single-spa applications. One of those two should be passed into <parcel> as a [mountParcel] binding';
+        throw new Error(message);
       }
 
       this.wrapper = document.createElement(this.wrapWith);
