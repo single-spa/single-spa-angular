@@ -7,7 +7,7 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
 const routes: Routes = [{ path: '**', component: EmptyRouteComponent }];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
   providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
 })

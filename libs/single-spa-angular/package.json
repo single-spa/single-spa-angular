@@ -25,7 +25,8 @@
   "sideEffects": false,
   "peerDependencies": {
     "@angular/core": ">=9",
-    "single-spa": ">=4.0.0"
+    "single-spa": ">=4.0.0",
+    "json5": "*"
   },
   "ngPackage": {
     "lib": {

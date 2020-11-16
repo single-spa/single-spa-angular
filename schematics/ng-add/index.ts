@@ -21,6 +21,9 @@ import {
 } from '@schematics/angular/utility/workspace-models';
 
 import { normalize, join } from 'path';
+// The JSON5 format supports comments and all Angular projects,
+// starting from version 10, contain comments in `tsconfig` files.
+import * as JSON5 from 'json5';
 
 import { addScripts } from './add-scripts';
 import { Schema as NgAddOptions } from './schema';
@@ -29,12 +32,6 @@ import {
   getSingleSpaAngularDependency,
   getAngularBuildersCustomWebpackDependency,
 } from './dependencies';
-import {
-  findPropertyInAstObject,
-  insertPropertyInAstObjectInOrder,
-  removePropertyInAstObject,
-} from '@schematics/angular/utility/json-utils';
-import { JsonParseMode, parseJsonAst } from '@angular-devkit/core';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
@@ -163,30 +160,23 @@ function updateProjectNewAngular(
 }
 
 function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
-  const tsConfigFileName = clientProject.architect!.build!.options.tsConfig;
-  const buffer = host.read(tsConfigFileName);
-  if (!buffer) {
+  const tsConfigPath = clientProject.architect!.build!.options.tsConfig;
+  const buffer: Buffer | null = host.read(tsConfigPath);
+
+  if (buffer === null) {
     return;
   }
 
-  const tsCfgAst = parseJsonAst(buffer.toString(), JsonParseMode.Loose);
-  if (tsCfgAst.kind !== 'object') {
-    return;
-  }
+  const tsConfig = JSON5.parse(buffer.toString());
 
-  const files = findPropertyInAstObject(tsCfgAst, 'files');
-  if (files && files.kind !== 'array') {
+  if (!Array.isArray(tsConfig.files)) {
     return;
   }
 
   // The "files" property will only contain path to `main.single-spa.ts` file,
   // because we remove `polyfills` from Webpack `entry` property.
-  const recorder = host.beginUpdate(tsConfigFileName);
-  if (files) {
-    removePropertyInAstObject(recorder, tsCfgAst, 'files');
-  }
-  insertPropertyInAstObjectInOrder(recorder, tsCfgAst, 'files', ['src/main.single-spa.ts'], 2);
-  host.commitUpdate(recorder);
+  tsConfig.files = ['src/main.single-spa.ts'];
+  host.overwrite(tsConfigPath, JSON5.stringify(tsConfig, null, 2));
 }
 
 export function addNPMScripts(options: NgAddOptions): Rule {

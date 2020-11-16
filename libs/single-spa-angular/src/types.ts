@@ -15,7 +15,7 @@ export interface SingleSpaAngularOptions<T = {}> extends BaseSingleSpaAngularOpt
 }
 
 export interface BootstrappedSingleSpaAngularOptions extends SingleSpaAngularOptions {
-  bootstrappedModule: NgModuleRef<any>;
+  bootstrappedModule: NgModuleRef<any> | null;
   // All below properties can be optional in case of
   // `SingleSpaAngularOpts.NgZone` is a `noop` string and not an `NgZone` class.
   bootstrappedNgZone?: NgZone;

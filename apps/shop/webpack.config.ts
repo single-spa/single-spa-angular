@@ -1,3 +1,3 @@
 import singleSpaAngularWebpack from '../../libs/single-spa-angular/webpack';
 
-export default (config, options) => singleSpaAngularWebpack(config, options);
+export default (config: any, options: any) => singleSpaAngularWebpack(config, options);
