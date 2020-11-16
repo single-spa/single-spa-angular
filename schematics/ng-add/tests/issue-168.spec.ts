@@ -1,5 +1,4 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import { config } from 'rxjs';
 
 import { createTestRunner } from './utils';
 
