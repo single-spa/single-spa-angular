@@ -195,7 +195,7 @@ async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any)
   options.bootstrappedModule!.destroy();
   options.bootstrappedModule = null;
 
-  // TODO: this is an issue anymore and should be removed in the future.
+  // TODO: this is not an issue anymore and should be removed in the future.
   removeApplicationFromDOMIfIvyEnabled(options, props);
 }
 

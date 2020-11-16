@@ -1,4 +1,5 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { config } from 'rxjs';
 
 import { createTestRunner } from './utils';
 
@@ -54,8 +55,8 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Arrange
     expect(Object.keys(configurations).length).toBe(3);
 
-    for (const configuration of configurations) {
-      expect(configuration.outputHashing).toBe('none');
+    for (let i = 0; i < configurations.length; i++) {
+      expect(configurations[i].outputHashing).toBe('none');
     }
   });
 
@@ -84,8 +85,8 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Arrange
     expect(Object.keys(configurations).length).toBe(3);
 
-    for (const configuration of configurations) {
-      expect(configuration.outputHashing).toBe('none');
+    for (let i = 0; i < configurations.length; i++) {
+      expect(configurations[i].outputHashing).toBe('none');
     }
   });
 });
