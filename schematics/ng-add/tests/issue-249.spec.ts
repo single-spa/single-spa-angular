@@ -1,7 +1,7 @@
-import { JsonParseMode, parseJsonAst, normalize } from '@angular-devkit/core';
+import { normalize } from '@angular-devkit/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { getFileContent } from '@schematics/angular/utility/test';
-import { findPropertyInAstObject } from '@schematics/angular/utility/json-utils';
+import * as JSON5 from 'json5';
 
 import { Schema as NgAddOptions } from '../schema';
 import { createWorkspace, createTestRunner } from './utils';
@@ -47,32 +47,21 @@ describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
       .toPromise();
 
     const expectedTsConfigPath = normalize('projects/ss-angular-cli-app/tsconfig.app.json');
-    const buffer = appTree.read(expectedTsConfigPath);
-    if (!buffer) {
+    const buffer: Buffer | null = appTree.read(expectedTsConfigPath);
+    if (buffer === null) {
       throw new Error('Failed to read the tsconfig');
     }
 
-    const tsConfigAst = parseJsonAst(buffer.toString(), JsonParseMode.Loose);
-    if (tsConfigAst.kind != 'object') {
-      throw new Error(`Root content of '${expectedTsConfigPath}' is not an object.`);
-    }
+    const tsConfig = JSON5.parse(buffer.toString());
 
-    // We verify that we didn't erased the comment
-    if (tsConfigAst.comments === undefined) {
-      throw new Error(`No comment has been found in the '${expectedTsConfigPath}' file.`);
-    }
-    expect(tsConfigAst.comments).toHaveLength(2);
-    expect(tsConfigAst.comments[0].text).toBe(angular10Comment);
-
-    // We verify the files property
-    const files = findPropertyInAstObject(tsConfigAst, 'files');
-    if (!files) {
+    if (!tsConfig.files) {
       throw new Error("'files' field of tsconfig should exist.");
     }
-    if (files.kind !== 'array') {
+
+    if (!Array.isArray(tsConfig.files)) {
       throw new Error("'files' field of tsconfig should be an array.");
     }
 
-    expect(files.value).toStrictEqual(['src/main.single-spa.ts']);
+    expect(tsConfig.files).toStrictEqual(['src/main.single-spa.ts']);
   });
 });

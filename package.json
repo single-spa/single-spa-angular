@@ -73,7 +73,7 @@
     "cy:run:chrome": "yarn cy:run --browser chrome",
     "cy:run:chromium": "yarn cy:run --browser chromium",
     "// - CI": "CI testing #requires yarn start:all",
-    "test:ci": "jest --runInBand",
+    "test:ci": "jest --runInBand --silent",
     "test:ci:integration": "yarn start-test start:all 8080 cy:run"
   },
   "devDependencies": {
@@ -116,6 +116,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.0",
     "husky": "^4.2.5",
     "jest": "^26.4.1",
+    "json5": "^2.1.3",
     "lint-staged": "^10.1.3",
     "ng-packagr": "^11.0.2",
     "prettier": "^2.0.4",
