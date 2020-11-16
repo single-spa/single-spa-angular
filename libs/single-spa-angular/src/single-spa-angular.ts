@@ -19,6 +19,7 @@ const defaultOptions = {
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   AnimationEngine: undefined,
   updateFunction: () => Promise.resolve(),
+  bootstrappedModule: null,
 };
 
 export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): LifeCycles<T> {
@@ -154,7 +155,7 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
 async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
   if (options.Router) {
     // Workaround for https://github.com/angular/angular/issues/19079
-    const router = options.bootstrappedModule.injector.get(options.Router);
+    const router = options.bootstrappedModule!.injector.get(options.Router);
     router.dispose();
   }
 
@@ -187,15 +188,14 @@ async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any)
     that cannot be imported and is not provided to the dependency injector. So, instead, we get its wrapper class, AnimationEngine, and then
     access its private variable reference to the TransitionAnimationEngine so that we can call flush.
     */
-    const animationEngine = options.bootstrappedModule.injector.get(options.AnimationEngine);
+    const animationEngine = options.bootstrappedModule!.injector.get(options.AnimationEngine);
     animationEngine._transitionEngine.flush();
   }
 
-  options.bootstrappedModule.destroy();
-  delete options.bootstrappedModule;
+  options.bootstrappedModule!.destroy();
+  options.bootstrappedModule = null;
 
-  // This is an issue. Issue has been created and Angular team is working on the fix:
-  // https://github.com/angular/angular/issues/36449
+  // TODO: this is an issue anymore and should be removed in the future.
   removeApplicationFromDOMIfIvyEnabled(options, props);
 }
 
