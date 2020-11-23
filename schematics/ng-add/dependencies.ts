@@ -33,16 +33,13 @@ export function getSingleSpaAngularDependency(): NodeDependency {
   };
 }
 
-/**
- * We have to install `@angular-builders/custom-webpack` version compatible with the current
- * version of Angular. If Angular is 8 then `custom-webpack@8.4.1` has to be installed.
- */
 export function getAngularBuildersCustomWebpackDependency(): NodeDependency {
-  const { VERSION } = require('@angular/core');
-
   return {
     name: '@angular-builders/custom-webpack',
-    version: `^${VERSION.major}`,
+    // Relying on the current major version of Angular is wrong.
+    // We have to install the `latest` version because we cannot know
+    // when the new version will be published.
+    version: 'latest',
     overwrite: false,
     type: NodeDependencyType.Dev,
   };
