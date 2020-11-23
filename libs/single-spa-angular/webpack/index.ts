@@ -131,7 +131,7 @@ function getLibraryName(options: Options | undefined): string {
 }
 
 function getProjectNameFromAngularJson(options: Options | undefined): string | null | undefined {
-  const angularJsonPath = findUp(['angular.json', '.angular.json'], process.cwd());
+  const angularJsonPath = findUp(['angular.json', '.angular.json', 'workspace.json'], process.cwd());
   if (!angularJsonPath) return null;
 
   const angularJson = JSON.parse(fs.readFileSync(angularJsonPath, 'utf8'));
