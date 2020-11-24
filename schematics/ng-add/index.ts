@@ -23,7 +23,7 @@ import {
 import { normalize, join } from 'path';
 // The JSON5 format supports comments and all Angular projects,
 // starting from version 10, contain comments in `tsconfig` files.
-import * as JSON5 from 'json5';
+import { parse } from 'json5';
 
 import { addScripts } from './add-scripts';
 import { Schema as NgAddOptions } from './schema';
@@ -167,7 +167,7 @@ function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
     return;
   }
 
-  const tsConfig = JSON5.parse(buffer.toString());
+  const tsConfig = parse(buffer.toString());
 
   if (!Array.isArray(tsConfig.files)) {
     return;
@@ -176,7 +176,7 @@ function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
   // The "files" property will only contain path to `main.single-spa.ts` file,
   // because we remove `polyfills` from Webpack `entry` property.
   tsConfig.files = ['src/main.single-spa.ts'];
-  host.overwrite(tsConfigPath, JSON5.stringify(tsConfig, null, 2));
+  host.overwrite(tsConfigPath, JSON.stringify(tsConfig, null, 2));
 }
 
 export function addNPMScripts(options: NgAddOptions): Rule {
