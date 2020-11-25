@@ -1,3 +1,6 @@
+import * as https from 'https';
+import { IncomingMessage } from 'http';
+import { VERSION } from '@angular/core';
 import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/dependencies';
 
 interface PackageJson {
@@ -33,14 +36,61 @@ export function getSingleSpaAngularDependency(): NodeDependency {
   };
 }
 
-export function getAngularBuildersCustomWebpackDependency(): NodeDependency {
+export async function getAngularBuildersCustomWebpackDependency(): Promise<NodeDependency> {
   return {
     name: '@angular-builders/custom-webpack',
-    // Relying on the current major version of Angular is wrong.
-    // We have to install the `latest` version because we cannot know
-    // when the new version will be published.
-    version: 'latest',
     overwrite: false,
     type: NodeDependencyType.Dev,
+    version: await resolveCustomWebpackVersion(),
   };
+}
+
+async function resolveCustomWebpackVersion(): Promise<string> {
+  let version: string;
+
+  try {
+    const versions: string[] = await getCustomWebpackVersions();
+    // We do `filter` because there can be `beta` versions, thus `^11`
+    // will not work in that case.
+    const compatibleMajorVersions: string[] = versions.filter(version =>
+      version.startsWith(VERSION.major),
+    );
+
+    version = compatibleMajorVersions.pop() || 'latest';
+  } catch {
+    // We could actually initialize version with the `latest` value,
+    // but let's be more imperative and fallback to the `latest` value
+    // if any exception has occured previously.
+    version = 'latest';
+  }
+
+  return version;
+}
+
+function getCustomWebpackVersions(): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const request = https.get(
+      {
+        protocol: 'https:',
+        hostname: 'registry.npmjs.com',
+        path: '/@angular-builders/custom-webpack',
+      },
+      (response: IncomingMessage) => {
+        const chunks: Buffer[] = [];
+
+        response
+          .on('error', reject)
+          .on('data', chunk => {
+            chunks.push(chunk);
+          })
+          .on('end', () => {
+            const response = JSON.parse(`${Buffer.concat(chunks)}`);
+            const versions: string[] = Object.keys(response.versions);
+            resolve(versions);
+          });
+      },
+    );
+
+    request.on('error', reject).end();
+  });
 }
