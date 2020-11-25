@@ -181,6 +181,7 @@ function resolveDevtool(options: Options | undefined): boolean | string {
 }
 
 function mergeConfigs(config: object, singleSpaConfig: object): any {
+  // eslint-disable-next-line
   const webpackMerge = require('webpack-merge');
 
   try {
