@@ -1,4 +1,3 @@
-import * as webpackMerge from 'webpack-merge';
 import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
@@ -49,7 +48,7 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     devtool: resolveDevtool(options),
   };
 
-  const mergedConfig: any = webpackMerge.smart(config, singleSpaConfig);
+  const mergedConfig = mergeConfigs(config, singleSpaConfig);
 
   if (mergedConfig.output.libraryTarget === 'system') {
     // Don't used named exports when exporting in System.register format.
@@ -131,7 +130,10 @@ function getLibraryName(options: Options | undefined): string {
 }
 
 function getProjectNameFromAngularJson(options: Options | undefined): string | null | undefined {
-  const angularJsonPath = findUp(['angular.json', '.angular.json', 'workspace.json'], process.cwd());
+  const angularJsonPath = findUp(
+    ['angular.json', '.angular.json', 'workspace.json'],
+    process.cwd(),
+  );
   if (!angularJsonPath) return null;
 
   const angularJson = JSON.parse(fs.readFileSync(angularJsonPath, 'utf8'));
@@ -175,5 +177,17 @@ function resolveDevtool(options: Options | undefined): boolean | string {
     // If options are not provided then we shouldn't enable source maps since
     // it can worsen the build time and the developer will not even know about it.
     return false;
+  }
+}
+
+function mergeConfigs(config: object, singleSpaConfig: object): any {
+  const webpackMerge = require('webpack-merge');
+
+  try {
+    // If `merge.smart` is available then it means that Webpack 4 is used.
+    return webpackMerge.smart(config, singleSpaConfig);
+  } catch {
+    // `merge.smart` has been dropped in `webpack-merge@5`.
+    return webpackMerge.default(config, singleSpaConfig);
   }
 }
