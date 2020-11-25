@@ -51,14 +51,14 @@ export default function (options: NgAddOptions): Rule {
 }
 
 export function addDependencies(): Rule {
-  const dependencies: NodeDependency[] = [
+  const dependencies: Array<NodeDependency | Promise<NodeDependency>> = [
     getSingleSpaDependency(),
     getSingleSpaAngularDependency(),
     getAngularBuildersCustomWebpackDependency(),
   ];
 
-  return (tree: Tree, context: SchematicContext) => {
-    for (const dependency of dependencies) {
+  return async (tree: Tree, context: SchematicContext) => {
+    for await (const dependency of dependencies) {
       addPackageJsonDependency(tree, dependency);
       context.logger.info(`Added '${dependency.name}' as a dependency`);
     }
