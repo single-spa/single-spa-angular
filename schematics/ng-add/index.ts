@@ -72,7 +72,6 @@ export function createMainEntry(options: NgAddOptions): Rule {
 
     const templateSource = apply(url('./_files'), [
       applyTemplates({
-        atLeastAngular8: atLeastAngular8(),
         prefix: project.workspace.prefix,
         routing: options.routing,
         usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
@@ -99,12 +98,8 @@ export function updateConfiguration(options: NgAddOptions) {
     }
     const workspacePath = getWorkspacePath(host);
 
-    if (atLeastAngular8()) {
-      updateProjectNewAngular(context, clientProject, project.name);
-      updateTSConfig(host, clientProject);
-    } else {
-      updateProjectOldAngular(context, clientProject, project);
-    }
+    updateProjectNewAngular(context, clientProject, project.name);
+    updateTSConfig(host, clientProject);
 
     host.overwrite(workspacePath, JSON.stringify(workspace, null, 2));
 
@@ -113,26 +108,6 @@ export function updateConfiguration(options: NgAddOptions) {
     context.logger.info(clientProject.architect.build.builder);
     return host;
   };
-}
-
-function updateProjectOldAngular(
-  context: SchematicContext,
-  clientProject: WorkspaceProject,
-  project: any,
-) {
-  context.logger.info('Using single-spa-angular builder for Angular versions before 8');
-
-  // Copy configuration from build architect
-  clientProject!.architect!['single-spa'] = clientProject.architect!.build;
-  clientProject!.architect!['single-spa'].builder = 'single-spa-angular:build';
-  clientProject!.architect![
-    'single-spa'
-  ].options.main = `${project.workspace.sourceRoot}/main.single-spa.ts`;
-
-  // Copy configuration from the serve architect
-  clientProject.architect!['single-spa-serve'] = clientProject.architect!.serve;
-  clientProject.architect!['single-spa-serve'].builder = 'single-spa-angular:dev-server';
-  clientProject.architect!['single-spa-serve'].options.browserTarget = `${project.name}:single-spa`;
 }
 
 function updateProjectNewAngular(
@@ -211,11 +186,6 @@ function getClientProject(
   }
 
   return { name: project!, workspace: clientProject };
-}
-
-function atLeastAngular8(): boolean {
-  const { VERSION } = require('@angular/core');
-  return Number(VERSION.major) >= 8;
 }
 
 function updateConfigurationsAndDisableOutputHashing(clientProject: WorkspaceProject): void {
