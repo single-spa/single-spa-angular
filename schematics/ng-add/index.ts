@@ -20,7 +20,7 @@ import {
   BrowserBuilderOptions,
 } from '@schematics/angular/utility/workspace-models';
 
-import { normalize, join } from 'path';
+import { join, normalize } from '@angular-devkit/core';
 // The JSON5 format supports comments and all Angular projects,
 // starting from version 10, contain comments in `tsconfig` files.
 import { parse } from 'json5';
@@ -146,9 +146,12 @@ function updateProjectNewAngular(
   const browserBuilder = '@angular-builders/custom-webpack:browser' as Builders.Browser;
 
   buildTarget.builder = browserBuilder;
-  buildTarget.options.main = join(clientProject.root, 'src/main.single-spa.ts');
+  buildTarget.options.main = join(
+    normalize(clientProject.root),
+    normalize('src/main.single-spa.ts'),
+  );
   (buildTarget.options as CustomWebpackBuilderOptions).customWebpackConfig = {
-    path: join(clientProject.root, 'extra-webpack.config.js'),
+    path: join(normalize(clientProject.root), 'extra-webpack.config.js'),
     libraryName: projectName,
     libraryTarget: 'umd',
   };
@@ -175,7 +178,7 @@ function updateTSConfig(host: Tree, clientProject: WorkspaceProject): void {
 
   // The "files" property will only contain path to `main.single-spa.ts` file,
   // because we remove `polyfills` from Webpack `entry` property.
-  tsConfig.files = ['src/main.single-spa.ts'];
+  tsConfig.files = [normalize('src/main.single-spa.ts')];
   host.overwrite(tsConfigPath, JSON.stringify(tsConfig, null, 2));
 }
 
