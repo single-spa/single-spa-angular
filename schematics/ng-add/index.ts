@@ -12,7 +12,6 @@ import {
   SchematicsException,
 } from '@angular-devkit/schematics';
 
-import { getWorkspace, getWorkspacePath } from '@schematics/angular/utility/config';
 import { addPackageJsonDependency, NodeDependency } from '@schematics/angular/utility/dependencies';
 import {
   WorkspaceProject,
@@ -32,6 +31,7 @@ import {
   getSingleSpaAngularDependency,
   getAngularBuildersCustomWebpackDependency,
 } from './dependencies';
+import { getWorkspace, getWorkspacePath } from './workspace';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
   customWebpackConfig: {
