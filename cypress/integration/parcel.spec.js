@@ -9,6 +9,8 @@ describe('Angular parcel', () => {
       .should('exist')
       .get('parcel-root parcel img')
       .invoke('attr', 'alt')
-      .should('eq', 'React logo');
+      .should('eq', 'React logo')
+      .get('parcel-root parcel h1')
+      .contains('Hola world');
   });
 });

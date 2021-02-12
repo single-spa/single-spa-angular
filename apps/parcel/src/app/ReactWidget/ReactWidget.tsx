@@ -4,7 +4,7 @@ import singleSpaReact from 'single-spa-react';
 
 const ReactLogo = React.lazy(() => import('./ReactLogo'));
 
-class ReactWidget extends React.Component {
+class ReactWidget extends React.Component<ReactWidgetProps> {
   componentDidMount(): void {
     console.log('ReactWidget.componentDidMount()');
   }
@@ -17,6 +17,7 @@ class ReactWidget extends React.Component {
     return (
       <React.Suspense fallback={<div>Loading ReactLogo...</div>}>
         <ReactLogo />
+        <h1>{this.props.hello} world</h1>
       </React.Suspense>
     );
   }
@@ -27,3 +28,7 @@ export const config = singleSpaReact({
   ReactDOM,
   rootComponent: ReactWidget,
 });
+
+interface ReactWidgetProps {
+  hello: string;
+}

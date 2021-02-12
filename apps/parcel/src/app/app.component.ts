@@ -11,4 +11,7 @@ import { config } from './ReactWidget/ReactWidget';
 export class AppComponent {
   config = config;
   mountRootParcel = mountRootParcel;
+  customProps = {
+    hello: 'Hola',
+  };
 }
