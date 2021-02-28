@@ -25,7 +25,7 @@
             "aot": true,
             "assets": ["apps/shop/src/favicon.ico", "apps/shop/src/assets"],
             "styles": ["apps/shop/src/styles.scss"],
-            "scripts": []
+            "deployUrl": "http://localhost:4200/"
           },
           "configurations": {
             "production": {
@@ -95,7 +95,7 @@
             "aot": true,
             "assets": ["apps/chat/src/favicon.ico", "apps/chat/src/assets"],
             "styles": ["apps/chat/src/styles.scss"],
-            "scripts": []
+            "deployUrl": "http://localhost:9000/"
           },
           "configurations": {
             "production": {
@@ -165,7 +165,7 @@
             "aot": true,
             "assets": ["apps/navbar/src/favicon.ico", "apps/navbar/src/assets"],
             "styles": ["apps/navbar/src/styles.scss"],
-            "scripts": []
+            "deployUrl": "http://localhost:4300/"
           },
           "configurations": {
             "production": {
@@ -235,7 +235,7 @@
             "aot": true,
             "assets": ["apps/elements/src/favicon.ico", "apps/elements/src/assets"],
             "styles": ["apps/elements/src/styles.scss"],
-            "scripts": []
+            "deployUrl": "http://localhost:4000/"
           },
           "configurations": {
             "production": {
@@ -305,7 +305,7 @@
             "aot": true,
             "assets": ["apps/noop-zone/src/favicon.ico", "apps/noop-zone/src/assets"],
             "styles": ["apps/noop-zone/src/styles.scss"],
-            "scripts": []
+            "deployUrl": "http://localhost:8000/"
           },
           "configurations": {
             "production": {
@@ -375,7 +375,7 @@
             "aot": true,
             "assets": ["apps/parcel/src/favicon.ico", "apps/parcel/src/assets"],
             "styles": ["apps/parcel/src/styles.scss"],
-            "scripts": [],
+            "deployUrl": "http://localhost:4400/",
             "allowedCommonJsDependencies": ["react", "react-dom"]
           },
           "configurations": {
