@@ -36,7 +36,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/341', () => {
     // Assert
     expect(
       messages.find(message =>
-        message.includes('Warning: Since the routing is enabled an additional manual'),
+        message.includes('Warning: Since routing is enabled, an additional manual'),
       ),
     ).toBeTruthy();
   });
