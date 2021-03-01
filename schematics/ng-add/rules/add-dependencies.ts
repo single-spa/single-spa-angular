@@ -1,7 +1,27 @@
 import * as https from 'https';
 import { IncomingMessage } from 'http';
 import { VERSION } from '@angular/core';
-import { NodeDependencyType, NodeDependency } from '@schematics/angular/utility/dependencies';
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import {
+  addPackageJsonDependency,
+  NodeDependency,
+  NodeDependencyType,
+} from '@schematics/angular/utility/dependencies';
+
+export function addDependencies(): Rule {
+  const dependencies: Array<NodeDependency | Promise<NodeDependency>> = [
+    getSingleSpaDependency(),
+    getSingleSpaAngularDependency(),
+    getAngularBuildersCustomWebpackDependency(),
+  ];
+
+  return async (tree: Tree, context: SchematicContext) => {
+    for await (const dependency of dependencies) {
+      addPackageJsonDependency(tree, dependency);
+      context.logger.info(`Added '${dependency.name}' as a dependency`);
+    }
+  };
+}
 
 interface PackageJson {
   version: string;
@@ -13,9 +33,9 @@ interface PackageJson {
   };
 }
 
-const { version, peerDependencies, dependencies }: PackageJson = require('../../package.json');
+const { version, peerDependencies, dependencies }: PackageJson = require('../../../package.json');
 
-export function getSingleSpaDependency(): NodeDependency {
+function getSingleSpaDependency(): NodeDependency {
   const singleSpaVersion =
     peerDependencies?.['single-spa'] || dependencies?.['single-spa'] || 'latest';
 
@@ -27,7 +47,7 @@ export function getSingleSpaDependency(): NodeDependency {
   };
 }
 
-export function getSingleSpaAngularDependency(): NodeDependency {
+function getSingleSpaAngularDependency(): NodeDependency {
   return {
     name: 'single-spa-angular',
     version,
@@ -36,7 +56,7 @@ export function getSingleSpaAngularDependency(): NodeDependency {
   };
 }
 
-export async function getAngularBuildersCustomWebpackDependency(): Promise<NodeDependency> {
+async function getAngularBuildersCustomWebpackDependency(): Promise<NodeDependency> {
   return {
     name: '@angular-builders/custom-webpack',
     overwrite: false,
