@@ -1,6 +1,21 @@
-import { Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 
-const DEFAULT_PORT = 4200;
+import { Schema as NgAddOptions } from '../schema';
+
+export function addNPMScripts(options: NgAddOptions): Rule {
+  return (tree: Tree) => {
+    const pkgPath = '/package.json';
+    const buffer = tree.read(pkgPath);
+
+    if (buffer === null) {
+      throw new SchematicsException('Could not find package.json');
+    }
+
+    addScripts(tree, pkgPath, JSON.parse(buffer.toString()), options.project);
+  };
+}
+
+const defaultPort = 4200;
 
 interface Scripts {
   [script: string]: string;
@@ -26,12 +41,7 @@ interface Scripts {
  * - build:single-spa:second-cool-app
  * - serve:single-spa:second-cool-app
  */
-export function addScripts(
-  tree: Tree,
-  pkgPath: string,
-  pkg: any,
-  project: string | undefined,
-): void {
+function addScripts(tree: Tree, pkgPath: string, pkg: any, project: string | undefined): void {
   if (project) {
     addScriptsForTheSpecificProject(pkg, project);
   } else {
@@ -58,13 +68,11 @@ function addScriptsForTheSpecificProject(pkg: any, project: string): void {
  * that he has a single project in his workspace and we want to provide a default script.
  */
 function addDefaultScripts(pkg: any): void {
-  pkg.scripts[
-    'build:single-spa'
-  ] = `ng build --prod --deploy-url http://localhost:${DEFAULT_PORT}/`;
+  pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:${defaultPort}/`;
 
   pkg.scripts[
     'serve:single-spa'
-  ] = `ng s --disable-host-check --port ${DEFAULT_PORT} --deploy-url http://localhost:${DEFAULT_PORT}/ --live-reload false`;
+  ] = `ng s --disable-host-check --port ${defaultPort} --deploy-url http://localhost:${defaultPort}/ --live-reload false`;
 }
 
 function parseExistingScriptsAndChoosePort(scripts: Scripts): number {
@@ -73,7 +81,7 @@ function parseExistingScriptsAndChoosePort(scripts: Scripts): number {
   const ports: number[] = getPortsFromCollectedScripts(collectedScripts);
 
   if (ports.length === 0) {
-    return DEFAULT_PORT;
+    return defaultPort;
   }
 
   const lastPort = ports.pop();
