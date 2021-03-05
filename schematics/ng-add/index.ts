@@ -17,7 +17,7 @@ export default function (options: NgAddOptions): Rule {
       addDependencies(),
       createMainEntry(project, options),
       updateConfiguration(workspace, project, host, options),
-      addNPMScripts(options),
+      addNPMScripts(workspace, project, host, options),
       showWarningIfRoutingIsEnabled(options),
     ]);
   };

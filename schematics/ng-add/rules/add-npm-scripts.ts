@@ -1,8 +1,15 @@
+import { workspaces } from '@angular-devkit/core';
 import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 
+import { getBuildTarget } from './utils';
 import { Schema as NgAddOptions } from '../schema';
 
-export function addNPMScripts(options: NgAddOptions): Rule {
+export function addNPMScripts(
+  workspace: workspaces.WorkspaceDefinition,
+  project: workspaces.ProjectDefinition,
+  host: workspaces.WorkspaceHost,
+  options: NgAddOptions,
+): Rule {
   return (tree: Tree) => {
     const pkgPath = '/package.json';
     const buffer = tree.read(pkgPath);
@@ -11,14 +18,9 @@ export function addNPMScripts(options: NgAddOptions): Rule {
       throw new SchematicsException('Could not find package.json');
     }
 
-    addScripts(tree, pkgPath, JSON.parse(buffer.toString()), options.project);
+    updateDeployUrl(workspace, project, host, options.port!);
+    addScripts(tree, pkgPath, JSON.parse(buffer.toString()), options);
   };
-}
-
-const defaultPort = 4200;
-
-interface Scripts {
-  [script: string]: string;
 }
 
 /**
@@ -41,77 +43,43 @@ interface Scripts {
  * - build:single-spa:second-cool-app
  * - serve:single-spa:second-cool-app
  */
-function addScripts(tree: Tree, pkgPath: string, pkg: any, project: string | undefined): void {
-  if (project) {
-    addScriptsForTheSpecificProject(pkg, project);
+function addScripts(tree: Tree, pkgPath: string, pkg: any, options: NgAddOptions): void {
+  if (options.project) {
+    addScriptsForTheSpecificProject(pkg, options.project, options.port!);
   } else {
-    addDefaultScripts(pkg);
+    addDefaultScripts(pkg, options.port!);
   }
 
   tree.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
-function addScriptsForTheSpecificProject(pkg: any, project: string): void {
-  const port = parseExistingScriptsAndChoosePort(pkg.scripts);
-
-  pkg.scripts[
-    `build:single-spa:${project}`
-  ] = `ng build ${project} --prod --deploy-url http://localhost:${port}/`;
-
+function addScriptsForTheSpecificProject(pkg: any, project: string, port: number): void {
+  pkg.scripts[`build:single-spa:${project}`] = `ng build ${project} --prod`;
   pkg.scripts[
     `serve:single-spa:${project}`
-  ] = `ng s --project ${project} --disable-host-check --port ${port} --deploy-url http://localhost:${port}/ --live-reload false`;
+  ] = `ng s --project ${project} --disable-host-check --port ${port} --live-reload false`;
 }
 
 /**
  * In that case the user didn't provide any `--project` argument, that probably means
  * that he has a single project in his workspace and we want to provide a default script.
  */
-function addDefaultScripts(pkg: any): void {
-  pkg.scripts['build:single-spa'] = `ng build --prod --deploy-url http://localhost:${defaultPort}/`;
-
-  pkg.scripts[
-    'serve:single-spa'
-  ] = `ng s --disable-host-check --port ${defaultPort} --deploy-url http://localhost:${defaultPort}/ --live-reload false`;
+function addDefaultScripts(pkg: any, port: number): void {
+  pkg.scripts['build:single-spa'] = `ng build --prod`;
+  pkg.scripts['serve:single-spa'] = `ng s --disable-host-check --port ${port} --live-reload false`;
 }
 
-function parseExistingScriptsAndChoosePort(scripts: Scripts): number {
-  const collectedScripts: string[] = collectExistingServeSingleSpaScripts(scripts);
-  // For instance `[4200, 4201, 4202]`.
-  const ports: number[] = getPortsFromCollectedScripts(collectedScripts);
-
-  if (ports.length === 0) {
-    return defaultPort;
-  }
-
-  const lastPort = ports.pop();
-  // `4202 + 1 -> 4203` next port for the new project.
-  return lastPort! + 1;
-}
-
-function collectExistingServeSingleSpaScripts(scripts: Scripts): string[] {
-  return Object.keys(scripts)
-    .filter(key => key.startsWith('serve:single-spa'))
-    .map(key => scripts[key]);
-}
-
-function getPortsFromCollectedScripts(collectedScripts: string[]): number[] {
-  return (
-    collectedScripts
-      .reduce((ports: number[], script: string) => {
-        const match: RegExpMatchArray | null = script.match(/--port \d+/);
-
-        if (match !== null) {
-          // `match[0]` will be a string e.g. `--port 4200`,
-          // we split by space to get that `4200`.
-          const [, port] = match[0].split(' ');
-          ports.push(+port);
-        }
-
-        return ports;
-      }, <number[]>[])
-      // Sorts all numbers for ascending order. For example we will get
-      // `[4200, 4201, 4202]` sorted numbers. We will need `4202` to get next port.
-      .sort()
-  );
+/**
+ * @description `--deploy-url` option is deprecated, see: https://angular.io/cli/serve#options
+ * This step updates the `deployUrl` which might be defined in `[project].architect.build.options.deployUrl`.
+ */
+async function updateDeployUrl(
+  workspace: workspaces.WorkspaceDefinition,
+  project: workspaces.ProjectDefinition,
+  host: workspaces.WorkspaceHost,
+  port: number,
+): Promise<void> {
+  const buildTarget = getBuildTarget(project);
+  buildTarget.options!.deployUrl = `http://localhost:${port}/`;
+  await workspaces.writeWorkspace(workspace, host);
 }

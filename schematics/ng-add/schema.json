@@ -22,6 +22,12 @@
       "description": "A value of true means the angular application uses BrowserAnimationsModule",
       "default": false,
       "x-prompt": "Does your application use BrowserAnimationsModule?"
+    },
+    "port": {
+      "type": "number",
+      "description": "Port to listen on",
+      "default": 4200,
+      "x-prompt": "(todo): ask Joel to provide the prompt"
     }
   },
   "required": []
