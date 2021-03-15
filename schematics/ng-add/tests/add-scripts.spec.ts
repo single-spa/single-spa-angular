@@ -47,24 +47,31 @@ describe('ng-add', () => {
       .toPromise();
 
     const tree = await testRunner
-      .runSchematicAsync('ng-add', { project: 'second-cool-app' }, workspaceTree)
+      .runSchematicAsync('ng-add', { project: 'second-cool-app', port: 4201 }, workspaceTree)
       .toPromise();
 
     const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
-    // Assert
-    expect(scripts['build:single-spa:first-cool-app']).toBe(
-      'ng build first-cool-app --prod --deploy-url http://localhost:4200/',
-    );
+    // Assert `package.json` scripts
+    expect(scripts['build:single-spa:first-cool-app']).toBe('ng build first-cool-app --prod');
     expect(scripts['serve:single-spa:first-cool-app']).toBe(
-      'ng s --project first-cool-app --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false',
+      'ng s --project first-cool-app --disable-host-check --port 4200 --live-reload false',
     );
 
-    expect(scripts['build:single-spa:second-cool-app']).toBe(
-      'ng build second-cool-app --prod --deploy-url http://localhost:4201/',
-    );
+    expect(scripts['build:single-spa:second-cool-app']).toBe('ng build second-cool-app --prod');
     expect(scripts['serve:single-spa:second-cool-app']).toBe(
-      'ng s --project second-cool-app --disable-host-check --port 4201 --deploy-url http://localhost:4201/ --live-reload false',
+      'ng s --project second-cool-app --disable-host-check --port 4201 --live-reload false',
+    );
+
+    // Assert `angular.json` `deployUrl` option
+    const config = JSON.parse(tree.get('/angular.json')!.content.toString());
+
+    expect(config.projects['first-cool-app'].architect.build.options.deployUrl).toBe(
+      'http://localhost:4200/',
+    );
+
+    expect(config.projects['second-cool-app'].architect.build.options.deployUrl).toBe(
+      'http://localhost:4201/',
     );
   });
 
@@ -76,22 +83,33 @@ describe('ng-add', () => {
     await testRunner.runSchematicAsync('ng-add', undefined, workspaceTree).toPromise();
 
     const tree = await testRunner
-      .runSchematicAsync('ng-add', { project: 'additional-project' }, workspaceTree)
+      .runSchematicAsync('ng-add', { project: 'additional-project', port: 4201 }, workspaceTree)
       .toPromise();
 
     const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
-    // Arrange
-    expect(scripts['build:single-spa']).toBe('ng build --prod --deploy-url http://localhost:4200/');
+    // Assert `package.json` scripts
+    expect(scripts['build:single-spa']).toBe('ng build --prod');
     expect(scripts['serve:single-spa']).toBe(
-      'ng s --disable-host-check --port 4200 --deploy-url http://localhost:4200/ --live-reload false',
+      'ng s --disable-host-check --port 4200 --live-reload false',
     );
 
     expect(scripts['build:single-spa:additional-project']).toBe(
-      'ng build additional-project --prod --deploy-url http://localhost:4201/',
+      'ng build additional-project --prod',
     );
     expect(scripts['serve:single-spa:additional-project']).toBe(
-      'ng s --project additional-project --disable-host-check --port 4201 --deploy-url http://localhost:4201/ --live-reload false',
+      'ng s --project additional-project --disable-host-check --port 4201 --live-reload false',
+    );
+
+    // Assert `angular.json` `deployUrl` option
+    const config = JSON.parse(tree.get('/angular.json')!.content.toString());
+
+    expect(config.projects['default-project'].architect.build.options.deployUrl).toBe(
+      'http://localhost:4200/',
+    );
+
+    expect(config.projects['additional-project'].architect.build.options.deployUrl).toBe(
+      'http://localhost:4201/',
     );
   });
 });

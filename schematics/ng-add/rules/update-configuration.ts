@@ -3,8 +3,9 @@
 import { parse } from 'json5';
 import { join, normalize, workspaces } from '@angular-devkit/core';
 import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
-import { Tree, SchematicContext, SchematicsException, Rule } from '@angular-devkit/schematics';
+import { Tree, SchematicContext, Rule } from '@angular-devkit/schematics';
 
+import { getBuildTarget } from './utils';
 import { Schema as NgAddOptions } from '../schema';
 
 interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
@@ -22,11 +23,7 @@ export function updateConfiguration(
   options: NgAddOptions,
 ): Rule {
   return async (tree: Tree, context: SchematicContext) => {
-    const buildTarget = project.targets.get('build');
-
-    if (!buildTarget) {
-      throw new SchematicsException(`Project target "build" not found.`);
-    }
+    const buildTarget = getBuildTarget(project);
 
     updateAngularConfiguration(context, project, buildTarget, options);
     updateTSConfig(tree, buildTarget);
@@ -45,15 +42,8 @@ function updateAngularConfiguration(
   options: NgAddOptions,
 ): void {
   context.logger.info('Using @angular-builders/custom-webpack builder.');
-  const root = normalize(project.root);
-  buildTarget.builder = '@angular-builders/custom-webpack:browser';
-  buildTarget.options!.main = join(root, normalize('src/main.single-spa.ts'));
-  ((buildTarget.options as unknown) as CustomWebpackBuilderOptions).customWebpackConfig = {
-    path: join(root, 'extra-webpack.config.js'),
-    libraryName: options.project,
-    libraryTarget: 'umd',
-  };
 
+  updateBuildTarget(buildTarget, project, options);
   updateConfigurationsAndDisableOutputHashing(buildTarget);
 
   const serveTarget = project.targets.get('serve');
@@ -65,6 +55,11 @@ function updateAngularConfiguration(
   serveTarget.builder = '@angular-builders/custom-webpack:dev-server';
 }
 
+/**
+ * @description This steps updates configurations which are defined
+ * in `[project].architect.build.configurations` and sets `outputHashing` to `none`
+ * for each configuration.
+ */
 function updateConfigurationsAndDisableOutputHashing(
   buildTarget: workspaces.TargetDefinition,
 ): void {
@@ -78,6 +73,33 @@ function updateConfigurationsAndDisableOutputHashing(
   }
 }
 
+/**
+ * @description This step resolves the `tsconfig.app.json` path which is defined
+ * in `[project].architect.build.options.tsConfig`, reads the TS config and updates
+ * the `files` property to point to `main.single-spa.ts` file.
+ *
+ * This is how `tsconfig.app.json` looks by default in any Angular project:
+ * ```json
+ * To learn more about this file see: https://angular.io/config/tsconfig.
+ * {
+ *   "extends": "./tsconfig.json",
+ *   "compilerOptions": { ... },
+ *   "files": [
+ *     "src/main.ts",
+ *     "src/polyfills.ts"
+ *   ]
+ * }
+ * ```
+ *
+ * This is how it will look like after update:
+ * ```json
+ * {
+ *   "extends": "./tsconfig.json",
+ *   "compilerOptions": { ... },
+ *   "files": ["src/main.single-spa.ts"]
+ * }
+ * ```
+ */
 function updateTSConfig(tree: Tree, buildTarget: workspaces.TargetDefinition): void {
   const tsConfigPath = <string>buildTarget.options!.tsConfig;
   const buffer: Buffer | null = tree.read(tsConfigPath);
@@ -96,4 +118,33 @@ function updateTSConfig(tree: Tree, buildTarget: workspaces.TargetDefinition): v
   // because we remove `polyfills` from Webpack `entry` property.
   tsConfig.files = [normalize('src/main.single-spa.ts')];
   tree.overwrite(tsConfigPath, JSON.stringify(tsConfig, null, 2));
+}
+
+/**
+ * @description This step updates options for the build target defined in
+ * `[project].architect.build.options`. This is how it will look like after update:
+ * ```json
+ * "builder": "@angular-builders/custom-webpack:browser",
+ * "options": {
+ *   "customWebpackConfig": {
+ *     "path": "extra-webpack.config.js"
+ *   }
+ *   "main": "src/main.single-spa.ts"
+ * }
+ * ```
+ */
+function updateBuildTarget(
+  buildTarget: workspaces.TargetDefinition,
+  project: workspaces.ProjectDefinition,
+  options: NgAddOptions,
+): void {
+  const root = normalize(project.root);
+
+  buildTarget.builder = '@angular-builders/custom-webpack:browser';
+  buildTarget.options!.main = join(root, normalize('src/main.single-spa.ts'));
+  ((buildTarget.options as unknown) as CustomWebpackBuilderOptions).customWebpackConfig = {
+    path: join(root, 'extra-webpack.config.js'),
+    libraryName: options.project,
+    libraryTarget: 'umd',
+  };
 }
