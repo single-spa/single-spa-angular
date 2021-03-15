@@ -27,7 +27,7 @@
       "type": "number",
       "description": "Port to listen on",
       "default": 4200,
-      "x-prompt": "(todo): ask Joel to provide the prompt"
+      "x-prompt": "What port should your project run on?"
     }
   },
   "required": []
