@@ -26,9 +26,9 @@ jobs:
           key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-v1
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 12.12
+          node-version: 14.x
 
       - name: Install dependencies
         # Do not install dependencies again if checksum for the

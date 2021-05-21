@@ -1,10 +1,7 @@
 import { NgModuleRef, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LifeCycles } from 'single-spa';
-import {
-  getContainerElementAndSetTemplate,
-  removeApplicationFromDOMIfIvyEnabled,
-} from 'single-spa-angular/internals';
+import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
 import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
@@ -17,7 +14,6 @@ const defaultOptions = {
   // Optional options
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
-  AnimationEngine: undefined,
   updateFunction: () => Promise.resolve(),
   bootstrappedModule: null,
 };
@@ -134,12 +130,6 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
       skipLocationChangeOnNonImperativeRoutingTriggers(module, options);
-
-      // Cleanup resources, especially remove event listeners thus they will not be added
-      // twice when application gets bootstrapped the second time.
-      module.onDestroy(() => {
-        singleSpaPlatformLocation.destroyApplication(zoneIdentifier);
-      });
     }
 
     bootstrappedOptions.bootstrappedNgZone = ngZone;
@@ -151,52 +141,15 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
   return module;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
-  if (options.Router) {
-    // Workaround for https://github.com/angular/angular/issues/19079
-    const router = options.bootstrappedModule!.injector.get(options.Router);
-    router.dispose();
-  }
+function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
+  return Promise.resolve().then(() => {
+    if (options.routingEventListener) {
+      window.removeEventListener('single-spa:routing-event', options.routingEventListener);
+    }
 
-  if (options.routingEventListener) {
-    window.removeEventListener('single-spa:routing-event', options.routingEventListener);
-  }
-
-  if (options.AnimationEngine) {
-    /*
-    The BrowserAnimationsModule does not clean up after itself :'(. When you unmount/destroy the main module, the
-    BrowserAnimationsModule uses an AnimationRenderer thing to remove dom elements from the page. But the AnimationRenderer
-    defers the actual work to the TransitionAnimationEngine to do this, and the TransitionAnimationEngine doesn't actually
-    remove the dom node, but just calls "markElementAsRemoved()".
-
-    See https://github.com/angular/angular/blob/db62ccf9eb46ee89366ade586365ea027bb93eb1/packages/animations/browser/src/render/transition_animation_engine.ts#L717
-
-    What markAsRemovedDoes is put it into an array called "collectedLeaveElements", which is all the elements that should be removed
-    after the DOM has had a chance to do any animations.
-
-    See https://github.com/angular/angular/blob/master/packages/animations/browser/src/render/transition_animation_engine.ts#L525
-
-    The actual dom nodes aren't removed until the TransitionAnimationEngine "flushes".
-
-    See https://github.com/angular/angular/blob/db62ccf9eb46ee89366ade586365ea027bb93eb1/packages/animations/browser/src/render/transition_animation_engine.ts#L851
-
-    Unfortunately, though, that "flush" will never happen, since the entire module is being destroyed and there will be no more flushes.
-    So what we do in this code is force one more flush of the animations after the module is destroyed.
-
-    Ideally, we would do this by getting the TransitionAnimationEngine directly and flushing it. Unfortunately, though, it's private class
-    that cannot be imported and is not provided to the dependency injector. So, instead, we get its wrapper class, AnimationEngine, and then
-    access its private variable reference to the TransitionAnimationEngine so that we can call flush.
-    */
-    const animationEngine = options.bootstrappedModule!.injector.get(options.AnimationEngine);
-    animationEngine._transitionEngine.flush();
-  }
-
-  options.bootstrappedModule!.destroy();
-  options.bootstrappedModule = null;
-
-  // TODO: this is not an issue anymore and should be removed in the future.
-  removeApplicationFromDOMIfIvyEnabled(options, props);
+    options.bootstrappedModule!.destroy();
+    options.bootstrappedModule = null;
+  });
 }
 
 function skipLocationChangeOnNonImperativeRoutingTriggers(

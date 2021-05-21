@@ -27,16 +27,5 @@
     "@angular/core": ">=9",
     "json5": "*",
     "single-spa": ">=4.0.0"
-  },
-  "ngPackage": {
-    "lib": {
-      "umdId": "single-spa-angular",
-      "flatModuleFile": "single-spa-angular",
-      "entryFile": "index.ts",
-      "umdModuleIds": {
-        "single-spa-angular/internals": "single-spa-angular-internals"
-      }
-    },
-    "dest": "../../lib"
   }
 }

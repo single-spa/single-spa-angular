@@ -1,2 +1,2 @@
 export * from './types';
-export { getContainerElementAndSetTemplate, removeApplicationFromDOMIfIvyEnabled } from './dom';
+export { getContainerElementAndSetTemplate } from './dom';

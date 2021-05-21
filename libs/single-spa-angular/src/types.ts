@@ -2,7 +2,8 @@ import { NgModuleRef, Type, NgZone } from '@angular/core';
 import { AppProps } from 'single-spa';
 import { BaseSingleSpaAngularOptions } from 'single-spa-angular/internals';
 
-export interface SingleSpaAngularOptions<T = {}> extends BaseSingleSpaAngularOptions {
+export interface SingleSpaAngularOptions<T = Record<string, unknown>>
+  extends BaseSingleSpaAngularOptions {
   // This might be `noop` if the root module is bootstrapped
   // with `{ ngZone: 'noop' }` options.
   NgZone: typeof NgZone | 'noop';
@@ -10,7 +11,6 @@ export interface SingleSpaAngularOptions<T = {}> extends BaseSingleSpaAngularOpt
   // `Router` and `NavigationStart` should be always provided together.
   Router?: Type<any>;
   NavigationStart?: Type<any>;
-  AnimationEngine?: Type<any>;
   bootstrapFunction(props: AppProps & T): Promise<NgModuleRef<any>>;
 }
 

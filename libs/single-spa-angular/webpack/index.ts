@@ -25,7 +25,8 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     output: {
       library: libraryName,
       libraryTarget: options?.customWebpackConfig?.libraryTarget ?? 'umd',
-      jsonpFunction: 'webpackJsonp' + libraryName,
+      // `output.jsonpFunction` has been renamed to `output.chunkLoadingGlobal` in Webpack 5.
+      chunkLoadingGlobal: 'webpackJsonp' + libraryName,
       devtoolNamespace: libraryName,
     },
     externals: ['zone.js'],
@@ -180,7 +181,10 @@ function resolveDevtool(options: Options | undefined): boolean | string {
   }
 }
 
-function mergeConfigs(config: object, singleSpaConfig: object): any {
+function mergeConfigs(
+  config: Record<string, unknown>,
+  singleSpaConfig: Record<string, unknown>,
+): any {
   // eslint-disable-next-line
   const webpackMerge = require('webpack-merge');
 

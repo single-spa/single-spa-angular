@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "single-spa-ng-add",
+  "$id": "single-spa-ng-add",
   "title": "single-spa ng-add schematic",
   "type": "object",
   "properties": {
