@@ -25,7 +25,6 @@ export function createMainEntry(
       applyTemplates({
         prefix: project.prefix,
         routing: options.routing,
-        usingBrowserAnimationsModule: options.usingBrowserAnimationsModule,
       }),
       move(path),
     ]);

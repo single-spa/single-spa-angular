@@ -17,12 +17,6 @@
       "default": true,
       "x-prompt": "Does your application use Angular routing?"
     },
-    "usingBrowserAnimationsModule": {
-      "type": "boolean",
-      "description": "A value of true means the angular application uses BrowserAnimationsModule",
-      "default": false,
-      "x-prompt": "Does your application use BrowserAnimationsModule?"
-    },
     "port": {
       "type": "number",
       "description": "Port to listen on",
