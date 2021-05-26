@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
 import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 
+import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';
+
 export interface DefaultExtraOptions {
   removeMiniCssExtract: boolean;
 }
@@ -92,20 +94,9 @@ function removePluginByName(plugins: any[], name: string) {
   }
 }
 
-function removeMiniCssExtract(config: any) {
+function removeMiniCssExtract(config: any): void {
+  removeMiniCssExtractRules(config);
   removePluginByName(config.plugins, 'MiniCssExtractPlugin');
-  config.module.rules.forEach((rule: any) => {
-    if (rule.use) {
-      const cssMiniExtractIndex = rule.use.findIndex(
-        (use: any) =>
-          (typeof use === 'string' && use.includes('mini-css-extract-plugin')) ||
-          (typeof use === 'object' && use.loader && use.loader.includes('mini-css-extract-plugin')),
-      );
-      if (cssMiniExtractIndex >= 0) {
-        rule.use[cssMiniExtractIndex] = { loader: 'style-loader' };
-      }
-    }
-  });
 }
 
 function getLibraryName(options: Options | undefined): string {
