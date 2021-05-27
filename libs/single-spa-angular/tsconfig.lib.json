@@ -10,8 +10,7 @@
     "types": ["node"]
   },
   "angularCompilerOptions": {
-    "enableIvy": true,
-    "compilationMode": "partial",
+    "enableIvy": false,
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
