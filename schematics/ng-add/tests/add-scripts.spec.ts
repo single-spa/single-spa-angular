@@ -1,26 +1,25 @@
+import { VERSION } from '@angular/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
 import { createTestRunner } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
-  createApplication: false,
   newProjectRoot: 'projects',
-  version: '9.0.0',
+  version: VERSION.full,
 };
 
 describe('ng-add', () => {
   let workspaceTree: UnitTestTree;
   const testRunner = createTestRunner();
 
-  async function generateApplication(name: string, project?: string) {
+  async function generateApplication(name: string) {
     await testRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
         'application',
         {
           name,
-          project,
           routing: true,
           skipTests: true,
           style: 'scss',
@@ -39,8 +38,8 @@ describe('ng-add', () => {
 
   test('should create 2 apps in an empty workspace and generate appropriate scripts', async () => {
     // Arrange & act
-    await generateApplication('first-cool-app', 'first-cool-app');
-    await generateApplication('second-cool-app', 'second-cool-app');
+    await generateApplication('first-cool-app');
+    await generateApplication('second-cool-app');
 
     await testRunner
       .runSchematicAsync('ng-add', { project: 'first-cool-app' }, workspaceTree)
@@ -78,7 +77,7 @@ describe('ng-add', () => {
   test('should create 2 apps but one app should be default and second one is additional', async () => {
     // Arrange & act
     await generateApplication('default-project');
-    await generateApplication('additional-project', 'additional-project');
+    await generateApplication('additional-project');
 
     await testRunner.runSchematicAsync('ng-add', undefined, workspaceTree).toPromise();
 

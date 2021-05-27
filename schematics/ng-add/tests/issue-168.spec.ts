@@ -1,3 +1,4 @@
+import { VERSION } from '@angular/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
 import { createTestRunner } from './utils';
@@ -5,21 +6,20 @@ import { createTestRunner } from './utils';
 const workspaceOptions = {
   name: 'workspace',
   newProjectRoot: 'projects',
-  version: '9.0.0',
+  version: VERSION.full,
 };
 
 describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
   let workspaceTree: UnitTestTree;
   const testRunner = createTestRunner();
 
-  function generateApplication(name: string, project?: string) {
+  function generateApplication(name: string) {
     return testRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
         'application',
         {
           name,
-          project,
         },
         workspaceTree,
       )
@@ -37,10 +37,10 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     const appTree = await generateApplication('first-cool-app');
     let buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     let configurations = buildTarget.projects['first-cool-app'].architect.build.configurations;
-    // `production` is always present by default
-    const production = configurations.production;
+    // `development` and `production` are always present by default since Angular 12.
+    const { development, production } = configurations;
     // Let's just add more configurations for testing purposes.
-    configurations['us-dev'] = { ...production };
+    configurations['us-dev'] = { ...development };
     configurations['eu-west-1'] = { ...production };
 
     // Act
@@ -52,7 +52,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     configurations = buildTarget.projects['first-cool-app'].architect.build.configurations;
 
     // Arrange
-    expect(Object.keys(configurations).length).toBe(3);
+    expect(Object.keys(configurations).length).toBe(4);
 
     for (let i = 0; i < configurations.length; i++) {
       expect(configurations[i].outputHashing).toBe('none');
@@ -62,13 +62,13 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
   test('should update all configurations in the provided "--project"', async () => {
     // Arrange
     await generateApplication('first-cool-app');
-    const appTree = await generateApplication('second-cool-app', 'second-cool-app');
+    const appTree = await generateApplication('second-cool-app');
     let buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     let configurations = buildTarget.projects['second-cool-app'].architect.build.configurations;
-    // `production` is always present by default
-    const production = configurations.production;
+    // `development` and `production` are always present by default since Angular 12.
+    const { development, production } = configurations;
     // Let's just add more configurations for testing purposes.
-    configurations['us-dev'] = { ...production };
+    configurations['us-dev'] = { ...development };
     configurations['eu-west-1'] = { ...production };
 
     // Act
@@ -82,7 +82,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     configurations = buildTarget.projects['second-cool-app'].architect.build.configurations;
 
     // Arrange
-    expect(Object.keys(configurations).length).toBe(3);
+    expect(Object.keys(configurations).length).toBe(4);
 
     for (let i = 0; i < configurations.length; i++) {
       expect(configurations[i].outputHashing).toBe('none');

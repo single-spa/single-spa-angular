@@ -1,7 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
-import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 
 import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';
 
@@ -12,11 +11,13 @@ const defaultExtraOptions = {
   removeMiniCssExtract: true,
 };
 
-interface Options extends Partial<BrowserBuilderOptions> {
+interface Options {
   customWebpackConfig?: {
     libraryName?: string;
     libraryTarget?: string;
   };
+  main?: string;
+  sourceMap?: boolean | { scripts?: boolean; vendor?: boolean };
 }
 
 export default (config: any, options?: Options, extraOptions?: DefaultExtraOptions) => {

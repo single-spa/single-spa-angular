@@ -2,13 +2,12 @@
 // starting from version 10, contain comments in `tsconfig` files.
 import { parse } from 'json5';
 import { join, normalize, workspaces } from '@angular-devkit/core';
-import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import { Tree, SchematicContext, Rule } from '@angular-devkit/schematics';
 
 import { getBuildTarget } from './utils';
 import { Schema as NgAddOptions } from '../schema';
 
-interface CustomWebpackBuilderOptions extends BrowserBuilderOptions {
+interface CustomWebpackBuilderOptions {
   customWebpackConfig: {
     path: string;
     libraryName?: string;
@@ -142,7 +141,7 @@ function updateBuildTarget(
 
   buildTarget.builder = '@angular-builders/custom-webpack:browser';
   buildTarget.options!.main = join(root, normalize('src/main.single-spa.ts'));
-  ((buildTarget.options as unknown) as CustomWebpackBuilderOptions).customWebpackConfig = {
+  (buildTarget.options as unknown as CustomWebpackBuilderOptions).customWebpackConfig = {
     path: join(root, 'extra-webpack.config.js'),
     libraryName: options.project,
     libraryTarget: 'umd',
