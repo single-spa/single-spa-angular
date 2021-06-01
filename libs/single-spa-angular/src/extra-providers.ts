@@ -3,10 +3,9 @@ import {
   ɵBrowserPlatformLocation,
   PlatformLocation,
   LocationChangeEvent,
+  LocationChangeListener,
   DOCUMENT,
 } from '@angular/common';
-
-type OnPopStateListener = (event: LocationChangeEvent) => void;
 
 declare const Zone: any;
 
@@ -16,50 +15,7 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
   // that was not dispatched by the browser.
   private skipNextPopState = false;
 
-  // The key here is an actual forked `Zone` of some specific application.
-  // We will be able to find the specific zone when application gets destroyed
-  // by application `name`.
-  // The reason of that the `onPopState` method is invoked during `bootstrapModule`
-  // and we can't know what application has invoked it. Why should we know the application
-  // that has invoked `onPopState`? When application gets destroyed in a `sharing dependencies mode`
-  // (when there is a single platform per all applications) we want to remove application
-  // specific `popstate` listeners. E.g. if there are 2 applications:
-  // * shop application adds `popstate` listener
-  // * navbar application adds `popstate` listener
-  // When shop application gets destroyed we want to remove only its `popstate` listener.
-  private zoneToOnPopStateListenersMap = new Map<any, OnPopStateListener[]>();
-
-  // This is used only to make `Zone.wrap` happy, since it requires 2 arguments
-  // and the second argument is a unique string which `zone.js` uses for debugging purposes.
-  // We might want to use the application name, but we're not able to get it when `onPopState`
-  // method is called during module bootstrapping.
-  private source = 0;
-
-  destroyApplication(zoneIdentifier: string): void {
-    // TLDR: Angular adds `popstate` event listener and then doesn't remove it when application gets destroyed.
-    // Basically, Angular has a potentional memory leak. The `ɵBrowserPlatformLocation`
-    // has `onPopState` method which adds `popstate` event listener and forgets, see here:
-    // https://github.com/angular/angular/blob/14be55c9facf3e47b8c97df4502dc3f0f897da03/packages/common/src/location/platform_location.ts#L126
-    const zone = [...this.zoneToOnPopStateListenersMap.keys()].find(
-      // `getZoneWith` will return a zone which defines a `key` and in our case
-      // we define a custom key in `single-spa-angular.ts`
-      // via this line of code:
-      // `_properties[zoneIdentifier] = true;`
-      zone => zone.getZoneWith(zoneIdentifier) !== null,
-    );
-
-    const onPopStateListeners:
-      | OnPopStateListener[]
-      | undefined = this.zoneToOnPopStateListenersMap.get(zone);
-
-    if (Array.isArray(onPopStateListeners)) {
-      for (const onPopStateListener of onPopStateListeners) {
-        window.removeEventListener('popstate', onPopStateListener);
-      }
-    }
-
-    this.zoneToOnPopStateListenersMap.delete(zone);
-  }
+  private readonly source = 'Window.addEventListener:popstate';
 
   pushState(state: any, title: string, url: string): void {
     this.skipNextPopState = true;
@@ -71,7 +27,7 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
     super.replaceState(state, title, url);
   }
 
-  onPopState(fn: OnPopStateListener): void {
+  onPopState(fn: LocationChangeListener): VoidFunction {
     // `Zone.current` will reference the zone that serves as an execution context
     // to some specific application, especially when `onPopState` is called.
     const zone = Zone.current;
@@ -82,13 +38,13 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
     // overrides `history.replaceState` Angular's zone cannot intercept this event.
     // Only the root zone is able to intercept all events.
     // See https://github.com/single-spa/single-spa-angular/issues/94 for more details
-    fn = zone.wrap(fn, `${this.source++}`);
+    fn = zone.wrap(fn, this.source);
 
     const onPopStateListener = (event: LocationChangeEvent) => {
       // The `LocationChangeEvent` doesn't have the `singleSpa` property, since it's added
       // by `single-spa` starting from `5.4` version. We need this check because we want
       // to skip "unnatural" PopStateEvents, the one caused by `single-spa`.
-      const popStateEventWasDispatchedBySingleSpa = !!((event as unknown) as { singleSpa: boolean })
+      const popStateEventWasDispatchedBySingleSpa = !!(event as unknown as { singleSpa: boolean })
         .singleSpa;
 
       if (this.skipNextPopState && popStateEventWasDispatchedBySingleSpa) {
@@ -98,21 +54,7 @@ export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
       }
     };
 
-    this.storeOnPopStateListener(zone, onPopStateListener);
-    super.onPopState(onPopStateListener);
-  }
-
-  private storeOnPopStateListener(zone: any, onPopStateListener: OnPopStateListener): void {
-    // All listeners should be stored inside an array because the `onPopState` can be called
-    // multiple times thus we wanna reference all listeners to remove them further.
-    const onPopStateListeners: OnPopStateListener[] =
-      this.zoneToOnPopStateListenersMap.get(zone) || [];
-
-    onPopStateListeners.push(onPopStateListener);
-
-    if (!this.zoneToOnPopStateListenersMap.has(zone)) {
-      this.zoneToOnPopStateListenersMap.set(zone, onPopStateListeners);
-    }
+    return super.onPopState(onPopStateListener);
   }
 }
 
@@ -125,7 +67,6 @@ export function getSingleSpaExtraProviders(): StaticProvider[] {
   return [
     {
       provide: SingleSpaPlatformLocation,
-      useClass: SingleSpaPlatformLocation,
       deps: [[new Inject(DOCUMENT)]],
     },
     {

@@ -70,13 +70,18 @@ async function resolveCustomWebpackVersion(): Promise<string> {
 
   try {
     const versions: string[] = await getCustomWebpackVersions();
-    // We do `filter` because there can be `beta` versions, thus `^11`
-    // will not work in that case.
-    const compatibleMajorVersions: string[] = versions.filter(version =>
-      version.startsWith(VERSION.major),
-    );
+    // Let's try to get all versions that might match the current major Angular version.
+    // This can be:
+    // `['12.0.0-beta.0', '12.0.0', '12.0.1-beta.0']`
+    const majorVersions = versions.filter(version => version.startsWith(VERSION.major));
+    const majorBetaVersions = majorVersions.filter(version => version.match(/-beta/) !== null);
+    const majorStableVersions = majorVersions.filter(version => version.match(/-beta/) === null);
 
-    version = compatibleMajorVersions.pop() || 'latest';
+    // Well, we'd want to use the stable version first of all, for instance, `12.0.0`, and if
+    // no stable version is available, then we fall back to the beta version.
+    // This can happen when the new Angular version is out and the `@angular-builders/custom-webpack`
+    // hasn't released the stable compatible version yet.
+    version = majorStableVersions.pop() || majorBetaVersions.pop() || 'latest';
   } catch {
     // We could actually initialize version with the `latest` value,
     // but let's be more imperative and fallback to the `latest` value

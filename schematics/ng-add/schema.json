@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "single-spa-ng-add",
+  "$id": "single-spa-ng-add",
   "title": "single-spa ng-add schematic",
   "type": "object",
   "properties": {
@@ -16,12 +16,6 @@
       "description": "When true, angular application supports routing",
       "default": true,
       "x-prompt": "Does your application use Angular routing?"
-    },
-    "usingBrowserAnimationsModule": {
-      "type": "boolean",
-      "description": "A value of true means the angular application uses BrowserAnimationsModule",
-      "default": false,
-      "x-prompt": "Does your application use BrowserAnimationsModule?"
     },
     "port": {
       "type": "number",

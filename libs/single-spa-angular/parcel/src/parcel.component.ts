@@ -25,7 +25,7 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
   @Input() mountParcel: AppProps['mountParcel'] | null = null;
   @Input() onParcelMount: (() => void) | null = null;
   @Input() wrapWith = 'div';
-  @Input() customProps: object = {};
+  @Input() customProps: Record<string, unknown> = {};
   @Input() appendTo: Node | null = null;
   @Input() handleError = (error: Error) => console.error(error);
 

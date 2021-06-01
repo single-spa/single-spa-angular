@@ -1,7 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
-import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
+
+import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';
 
 export interface DefaultExtraOptions {
   removeMiniCssExtract: boolean;
@@ -10,11 +11,13 @@ const defaultExtraOptions = {
   removeMiniCssExtract: true,
 };
 
-interface Options extends Partial<BrowserBuilderOptions> {
+interface Options {
   customWebpackConfig?: {
     libraryName?: string;
     libraryTarget?: string;
   };
+  main?: string;
+  sourceMap?: boolean | { scripts?: boolean; vendor?: boolean };
 }
 
 export default (config: any, options?: Options, extraOptions?: DefaultExtraOptions) => {
@@ -25,7 +28,8 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     output: {
       library: libraryName,
       libraryTarget: options?.customWebpackConfig?.libraryTarget ?? 'umd',
-      jsonpFunction: 'webpackJsonp' + libraryName,
+      // `output.jsonpFunction` has been renamed to `output.chunkLoadingGlobal` in Webpack 5.
+      chunkLoadingGlobal: 'webpackJsonp' + libraryName,
       devtoolNamespace: libraryName,
     },
     externals: ['zone.js'],
@@ -91,20 +95,9 @@ function removePluginByName(plugins: any[], name: string) {
   }
 }
 
-function removeMiniCssExtract(config: any) {
+function removeMiniCssExtract(config: any): void {
+  removeMiniCssExtractRules(config);
   removePluginByName(config.plugins, 'MiniCssExtractPlugin');
-  config.module.rules.forEach((rule: any) => {
-    if (rule.use) {
-      const cssMiniExtractIndex = rule.use.findIndex(
-        (use: any) =>
-          (typeof use === 'string' && use.includes('mini-css-extract-plugin')) ||
-          (typeof use === 'object' && use.loader && use.loader.includes('mini-css-extract-plugin')),
-      );
-      if (cssMiniExtractIndex >= 0) {
-        rule.use[cssMiniExtractIndex] = { loader: 'style-loader' };
-      }
-    }
-  });
 }
 
 function getLibraryName(options: Options | undefined): string {
@@ -180,7 +173,10 @@ function resolveDevtool(options: Options | undefined): boolean | string {
   }
 }
 
-function mergeConfigs(config: object, singleSpaConfig: object): any {
+function mergeConfigs(
+  config: Record<string, unknown>,
+  singleSpaConfig: Record<string, unknown>,
+): any {
   // eslint-disable-next-line
   const webpackMerge = require('webpack-merge');
 

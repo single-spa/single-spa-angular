@@ -9,72 +9,111 @@ describe('Webpack config', () => {
 
   describe('Remove MiniCssExtractPlugin', () => {
     test('should remove Mini Css Extract from plugins', () => {
-      // GIVEN
+      // Arrange
       const config = { plugins: [new MiniCssExtractPlugin(), new AnotherPlugin()] };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack({ ...defaultConfig, ...config });
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.plugins).toHaveLength(1);
       expect(singleSpaConfig.plugins[0].constructor.name).toBe('AnotherPlugin');
     });
 
     test('should remove Mini Css Extract from string rules and replace by style-loader', () => {
-      // GIVEN
-      const config = { module: { rules: [{ use: ['mini-css-extract-plugin', 'other-loader'] }] } };
-
-      // TEST
-      const singleSpaConfig = singleSpaAngularWebpack({ ...defaultConfig, ...config });
-
-      // EXPECT
-      expect(singleSpaConfig.module.rules[0]).toEqual({
-        use: [{ loader: 'style-loader' }, 'other-loader'],
-      });
-    });
-
-    test('should remove Mini Css Extract from object rules and replace by style-loader', () => {
-      // GIVEN
+      // Arrange
       const config = {
         module: {
-          rules: [{ use: [{ loader: 'mini-css-extract-plugin' }, { loader: 'other-loader' }] }],
+          rules: [
+            {
+              test: /\.scss$/,
+              rules: [
+                {
+                  oneOf: [
+                    {
+                      use: ['mini-css-extract-plugin', 'other-loader'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack({ ...defaultConfig, ...config });
 
-      // EXPECT
-      expect(singleSpaConfig.module.rules[0]).toEqual({
-        use: [{ loader: 'style-loader' }, { loader: 'other-loader' }],
-      });
+      // Assert
+      expect(singleSpaConfig.module.rules).toMatchSnapshot();
+    });
+
+    test('should remove Mini Css Extract from object rules and replace by style-loader', () => {
+      // Arrange
+      const config = {
+        module: {
+          rules: [
+            {
+              test: /\.scss$/,
+              rules: [
+                {
+                  oneOf: [
+                    {
+                      use: [{ loader: 'mini-css-extract-plugin' }, { loader: 'other-loader' }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      };
+
+      // Act
+      const singleSpaConfig = singleSpaAngularWebpack({ ...defaultConfig, ...config });
+
+      // Assert
+      expect(singleSpaConfig.module.rules).toMatchSnapshot();
     });
 
     test('should not break if no Mini Css Extract configurations specified', () => {
-      // GIVEN
+      // Arrange
       const config = {
         plugins: [new AnotherPlugin()],
-        module: { rules: [{ use: ['other-loader', { loader: 'other-loader' }] }] },
+        module: {
+          rules: [
+            {
+              test: /\.scss$/,
+              rules: [
+                {
+                  oneOf: [
+                    {
+                      use: ['other-loader', { loader: 'other-loader' }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack({ ...defaultConfig, ...config });
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.plugins).toHaveLength(1);
       expect(singleSpaConfig.plugins[0].constructor.name).toEqual('AnotherPlugin');
-      expect(singleSpaConfig.module.rules[0]).toEqual({
-        use: ['other-loader', { loader: 'other-loader' }],
-      });
+      expect(singleSpaConfig.module.rules).toMatchSnapshot();
     });
   });
 
   describe("Don't remove MiniCssExtractPlugin", () => {
     test('should not remove the Mini Css Extract plugin', () => {
-      // GIVEN
+      // Arrange
       const config = { plugins: [new MiniCssExtractPlugin(), new AnotherPlugin()] };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack(
         { ...defaultConfig, ...config },
         {},
@@ -83,7 +122,7 @@ describe('Webpack config', () => {
         },
       );
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.plugins).toHaveLength(2);
       expect(singleSpaConfig.plugins[0].constructor.name).toBe('MiniCssExtractPlugin');
     });
@@ -91,12 +130,12 @@ describe('Webpack config', () => {
 
   describe('Source maps', () => {
     test('should not set "devtool" option when source maps are disabled', () => {
-      // GIVEN
+      // Arrange
       const config = {
         devtool: false,
       };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack(
         { ...defaultConfig, ...config },
         {
@@ -104,18 +143,18 @@ describe('Webpack config', () => {
         },
       );
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.devtool).toEqual(false);
     });
 
     test('should not set "devtool" option when source maps are disabled for scripts', () => {
-      // GIVEN
+      // Arrange
       const config = {
         plugins: [],
         devtool: false,
       };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack(
         { ...defaultConfig, ...config },
         {
@@ -126,18 +165,18 @@ describe('Webpack config', () => {
         },
       );
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.devtool).toEqual(false);
     });
 
     test('should set "devtool" to "sourcemaps" when source maps are enabled', () => {
-      // GIVEN
+      // Arrange
       const config = {
         plugins: [],
         devtool: false,
       };
 
-      // TEST
+      // Act
       const singleSpaConfig = singleSpaAngularWebpack(
         { ...defaultConfig, ...config },
         {
@@ -145,7 +184,7 @@ describe('Webpack config', () => {
         },
       );
 
-      // EXPECT
+      // Assert
       expect(singleSpaConfig.devtool).toEqual('sourcemap');
     });
   });

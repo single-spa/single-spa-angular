@@ -4,7 +4,6 @@
 
 export function assetUrl(url: string): string {
   // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/camelcase
   const publicPath = __webpack_public_path__;
   const publicPathSuffix = publicPath.endsWith('/') ? '' : '/';
   const urlPrefix = url.startsWith('/') ? '' : '/';
