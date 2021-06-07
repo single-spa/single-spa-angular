@@ -185,7 +185,7 @@ describe('Webpack config', () => {
       );
 
       // Assert
-      expect(singleSpaConfig.devtool).toEqual('sourcemap');
+      expect(singleSpaConfig.devtool).toEqual('source-map');
     });
   });
 });
