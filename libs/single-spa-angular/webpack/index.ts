@@ -165,7 +165,7 @@ function resolveDevtool(options: Options | undefined): boolean | string {
     typeof options?.sourceMap === 'object' && options.sourceMap.scripts === true;
 
   if (allSourceMapsEnabled || scriptsSourceMapsEnabled) {
-    return 'sourcemap';
+    return 'source-map';
   } else {
     // If options are not provided then we shouldn't enable source maps since
     // it can worsen the build time and the developer will not even know about it.
