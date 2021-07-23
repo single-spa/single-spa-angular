@@ -19,11 +19,7 @@ Array [
     ],
     "test": /\\\\\\.scss\\$/,
   },
-  Object {
-    "parser": Object {
-      "system": false,
-    },
-  },
+  Object {},
 ]
 `;
 
@@ -48,11 +44,7 @@ Array [
     ],
     "test": /\\\\\\.scss\\$/,
   },
-  Object {
-    "parser": Object {
-      "system": false,
-    },
-  },
+  Object {},
 ]
 `;
 
@@ -75,10 +67,6 @@ Array [
     ],
     "test": /\\\\\\.scss\\$/,
   },
-  Object {
-    "parser": Object {
-      "system": false,
-    },
-  },
+  Object {},
 ]
 `;
