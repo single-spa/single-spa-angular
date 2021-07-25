@@ -43,9 +43,6 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     module: {
       rules: [
         {
-          /*parser: {
-            system: false,
-          },*/
         },
       ],
     },
