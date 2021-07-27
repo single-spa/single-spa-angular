@@ -65,3 +65,21 @@ yarn add file:../single-spa-angular/lib
 yarn build
 yarn start
 ```
+
+# Publishing
+
+1. Modify `libs/single-spa-angular/package.json` to have the new `"version"`
+2. Terminal commands
+
+```sh
+yarn build
+cd lib
+yarn publish # do not change the version - it already has correct version from step 1
+cd ..
+git add .
+git commit -m "v1.2.5" # replace 1.2.5 with the newly published version
+git tag -a v1.2.5 -m v.1.2.5 # replace 1.2.5 with the newly published version
+git push
+```
+
+3. Create Github release

@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@angular-builders/custom-webpack@^12.0.0-beta.0":
+"@angular-builders/custom-webpack@12.0.0":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@angular-builders/custom-webpack/-/custom-webpack-12.0.0.tgz#370b4a8794d760a3e2cd6404a085d191ac8932ee"
   integrity sha512-IvgSdapwopWpT2s34h18ubmQqADiA9jKQruhBVnQIWQP6Ro3mk1JIzIlOe09iKqpQH1zqYG6b4l3Gg/TjqJSaQ==
