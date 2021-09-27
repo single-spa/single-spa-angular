@@ -44,3 +44,5 @@ dist-server
 
 # Jetbrains ide
 .idea
+
+migrations.json
