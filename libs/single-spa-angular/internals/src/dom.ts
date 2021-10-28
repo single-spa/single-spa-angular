@@ -15,7 +15,12 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
   }
 
   const containerElement = getContainerElement(domElementGetter);
-  containerElement.innerHTML = options.template;
+  if (typeof options.template === 'function') {
+    const template = options.template as (props: any) => string;
+    containerElement.innerHTML = template(props);
+  } else {
+    containerElement.innerHTML = options.template;
+  }
   return containerElement;
 }
 

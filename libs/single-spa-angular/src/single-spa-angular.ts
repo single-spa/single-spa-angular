@@ -32,8 +32,8 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (typeof options.template !== 'string') {
-    throw Error('single-spa-angular must be passed options.template string');
+  if (typeof options.template !== 'string' && typeof options.template !== 'function') {
+    throw Error('single-spa-angular must be passed options.template string or function');
   }
 
   if (!options.NgZone) {
