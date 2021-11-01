@@ -1,11 +1,8 @@
 import { LifeCycles } from 'single-spa';
 import { NgElement } from '@angular/elements';
-import {
-  BaseSingleSpaAngularOptions,
-  getContainerElementAndSetTemplate,
-} from 'single-spa-angular/internals';
+import { getContainerElementAndSetTemplate, BaseSingleSpaAngularOptions } from 'single-spa-angular/internals';
 
-import { BootstrappedSingleSpaAngularElementsOptions } from './types';
+import { BootstrappedSingleSpaAngularElementsOptions, Mutex } from './types';
 
 const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
   element: null,
@@ -13,19 +10,21 @@ const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
   ngModuleRef: null,
   bootstrapFunction: null!,
   domElementGetter: undefined,
+  mutex: new Mutex(),
 };
 
 async function bootstrap(options: BootstrappedSingleSpaAngularElementsOptions, props: any) {
-  if (options.ngModuleRef !== null) {
-    return;
-  }
+  return await options.mutex.dispatch(async () => {
+    if (options.ngModuleRef !== null) {
+      return;
+    }
 
-  // We call `bootstrapFunction()` inside the bootstrap lifecycle hook
-  // because Angular modules that expose custom elements should be
-  // bootstrapped only once.
-  options.ngModuleRef = await options.bootstrapFunction(props);
+    // We call `bootstrapFunction()` inside the bootstrap lifecycle hook
+    // because Angular modules that expose custom elements should be
+    // bootstrapped only once.
+    options.ngModuleRef = await options.bootstrapFunction(props);
+  });
 }
-
 async function mount(options: BootstrappedSingleSpaAngularElementsOptions, props: any) {
   const containerElement = getContainerElementAndSetTemplate(options, props);
   // `options.template` which can be `<app-element />` is not a valid selector
