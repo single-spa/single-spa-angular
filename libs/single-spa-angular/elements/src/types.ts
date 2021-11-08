@@ -27,7 +27,13 @@ export class Mutex {
     }
   }
 }
-export interface BootstrappedSingleSpaAngularElementsOptions extends BaseSingleSpaAngularOptions {
+
+export interface SingleSpaAngularElementOptions extends BaseSingleSpaAngularOptions {
+  parcelCanUpdate?: boolean;
+}
+
+export interface BootstrappedSingleSpaAngularElementsOptions
+  extends SingleSpaAngularElementOptions {
   ngModuleRef: NgModuleRef<any> | null;
   // This will be an actual custom element.
   element: NgElement | null;
