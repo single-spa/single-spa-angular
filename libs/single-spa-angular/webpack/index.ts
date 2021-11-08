@@ -41,10 +41,7 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
       },
     },
     module: {
-      rules: [
-        {
-        },
-      ],
+      rules: [{}],
     },
     devtool: resolveDevtool(options),
   };

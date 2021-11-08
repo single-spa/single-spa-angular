@@ -36,6 +36,6 @@ export interface BootstrappedSingleSpaAngularElementsOptions
   extends SingleSpaAngularElementOptions {
   ngModuleRef: NgModuleRef<any> | null;
   // This will be an actual custom element.
-  element: NgElement | null;
+  elements: Map<string, NgElement>;
   mutex: Mutex;
 }

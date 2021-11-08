@@ -10,7 +10,7 @@ import {
 import { SingleSpaElementPropsService } from './element-props-providers';
 
 const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
-  element: null,
+  elements: new Map<string, NgElement>(),
   template: null!,
   ngModuleRef: null,
   bootstrapFunction: null!,
@@ -52,17 +52,28 @@ async function mount(options: BootstrappedSingleSpaAngularElementsOptions, props
   // `options.template` which can be `<app-element />` is not a valid selector
   // for `document.querySelector`, thus we retrieve this custom element
   // via this property.
-  options.element = containerElement.firstElementChild as NgElement;
+  const element = containerElement.firstElementChild as NgElement;
+  if (!element || !element.parentElement) {
+    throw Error(
+      `single-spa-angular/elements: the element is not a valid Angular element or does not have a parent.`,
+    );
+  }
+  options.elements.set(props.name, element);
   setPropsService(options, props);
 }
 
-function unmount(options: BootstrappedSingleSpaAngularElementsOptions): Promise<void> {
+function unmount(options: BootstrappedSingleSpaAngularElementsOptions, props: any): Promise<void> {
   return Promise.resolve().then(() => {
     // Removing custom element from DOM is enough since it will trigger
     // `disconnectedCallback()` and Angular will dispose all resources.
-    console.log('unmount');
-    options.element!.parentElement!.removeChild(options.element!);
-    options.element = null;
+    if (!options.elements.has(props.name)) {
+      throw Error(
+        `single-spa-angular/elements: the element is not a valid Angular element or does not have a parent.`,
+      );
+    }
+    const element = options.elements.get(props.name);
+    element!.parentElement!.removeChild(element!);
+    options.elements.delete(props.name);
   });
 }
 
