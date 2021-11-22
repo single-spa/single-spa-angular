@@ -2,11 +2,7 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../lib",
   "lib": {
-    "umdId": "single-spa-angular",
     "flatModuleFile": "single-spa-angular",
-    "entryFile": "index.ts",
-    "umdModuleIds": {
-      "single-spa-angular/internals": "single-spa-angular-internals"
-    }
+    "entryFile": "index.ts"
   }
 }

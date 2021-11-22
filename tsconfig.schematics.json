@@ -4,7 +4,7 @@
     "outDir": "./lib/schematics/ng-add",
     "target": "ES2015",
     "module": "CommonJS",
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["./schematics/**/*"],
   "exclude": ["./schematics/**/*.spec.ts"]

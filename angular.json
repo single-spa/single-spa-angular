@@ -1,75 +1,6 @@
 {
   "version": 1,
   "projects": {
-    "shop": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "apps/shop",
-      "sourceRoot": "apps/shop/src",
-      "prefix": "single-spa-angular",
-      "architect": {
-        "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
-          "options": {
-            "customWebpackConfig": {
-              "path": "apps/shop/webpack.config.ts"
-            },
-            "outputPath": "dist/apps/shop",
-            "index": "apps/shop/src/index.html",
-            "main": "apps/shop/src/main.single-spa.ts",
-            "tsConfig": "apps/shop/tsconfig.app.json",
-            "aot": true,
-            "assets": ["apps/shop/src/favicon.ico", "apps/shop/src/assets"],
-            "styles": ["apps/shop/src/styles.scss"],
-            "deployUrl": "http://localhost:4200/"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/shop/src/environments/environment.ts",
-                  "with": "apps/shop/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
-          "options": {
-            "browserTarget": "shop:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "shop:build:production"
-            }
-          }
-        }
-      }
-    },
     "chat": {
       "projectType": "application",
       "schematics": {
@@ -97,6 +28,14 @@
             "deployUrl": "http://localhost:9000/"
           },
           "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -137,76 +76,8 @@
             }
           }
         }
-      }
-    },
-    "navbar": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
       },
-      "root": "apps/navbar",
-      "sourceRoot": "apps/navbar/src",
-      "prefix": "single-spa-angular",
-      "architect": {
-        "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
-          "options": {
-            "customWebpackConfig": {
-              "path": "apps/navbar/webpack.config.ts"
-            },
-            "outputPath": "dist/apps/navbar",
-            "index": "apps/navbar/src/index.html",
-            "main": "apps/navbar/src/main.single-spa.ts",
-            "tsConfig": "apps/navbar/tsconfig.app.json",
-            "aot": true,
-            "assets": ["apps/navbar/src/favicon.ico", "apps/navbar/src/assets"],
-            "styles": ["apps/navbar/src/styles.scss"],
-            "deployUrl": "http://localhost:4300/"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/navbar/src/environments/environment.ts",
-                  "with": "apps/navbar/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
-          "options": {
-            "browserTarget": "navbar:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "navbar:build:production"
-            }
-          }
-        }
-      }
+      "tags": []
     },
     "elements": {
       "projectType": "application",
@@ -235,6 +106,14 @@
             "deployUrl": "http://localhost:4000/"
           },
           "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -275,7 +154,86 @@
             }
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "navbar": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/navbar",
+      "sourceRoot": "apps/navbar/src",
+      "prefix": "single-spa-angular",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "apps/navbar/webpack.config.ts"
+            },
+            "outputPath": "dist/apps/navbar",
+            "index": "apps/navbar/src/index.html",
+            "main": "apps/navbar/src/main.single-spa.ts",
+            "tsConfig": "apps/navbar/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/navbar/src/favicon.ico", "apps/navbar/src/assets"],
+            "styles": ["apps/navbar/src/styles.scss"],
+            "deployUrl": "http://localhost:4300/"
+          },
+          "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/navbar/src/environments/environment.ts",
+                  "with": "apps/navbar/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "navbar:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "navbar:build:production"
+            }
+          }
+        }
+      },
+      "tags": []
     },
     "noop-zone": {
       "projectType": "application",
@@ -304,6 +262,14 @@
             "deployUrl": "http://localhost:8000/"
           },
           "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -344,7 +310,8 @@
             }
           }
         }
-      }
+      },
+      "tags": []
     },
     "parcel": {
       "projectType": "application",
@@ -374,6 +341,14 @@
             "allowedCommonJsDependencies": ["react", "react-dom"]
           },
           "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -414,7 +389,86 @@
             }
           }
         }
-      }
+      },
+      "tags": []
+    },
+    "shop": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/shop",
+      "sourceRoot": "apps/shop/src",
+      "prefix": "single-spa-angular",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "apps/shop/webpack.config.ts"
+            },
+            "outputPath": "dist/apps/shop",
+            "index": "apps/shop/src/index.html",
+            "main": "apps/shop/src/main.single-spa.ts",
+            "tsConfig": "apps/shop/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/shop/src/favicon.ico", "apps/shop/src/assets"],
+            "styles": ["apps/shop/src/styles.scss"],
+            "deployUrl": "http://localhost:4200/"
+          },
+          "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/shop/src/environments/environment.ts",
+                  "with": "apps/shop/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "shop:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "shop:build:production"
+            }
+          }
+        }
+      },
+      "tags": []
     },
     "single-spa-angular": {
       "projectType": "library",
@@ -434,25 +488,8 @@
             "project": "libs/single-spa-angular/ng-package.json"
           }
         }
-      }
+      },
+      "tags": []
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/angular"
-  },
-  "schematics": {
-    "@nrwl/workspace": {
-      "library": {
-        "linter": "tslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "unitTestRunner": "jest"
-    }
-  },
-  "defaultProject": "shop"
+  }
 }

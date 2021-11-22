@@ -1,16 +1,15 @@
-import { VERSION } from '@angular/core';
 import { normalize } from '@angular-devkit/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { getFileContent } from '@schematics/angular/utility/test';
 import * as JSON5 from 'json5';
 
 import { Schema as NgAddOptions } from '../schema';
-import { createWorkspace, createTestRunner } from './utils';
+import { createWorkspace, createTestRunner, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'ss-workspace',
   newProjectRoot: 'projects',
-  version: VERSION.full,
+  version: VERSION,
 };
 
 const appOptions = {

@@ -3,6 +3,8 @@ import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/te
 
 const collectionPath = join(__dirname, '../../schematics.json');
 
+export const VERSION: string = require('@angular/core/package.json').version;
+
 export async function createWorkspace<WorkspaceOptions, AppOptions>(
   testRunner: SchematicTestRunner,
   appTree: UnitTestTree,

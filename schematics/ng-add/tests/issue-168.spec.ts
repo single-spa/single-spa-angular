@@ -1,12 +1,11 @@
-import { VERSION } from '@angular/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
-import { createTestRunner } from './utils';
+import { createTestRunner, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
   newProjectRoot: 'projects',
-  version: VERSION.full,
+  version: VERSION,
 };
 
 describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {

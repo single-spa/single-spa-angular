@@ -54,7 +54,7 @@ function addScripts(tree: Tree, pkgPath: string, pkg: any, options: NgAddOptions
 }
 
 function addScriptsForTheSpecificProject(pkg: any, project: string, port: number): void {
-  pkg.scripts[`build:single-spa:${project}`] = `ng build ${project} --prod`;
+  pkg.scripts[`build:single-spa:${project}`] = `ng build ${project} --configuration production`;
   pkg.scripts[
     `serve:single-spa:${project}`
   ] = `ng s --project ${project} --disable-host-check --port ${port} --live-reload false`;
@@ -65,7 +65,7 @@ function addScriptsForTheSpecificProject(pkg: any, project: string, port: number
  * that he has a single project in his workspace and we want to provide a default script.
  */
 function addDefaultScripts(pkg: any, port: number): void {
-  pkg.scripts['build:single-spa'] = `ng build --prod`;
+  pkg.scripts['build:single-spa'] = `ng build --configuration production`;
   pkg.scripts['serve:single-spa'] = `ng s --disable-host-check --port ${port} --live-reload false`;
 }
 

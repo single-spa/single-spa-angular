@@ -19,34 +19,30 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "accessToken": "YmQwMTE3MTMtOTE0YS00ZjUwLTliN2ItMWI4N2NmMmQ1MTUzfHJlYWQtd3JpdGU=",
-        "cacheableOperations": ["test", "lint", "e2e"],
+        "cacheableOperations": ["build", "test", "lint", "e2e"],
         "runtimeCacheInputs": ["node -v"],
         "canTrackAnalytics": false,
-        "showUsageWarnings": true
+        "showUsageWarnings": true,
+        "parallel": 1
       }
     }
   },
-  "projects": {
-    "shop": {
-      "tags": []
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "shop",
+  "generators": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "tslint"
+      }
     },
-    "chat": {
-      "tags": []
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "navbar": {
-      "tags": []
-    },
-    "elements": {
-      "tags": []
-    },
-    "noop-zone": {
-      "tags": []
-    },
-    "parcel": {
-      "tags": []
-    },
-    "single-spa-angular": {
-      "tags": []
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
     }
   }
 }

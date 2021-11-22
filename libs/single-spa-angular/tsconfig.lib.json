@@ -10,7 +10,7 @@
     "types": ["node"]
   },
   "angularCompilerOptions": {
-    "enableIvy": false,
+    "compilationMode": "partial",
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
@@ -18,5 +18,6 @@
     "strictInjectionParameters": true,
     "enableResourceInlining": true
   },
+  "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts"]
 }

@@ -1,15 +1,14 @@
 import { normalize } from 'path';
-import { VERSION } from '@angular/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { getFileContent } from '@schematics/angular/utility/test';
 
 import { Schema as NgAddOptions } from '../schema';
-import { createTestRunner, createWorkspace } from './utils';
+import { createTestRunner, createWorkspace, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'ss-workspace',
   newProjectRoot: 'projects',
-  version: VERSION.full,
+  version: VERSION,
 };
 
 const appOptions = {
@@ -43,6 +42,14 @@ describe('ng-add', () => {
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.dependencies['single-spa']).toBeDefined();
     expect(packageJSON.dependencies['single-spa-angular']).toBeDefined();
+  });
+
+  test('should add style-laoder to devDependencies', async () => {
+    const tree = await testRunner
+      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .toPromise();
+    const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
+    expect(packageJSON.devDependencies['style-loader']).toBeDefined();
   });
 
   test('should add @angular-builders/custom-webpack to devDependencies', async () => {

@@ -35,16 +35,13 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     externals: ['zone.js'],
     devServer: {
       historyApiFallback: false,
-      contentBase: path.resolve(process.cwd(), 'src'),
+      static: path.resolve(process.cwd(), 'src'),
       headers: {
         'Access-Control-Allow-Headers': '*',
       },
     },
     module: {
-      rules: [
-        {
-        },
-      ],
+      rules: [{}],
     },
     devtool: resolveDevtool(options),
   };
