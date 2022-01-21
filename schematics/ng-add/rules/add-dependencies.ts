@@ -1,6 +1,5 @@
 import * as https from 'https';
 import { IncomingMessage } from 'http';
-import { VERSION } from '@angular/core';
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import {
   addPackageJsonDependency,
@@ -12,6 +11,7 @@ export function addDependencies(): Rule {
   const dependencies: Array<NodeDependency | Promise<NodeDependency>> = [
     getSingleSpaDependency(),
     getSingleSpaAngularDependency(),
+    getStyleLoaderDependency(),
     getAngularBuildersCustomWebpackDependency(),
   ];
 
@@ -26,10 +26,12 @@ export function addDependencies(): Rule {
 interface PackageJson {
   version: string;
   peerDependencies?: {
-    'single-spa': string;
+    'single-spa'?: string;
+    'style-loader'?: string;
   };
   dependencies?: {
-    'single-spa': string;
+    'single-spa'?: string;
+    'style-loader'?: string;
   };
 }
 
@@ -56,6 +58,15 @@ function getSingleSpaAngularDependency(): NodeDependency {
   };
 }
 
+function getStyleLoaderDependency(): NodeDependency {
+  return {
+    name: 'style-loader',
+    overwrite: false,
+    type: NodeDependencyType.Dev,
+    version: peerDependencies?.['style-loader'] || dependencies?.['style-loader'] || 'latest',
+  };
+}
+
 async function getAngularBuildersCustomWebpackDependency(): Promise<NodeDependency> {
   return {
     name: '@angular-builders/custom-webpack',
@@ -69,11 +80,12 @@ async function resolveCustomWebpackVersion(): Promise<string> {
   let version: string;
 
   try {
+    const major = await resolveAngularMajorVersion();
     const versions: string[] = await getCustomWebpackVersions();
     // Let's try to get all versions that might match the current major Angular version.
     // This can be:
     // `['12.0.0-beta.0', '12.0.0', '12.0.1-beta.0']`
-    const majorVersions = versions.filter(version => version.startsWith(VERSION.major));
+    const majorVersions = versions.filter(version => version.startsWith(major));
     const majorBetaVersions = majorVersions.filter(version => version.match(/-beta/) !== null);
     const majorStableVersions = majorVersions.filter(version => version.match(/-beta/) === null);
 
@@ -118,4 +130,17 @@ function getCustomWebpackVersions(): Promise<string[]> {
 
     request.on('error', reject).end();
   });
+}
+
+async function resolveAngularMajorVersion(): Promise<string> {
+  if (typeof jest !== 'undefined') {
+    return (await import('@angular/core')).VERSION.major;
+  } else {
+    // Caretaker note: Angular 13 is no longer shipped with UMD bundles. It exports `.mjs` files only.
+    // Thus `require('@angular/core')` throws an exception that `Must use import to load ES Module`.
+
+    // The `await import('@angular/core')` is transformed by the TS compiler into this:
+    // `yield Promise.resolve().then(() => require('@angular/core'))`.
+    return (await Function('return import("@angular/core")')()).VERSION.major;
+  }
 }

@@ -1,12 +1,11 @@
-import { VERSION } from '@angular/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
-import { createTestRunner } from './utils';
+import { createTestRunner, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
   newProjectRoot: 'projects',
-  version: VERSION.full,
+  version: VERSION,
 };
 
 describe('ng-add', () => {
@@ -52,12 +51,16 @@ describe('ng-add', () => {
     const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
     // Assert `package.json` scripts
-    expect(scripts['build:single-spa:first-cool-app']).toBe('ng build first-cool-app --prod');
+    expect(scripts['build:single-spa:first-cool-app']).toBe(
+      'ng build first-cool-app --configuration production',
+    );
     expect(scripts['serve:single-spa:first-cool-app']).toBe(
       'ng s --project first-cool-app --disable-host-check --port 4200 --live-reload false',
     );
 
-    expect(scripts['build:single-spa:second-cool-app']).toBe('ng build second-cool-app --prod');
+    expect(scripts['build:single-spa:second-cool-app']).toBe(
+      'ng build second-cool-app --configuration production',
+    );
     expect(scripts['serve:single-spa:second-cool-app']).toBe(
       'ng s --project second-cool-app --disable-host-check --port 4201 --live-reload false',
     );
@@ -88,13 +91,13 @@ describe('ng-add', () => {
     const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 
     // Assert `package.json` scripts
-    expect(scripts['build:single-spa']).toBe('ng build --prod');
+    expect(scripts['build:single-spa']).toBe('ng build --configuration production');
     expect(scripts['serve:single-spa']).toBe(
       'ng s --disable-host-check --port 4200 --live-reload false',
     );
 
     expect(scripts['build:single-spa:additional-project']).toBe(
-      'ng build additional-project --prod',
+      'ng build additional-project --configuration production',
     );
     expect(scripts['serve:single-spa:additional-project']).toBe(
       'ng s --project additional-project --disable-host-check --port 4201 --live-reload false',
