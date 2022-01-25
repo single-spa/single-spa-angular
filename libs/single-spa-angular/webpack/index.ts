@@ -54,6 +54,16 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     devtool: resolveDevtool(options),
   };
 
+  // Do not set the `client.webSocketURL` configuration if there's no host and port.
+  if (config.devServer?.host && config.devServer.port) {
+    singleSpaConfig.devServer.client = {
+      webSocketURL: {
+        hostname: config.devServer.host,
+        port: config.devServer.port,
+      },
+    };
+  }
+
   const mergedConfig = mergeConfigs(config, singleSpaConfig);
 
   if (mergedConfig.output.libraryTarget === 'system') {
