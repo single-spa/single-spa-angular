@@ -1,0 +1,74 @@
+{
+  "projectType": "application",
+  "root": "apps/elements",
+  "sourceRoot": "apps/elements/src",
+  "prefix": "single-spa-angular",
+  "architect": {
+    "build": {
+      "builder": "@angular-builders/custom-webpack:browser",
+      "options": {
+        "customWebpackConfig": {
+          "path": "apps/elements/webpack.config.ts"
+        },
+        "outputPath": "dist/apps/elements",
+        "index": "apps/elements/src/index.html",
+        "main": "apps/elements/src/main.single-spa.ts",
+        "tsConfig": "apps/elements/tsconfig.app.json",
+        "aot": true,
+        "assets": ["apps/elements/src/favicon.ico", "apps/elements/src/assets"],
+        "styles": ["apps/elements/src/styles.scss"],
+        "deployUrl": "http://localhost:4000/"
+      },
+      "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/elements/src/environments/environment.ts",
+              "with": "apps/elements/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "none",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "builder": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "browserTarget": "elements:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "elements:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

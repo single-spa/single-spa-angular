@@ -20,7 +20,7 @@
       "options": {
         "accessToken": "YmQwMTE3MTMtOTE0YS00ZjUwLTliN2ItMWI4N2NmMmQ1MTUzfHJlYWQtd3JpdGU=",
         "cacheableOperations": ["build", "test", "lint", "e2e"],
-        "runtimeCacheInputs": ["node -v"],
+        "runtimeCacheInputs": ["node -v", "node ./scripts/get-os.js"],
         "canTrackAnalytics": false,
         "showUsageWarnings": true,
         "parallel": 1
@@ -28,21 +28,29 @@
     }
   },
   "cli": {
-    "defaultCollection": "@nrwl/angular"
+    "defaultCollection": "@nrwl/angular",
+    "analytics": false
   },
-  "defaultProject": "shop",
   "generators": {
-    "@nrwl/workspace": {
-      "library": {
-        "linter": "tslint"
-      }
-    },
     "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
       "unitTestRunner": "jest",
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:library": {
-      "unitTestRunner": "jest"
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "buildable": true
+    },
+    "@schematics/angular:component": {
+      "style": "scss",
+      "changeDetection": "OnPush"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss",
+      "changeDetection": "OnPush"
     }
-  }
+  },
+  "defaultProject": "single-spa-angular"
 }
