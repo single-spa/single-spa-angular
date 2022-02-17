@@ -3,6 +3,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
 
+import { loadMontserrat } from './fonts';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
@@ -12,6 +13,7 @@ if (environment.production) {
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: async () => {
+    await loadMontserrat();
     const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
       AppModule,
     );
