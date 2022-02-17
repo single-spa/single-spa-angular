@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "projects": {
+    "chat": "apps/chat",
+    "elements": "apps/elements",
+    "navbar": "apps/navbar",
+    "noop-zone": "apps/noop-zone",
+    "parcel": "apps/parcel",
+    "shop": "apps/shop",
+    "single-spa-angular": "libs/single-spa-angular"
+  }
+}
