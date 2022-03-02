@@ -31,6 +31,7 @@
   },
   "exports": {
     "./lib/webpack": {
+      "types": "./lib/webpack/index.d.ts",
       "default": "./lib/webpack/index.js"
     }
   }
