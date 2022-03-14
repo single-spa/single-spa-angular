@@ -15,6 +15,10 @@ const enum Action {
   Unmount = 'unmount',
 }
 
+// This will be provided through Terser global definitions by Angular CLI. This will
+// help to tree-shake away the code unneeded for production bundles.
+declare const ngDevMode: boolean;
+
 @Component({
   selector: 'parcel',
   template: '',
@@ -47,7 +51,7 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.scheduleTask(Action.Mount, () => {
-      if (this.mountParcel === null) {
+      if (ngDevMode && this.mountParcel === null) {
         throw new Error(
           'single-spa-angular: the [mountParcel] binding is required when using the <parcel> component. You can either (1) import mountRootParcel from single-spa or (2) use the mountParcel prop provided to single-spa applications.',
         );
@@ -61,7 +65,7 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
         this.host.nativeElement.appendChild(this.wrapper);
       }
 
-      this.parcel = this.mountParcel(this.config!, {
+      this.parcel = this.mountParcel!(this.config!, {
         ...this.customProps,
         domElement: this.wrapper,
       });

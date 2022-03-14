@@ -18,8 +18,12 @@ const defaultOptions = {
   bootstrappedModule: null,
 };
 
+// This will be provided through Terser global definitions by Angular CLI. This will
+// help to tree-shake away the code unneeded for production bundles.
+declare const ngDevMode: boolean;
+
 export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): LifeCycles<T> {
-  if (typeof userOptions !== 'object') {
+  if (ngDevMode && typeof userOptions !== 'object') {
     throw Error('single-spa-angular requires a configuration object');
   }
 
@@ -28,19 +32,19 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     ...userOptions,
   };
 
-  if (typeof options.bootstrapFunction !== 'function') {
+  if (ngDevMode && typeof options.bootstrapFunction !== 'function') {
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (typeof options.template !== 'string') {
+  if (ngDevMode && typeof options.template !== 'string') {
     throw Error('single-spa-angular must be passed options.template string');
   }
 
-  if (!options.NgZone) {
+  if (ngDevMode && !options.NgZone) {
     throw Error(`single-spa-angular must be passed the NgZone option`);
   }
 
-  if (options.Router && !options.NavigationStart) {
+  if (ngDevMode && options.Router && !options.NavigationStart) {
     // We call `console.warn` except of throwing `new Error()` since this will not
     // be a breaking change.
     console.warn(`single-spa-angular must be passed the NavigationStart option`);
@@ -89,7 +93,7 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
 
   const bootstrapPromise = options.bootstrapFunction(props);
 
-  if (!(bootstrapPromise instanceof Promise)) {
+  if (ngDevMode && !(bootstrapPromise instanceof Promise)) {
     throw Error(
       `single-spa-angular: the options.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`,
     );
@@ -97,10 +101,12 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
 
   const module: NgModuleRef<any> = await bootstrapPromise;
 
-  if (!module || typeof module.destroy !== 'function') {
-    throw Error(
-      `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
-    );
+  if (ngDevMode) {
+    if (!module || typeof module.destroy !== 'function') {
+      throw Error(
+        `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
+      );
+    }
   }
 
   const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
@@ -114,7 +120,7 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
   // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
   // Also `getSingleSpaExtraProviders()` function should be called only if the user doesn't use
   // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
-  if (ngZoneEnabled && options.Router && singleSpaPlatformLocation === null) {
+  if (ngDevMode && ngZoneEnabled && options.Router && singleSpaPlatformLocation === null) {
     throw new Error(`
       single-spa-angular: could not retrieve extra providers from the platform injector. Did you call platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule()?
     `);
