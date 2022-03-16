@@ -18,13 +18,13 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
     );
   }
 
-  const containerElement = getContainerElement(domElementGetter);
+  const containerElement = getContainerElement(domElementGetter, props);
   containerElement.innerHTML = options.template;
   return containerElement;
 }
 
-function getContainerElement(domElementGetter: DomElementGetter): never | HTMLElement {
-  const element = domElementGetter();
+function getContainerElement(domElementGetter: DomElementGetter, props: any): never | HTMLElement {
+  const element = domElementGetter(props);
 
   if (ngDevMode && !element) {
     throw Error('domElementGetter did not return a valid dom element');
