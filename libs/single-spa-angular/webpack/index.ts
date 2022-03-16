@@ -21,7 +21,7 @@ interface Options {
 }
 
 export default (config: any, options?: Options, extraOptions?: DefaultExtraOptions) => {
-  const libraryName = getLibraryName(options);
+  const libraryName = getLibraryName(config, options);
   extraOptions = { ...defaultExtraOptions, ...extraOptions };
 
   const singleSpaConfig: any = {
@@ -112,22 +112,23 @@ function removeMiniCssExtract(config: any): void {
   removePluginByName(config.plugins, 'MiniCssExtractPlugin');
 }
 
-function getLibraryName(options: Options | undefined): string {
+function getLibraryName(config: any, options: Options | undefined): string {
   if (options?.customWebpackConfig?.libraryName) {
     return options.customWebpackConfig.libraryName;
   }
 
-  const projectName = getProjectNameFromAngularJson(options);
+  const projectName =
+    getProjectNameFromAngularJson(options) || getProjectNameFromWorkspaceJson(config);
   if (projectName) return projectName;
 
   console.warn(
     'Warning: single-spa-angular could not determine a library name to use and has used a default value.',
   );
-  console.info('This may cause issues if this app uses code-splitting or lazy loading.');
+  console.warn('This may cause issues if this app uses code-splitting or lazy loading.');
   if (!options) {
-    console.info('You may also need to update extra-webpack.config.json.');
+    console.warn('You may also need to update extra-webpack.config.json.');
   }
-  console.info(
+  console.warn(
     'See <https://single-spa.js.org/docs/ecosystem-angular/#use-custom-webpack> for information on how to resolve this.',
   );
 
@@ -165,6 +166,42 @@ function getProjectNameFromAngularJson(options: Options | undefined): string | n
   } catch {
     // If we reach here there are multiple (or zero) projects in angular.json
     // we cannot tell which one to use, so we will end up using the default.
+    return null;
+  }
+}
+
+/**
+ * https://nx.dev/configuration/projectjson#project-configuration
+ */
+function getProjectNameFromWorkspaceJson(config: any): string | null {
+  // Ensure this is an Nrwl Nx workspace.
+  const nxJsonPath = findUp('nx.json', process.cwd());
+  if (!nxJsonPath) return null;
+
+  try {
+    // E.g. `/Users/username/single-spa-angular/apps/shop`.
+    const [root]: string = config.resolve.roots;
+    const workspaceJsonPath: string | null = findUp('workspace.json', process.cwd());
+    // The `workspace.json` structure might be as follows:
+    // {
+    //   "version": 2,
+    //   "projects": {
+    //     "chat": "apps/chat",
+    //     "shop": "apps/shop",
+    //     "my-lib": "libs/my-lib"
+    //   }
+    // }
+    const { projects } = JSON.parse(fs.readFileSync(workspaceJsonPath!, 'utf8'));
+
+    for (const [projectName, projectPath] of Object.entries<string>(projects)) {
+      // If `/Users/username/single-spa-angular/apps/shop` includes `apps/shop` then return `shop`.
+      if (root.includes(projectPath)) {
+        return projectName;
+      }
+    }
+
+    return null;
+  } catch {
     return null;
   }
 }
