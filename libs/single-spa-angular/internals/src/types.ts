@@ -1,10 +1,10 @@
 import { AppProps } from 'single-spa';
 import { NgModuleRef } from '@angular/core';
 
-export type DomElementGetter = () => HTMLElement;
+export type DomElementGetter = (props: any) => HTMLElement;
 
 export interface BaseSingleSpaAngularOptions {
   template: string;
-  domElementGetter?(): HTMLElement;
+  domElementGetter?: DomElementGetter;
   bootstrapFunction(props: AppProps): Promise<NgModuleRef<any>>;
 }
