@@ -8,6 +8,7 @@
       "builder": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
+          "libraryTarget": "system",
           "path": "apps/elements/webpack.config.ts"
         },
         "outputPath": "dist/apps/elements",
@@ -56,12 +57,12 @@
           ]
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "serve": {
       "builder": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "elements:build"
+        "browserTarget": "elements:build:development"
       },
       "configurations": {
         "production": {

@@ -8,6 +8,7 @@
       "builder": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
+          "libraryTarget": "system",
           "path": "apps/navbar/webpack.config.ts"
         },
         "outputPath": "dist/apps/navbar",
@@ -61,7 +62,7 @@
     "serve": {
       "builder": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "navbar:build"
+        "browserTarget": "navbar:build:development"
       },
       "configurations": {
         "production": {

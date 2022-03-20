@@ -8,6 +8,7 @@
       "builder": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
+          "libraryTarget": "system",
           "path": "apps/chat/webpack.config.ts"
         },
         "outputPath": "dist/apps/chat",
@@ -56,12 +57,12 @@
           ]
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "serve": {
       "builder": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "chat:build"
+        "browserTarget": "chat:build:development"
       },
       "configurations": {
         "production": {

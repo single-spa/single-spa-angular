@@ -8,6 +8,7 @@
       "builder": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
+          "libraryTarget": "system",
           "path": "apps/shop/webpack.config.ts"
         },
         "outputPath": "dist/apps/shop",

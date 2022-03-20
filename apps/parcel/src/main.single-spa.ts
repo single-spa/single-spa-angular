@@ -1,6 +1,6 @@
-import { enableProdMode, NgZone } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngular } from 'single-spa-angular';
+import { singleSpaAngular, enableProdMode } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
