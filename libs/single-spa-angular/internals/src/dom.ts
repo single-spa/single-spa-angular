@@ -10,7 +10,7 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
 ): HTMLElement {
   const domElementGetter = chooseDomElementGetter(options, props);
 
-  if (ngDevMode && !domElementGetter) {
+  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !domElementGetter) {
     throw Error(
       `Cannot mount angular application '${
         props.name || props.appName
@@ -26,7 +26,7 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
 function getContainerElement(domElementGetter: DomElementGetter, props: any): never | HTMLElement {
   const element = domElementGetter(props);
 
-  if (ngDevMode && !element) {
+  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !element) {
     throw Error('domElementGetter did not return a valid dom element');
   }
 
