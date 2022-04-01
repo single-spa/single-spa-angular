@@ -51,7 +51,7 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.scheduleTask(Action.Mount, () => {
-      if (ngDevMode && this.mountParcel === null) {
+      if ((typeof ngDevMode === 'undefined' || ngDevMode) && this.mountParcel === null) {
         throw new Error(
           'single-spa-angular: the [mountParcel] binding is required when using the <parcel> component. You can either (1) import mountRootParcel from single-spa or (2) use the mountParcel prop provided to single-spa applications.',
         );
