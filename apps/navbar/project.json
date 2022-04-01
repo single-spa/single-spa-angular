@@ -9,6 +9,7 @@
       "options": {
         "customWebpackConfig": {
           "libraryTarget": "system",
+          "excludeAngularDependencies": true,
           "path": "apps/navbar/webpack.config.ts"
         },
         "outputPath": "dist/apps/navbar",

@@ -15,6 +15,7 @@ interface Options {
   customWebpackConfig?: {
     libraryName?: string;
     libraryTarget?: string;
+    excludeAngularDependencies?: boolean;
   };
   main?: string;
   sourceMap?: boolean | { scripts?: boolean; vendor?: boolean };
@@ -53,6 +54,51 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     },
     devtool: resolveDevtool(options),
   };
+
+  if (options?.customWebpackConfig?.excludeAngularDependencies) {
+    // Note: we need to specify packages explicitly w/o wildcards (e.g. /@angular\/*/). The developer
+    // may have an alias that also starts with `@angular/`, this may lead to unexpected behavior.
+    singleSpaConfig.externals.push(
+      'rxjs',
+      'rxjs/operators',
+
+      '@angular/core',
+      '@angular/compiler',
+
+      '@angular/common',
+      '@angular/common/http',
+      '@angular/common/upgrade',
+
+      '@angular/platform-browser',
+      '@angular/platform-browser/animations',
+
+      '@angular/platform-browser-dynamic',
+
+      '@angular/router',
+      '@angular/router/upgrade',
+
+      '@angular/animations',
+      '@angular/animations/browser',
+
+      '@angular/forms',
+
+      '@angular/elements',
+
+      '@angular/upgrade',
+      '@angular/upgrade/static',
+
+      '@angular/service-worker',
+      '@angular/service-worker/config',
+
+      '@angular/localize',
+
+      'single-spa',
+      'single-spa-angular/internals',
+      'single-spa-angular',
+      'single-spa-angular/elements',
+      'single-spa-angular/parcel',
+    );
+  }
 
   // Do not set the `client.webSocketURL` configuration if there's no host and port.
   if (config.devServer?.host && config.devServer.port) {
