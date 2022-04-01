@@ -8,6 +8,7 @@
       "builder": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
+          "libraryTarget": "system",
           "path": "apps/parcel/webpack.config.ts"
         },
         "outputPath": "dist/apps/parcel",
@@ -57,12 +58,12 @@
           ]
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "serve": {
       "builder": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "parcel:build"
+        "browserTarget": "parcel:build:development"
       },
       "configurations": {
         "production": {
