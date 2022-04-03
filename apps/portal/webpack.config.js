@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = (env, { mode }) => {
   const isDevelopment = mode !== 'production';
 
-  return {
+  /** @type {import('webpack').Configuration} */
+  const config = {
     entry: path.join(__dirname, 'src/main.js'),
     output: {
       clean: true,
@@ -28,4 +29,6 @@ module.exports = (env, { mode }) => {
       historyApiFallback: true,
     },
   };
+
+  return config;
 };
