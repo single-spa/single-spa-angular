@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { assetUrl } from '../single-spa/asset-url';
+
 interface User {
   id: string;
   name: string;
@@ -25,7 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private ref: ChangeDetectorRef, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get<User[]>('https://jsonplaceholder.typicode.com/users').subscribe(users => {
+    this.http.get<User[]>(assetUrl('/users.json')).subscribe(users => {
       this.users = users;
       this.ref.detectChanges();
     });

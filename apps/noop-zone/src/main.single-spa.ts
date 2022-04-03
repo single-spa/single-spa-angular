@@ -1,7 +1,7 @@
 import { ApplicationRef } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngular, enableProdMode } from 'single-spa-angular';
+import { singleSpaAngular, enableProdMode, getSingleSpaExtraProviders } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -12,9 +12,12 @@ if (environment.production) {
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: async () => {
-    const ngModuleRef = await platformBrowserDynamic().bootstrapModule(AppModule, {
-      ngZone: 'noop',
-    });
+    const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
+      AppModule,
+      {
+        ngZone: 'noop',
+      },
+    );
 
     const appRef = ngModuleRef.injector.get(ApplicationRef);
     const listener = () => appRef.tick();
@@ -22,8 +25,6 @@ const lifecycles = singleSpaAngular({
 
     ngModuleRef.onDestroy(() => {
       window.removeEventListener('popstate', listener);
-      // This is used only for testing purposes.
-      window.dispatchEvent(new CustomEvent('noopZoneAppDestroyed'));
     });
 
     return ngModuleRef;
