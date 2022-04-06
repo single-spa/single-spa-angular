@@ -2,11 +2,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
 
+import { externals } from './externals';
 import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';
 
 export interface DefaultExtraOptions {
   removeMiniCssExtract: boolean;
 }
+
 const defaultExtraOptions = {
   removeMiniCssExtract: true,
 };
@@ -56,48 +58,7 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
   };
 
   if (options?.customWebpackConfig?.excludeAngularDependencies) {
-    // Note: we need to specify packages explicitly w/o wildcards (e.g. /@angular\/*/). The developer
-    // may have an alias that also starts with `@angular/`, this may lead to unexpected behavior.
-    singleSpaConfig.externals.push(
-      'rxjs',
-      'rxjs/operators',
-
-      '@angular/core',
-      '@angular/compiler',
-
-      '@angular/common',
-      '@angular/common/http',
-      '@angular/common/upgrade',
-
-      '@angular/platform-browser',
-      '@angular/platform-browser/animations',
-
-      '@angular/platform-browser-dynamic',
-
-      '@angular/router',
-      '@angular/router/upgrade',
-
-      '@angular/animations',
-      '@angular/animations/browser',
-
-      '@angular/forms',
-
-      '@angular/elements',
-
-      '@angular/upgrade',
-      '@angular/upgrade/static',
-
-      '@angular/service-worker',
-      '@angular/service-worker/config',
-
-      '@angular/localize',
-
-      'single-spa',
-      'single-spa-angular/internals',
-      'single-spa-angular',
-      'single-spa-angular/elements',
-      'single-spa-angular/parcel',
-    );
+    singleSpaConfig.externals.push(...externals);
   }
 
   // Do not set the `client.webSocketURL` configuration if there's no host and port.
@@ -158,6 +119,8 @@ function removeMiniCssExtract(config: any): void {
   removePluginByName(config.plugins, 'MiniCssExtractPlugin');
 }
 
+const logger = createLogger();
+
 function getLibraryName(config: any, options: Options | undefined): string {
   if (options?.customWebpackConfig?.libraryName) {
     return options.customWebpackConfig.libraryName;
@@ -167,14 +130,14 @@ function getLibraryName(config: any, options: Options | undefined): string {
     getProjectNameFromAngularJson(options) || getProjectNameFromWorkspaceJson(config);
   if (projectName) return projectName;
 
-  console.warn(
+  logger.warn(
     'Warning: single-spa-angular could not determine a library name to use and has used a default value.',
   );
-  console.warn('This may cause issues if this app uses code-splitting or lazy loading.');
+  logger.warn('This may cause issues if this app uses code-splitting or lazy loading.');
   if (!options) {
-    console.warn('You may also need to update extra-webpack.config.json.');
+    logger.warn('You may also need to update extra-webpack.config.json.');
   }
-  console.warn(
+  logger.warn(
     'See <https://single-spa.js.org/docs/ecosystem-angular/#use-custom-webpack> for information on how to resolve this.',
   );
 
@@ -281,5 +244,21 @@ function mergeConfigs(
   } catch {
     // `merge.smart` has been dropped in `webpack-merge@5`.
     return webpackMerge.default(config, singleSpaConfig);
+  }
+}
+
+function createLogger() {
+  try {
+    // If we're in an Nx workspace then use its logger.
+    // eslint-disable-next-line
+    const { output } = require('@nrwl/workspace');
+    return {
+      warn: (message: string) => output.warn({ title: message }),
+    };
+  } catch {
+    // Otherwise, fallback to `console.warn`.
+    return {
+      warn: (message: string) => console.warn(message),
+    };
   }
 }

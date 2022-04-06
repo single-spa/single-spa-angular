@@ -11,7 +11,7 @@ module.exports = (env, { mode }) => {
       clean: true,
       publicPath: '/',
       filename: isDevelopment ? '[name].js' : '[name].[contenthash].js',
-      path: path.join(__dirname, '../../dist/apps/portal'),
+      path: path.join(__dirname, '../../dist/apps/root-config'),
     },
     target: 'web',
     mode: isDevelopment ? 'development' : 'production',
