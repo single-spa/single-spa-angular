@@ -17,8 +17,18 @@
         "main": "apps/elements/src/main.single-spa.ts",
         "tsConfig": "apps/elements/tsconfig.app.json",
         "aot": true,
-        "assets": ["apps/elements/src/favicon.ico", "apps/elements/src/assets"],
-        "styles": ["apps/elements/src/styles.scss"],
+        "assets": [
+          "apps/elements/src/favicon.ico",
+          "apps/elements/src/assets"
+        ],
+        "styles": [
+          "apps/elements/src/styles.scss",
+          {
+            "input": "apps/elements/src/styles/dark-theme.scss",
+            "inject": false,
+            "bundleName": "dark-theme"
+          }
+        ],
         "deployUrl": "http://localhost:4000/"
       },
       "configurations": {

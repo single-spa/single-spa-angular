@@ -1,3 +1,1 @@
-import singleSpaAngularWebpack from '../../libs/single-spa-angular/webpack';
-
-export default singleSpaAngularWebpack;
+export { default } from '../../libs/single-spa-angular/webpack';

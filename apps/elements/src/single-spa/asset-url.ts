@@ -10,3 +10,10 @@ export function assetUrl(url: string): string {
 
   return `${publicPath}${publicPathSuffix}assets${urlPrefix}${url}`;
 }
+
+export function urlWithPublicPath(url: string): string {
+  // @ts-ignore
+  const publicPath = __webpack_public_path__;
+  const publicPathSuffix = publicPath.endsWith('/') ? '' : '/';
+  return `${publicPath}${publicPathSuffix}${url}`;
+}
