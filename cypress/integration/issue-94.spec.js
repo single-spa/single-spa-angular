@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+Cypress.Screenshot.defaults({
+  screenshotOnRunFailure: false,
+});
+
 describe('https://github.com/single-spa/single-spa-angular/issues/94', () => {
   it('should navigate using back button and change detection should continue working', () => {
     cy.visit('/shop');

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { assetUrl } from '../single-spa/asset-url';
+import { assetUrl, urlWithPublicPath } from '../single-spa/asset-url';
 
 interface User {
   id: string;
@@ -24,6 +24,8 @@ interface User {
 export class AppComponent implements OnInit, OnDestroy {
   users: User[] = [];
 
+  lazyStylesHaveBeenLoaded = false;
+
   constructor(private ref: ChangeDetectorRef, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -35,5 +37,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('Custom element <elements-root> has been destroyed');
+  }
+
+  tryToReproduce187Issue(): void {
+    System.import(urlWithPublicPath('dark-theme.js')).then(() => {
+      this.lazyStylesHaveBeenLoaded = true;
+      this.ref.detectChanges();
+    });
   }
 }

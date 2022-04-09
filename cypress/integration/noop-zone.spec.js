@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+Cypress.Screenshot.defaults({
+  screenshotOnRunFailure: false,
+});
+
 describe('Zone-less application', () => {
   it('should mount zone-less application, navigate between pages and then unmount it successfully', () => {
     cy.visit('/noop-zone');

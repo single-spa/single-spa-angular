@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+Cypress.Screenshot.defaults({
+  screenshotOnRunFailure: false,
+});
+
 describe('Angular parcel', () => {
   it('should navigate to /parcel and render the React widget and lazy component', () => {
     cy.visit('/parcel')
