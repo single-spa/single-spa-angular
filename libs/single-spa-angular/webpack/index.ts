@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as fs from 'fs';
 import { findUp } from '@angular/cli/utilities/find-up';
 
@@ -38,15 +37,6 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     externals: ['zone.js'],
     devServer: {
       historyApiFallback: false,
-      static: {
-        // The `devServer.contentBase` property isn't used anymore, the Angular CLI sets the `resolve.roots` property
-        // that references the project root directory.
-        // See: https://github.com/angular/angular-cli/blob/master/packages/angular_devkit/build_angular/src/webpack/configs/common.ts#L304
-        // Otherwise, we just fallback to `src` folder.
-        directory: Array.isArray(config.resolve?.roots)
-          ? config.resolve.roots[0]
-          : path.join(process.cwd(), 'src'),
-      },
       headers: {
         'Access-Control-Allow-Headers': '*',
       },
