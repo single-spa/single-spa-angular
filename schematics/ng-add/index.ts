@@ -26,7 +26,12 @@ export default function (options: NgAddOptions): Rule {
 async function getWorkspace(tree: Tree, projectName: string | undefined) {
   const host = createVirtualHost(tree);
   const { workspace } = await workspaces.readWorkspace('/', host);
-  projectName = projectName || <string>workspace.extensions.defaultProject;
+  // Previously, we used `projectName` or `workspace.extensions.defaultProject`.
+  // The defaultProject workspace option has been deprecated.
+  // The project to use will be determined from the current working directory.
+  if (!projectName) {
+    throw new SchematicsException('The project name is not specified.');
+  }
 
   const project = workspace.projects.get(projectName);
 

@@ -1,11 +1,11 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/navbar",
   "sourceRoot": "apps/navbar/src",
   "prefix": "single-spa-angular",
-  "architect": {
+  "targets": {
     "build": {
-      "builder": "@angular-builders/custom-webpack:browser",
+      "executor": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
           "libraryTarget": "system",
@@ -61,7 +61,7 @@
       "defaultConfiguration": "development"
     },
     "serve": {
-      "builder": "@angular-builders/custom-webpack:dev-server",
+      "executor": "@angular-builders/custom-webpack:dev-server",
       "options": {
         "browserTarget": "navbar:build:development"
       },

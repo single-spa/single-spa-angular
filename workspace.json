@@ -8,5 +8,6 @@
     "parcel": "apps/parcel",
     "shop": "apps/shop",
     "single-spa-angular": "libs/single-spa-angular"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

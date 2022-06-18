@@ -28,7 +28,11 @@ describe('https://github.com/single-spa/single-spa-angular/issues/341', () => {
 
     // Act
     appTree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, appTree)
+      .runSchematicAsync<NgAddOptions>(
+        'ng-add',
+        { project: 'first-cool-app', routing: true },
+        appTree,
+      )
       .toPromise();
 
     subscription.unsubscribe();

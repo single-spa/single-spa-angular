@@ -31,13 +31,15 @@ describe('ng-add', () => {
   });
 
   test('should run ng-add', async () => {
-    const tree = await testRunner.runSchematicAsync('ng-add', {}, appTree).toPromise();
+    const tree = await testRunner
+      .runSchematicAsync('ng-add', { project: 'ss-angular-cli-app' }, appTree)
+      .toPromise();
     expect(tree.files).toBeDefined();
   });
 
   test('should add single-spa and single-spa-angular to dependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .runSchematicAsync<NgAddOptions>('ng-add', { project: 'ss-angular-cli-app' }, appTree)
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.dependencies['single-spa']).toBeDefined();
@@ -46,7 +48,7 @@ describe('ng-add', () => {
 
   test('should add style-laoder to devDependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .runSchematicAsync<NgAddOptions>('ng-add', { project: 'ss-angular-cli-app' }, appTree)
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.devDependencies['style-loader']).toBeDefined();
@@ -54,7 +56,7 @@ describe('ng-add', () => {
 
   test('should add @angular-builders/custom-webpack to devDependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .runSchematicAsync<NgAddOptions>('ng-add', { project: 'ss-angular-cli-app' }, appTree)
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.devDependencies['@angular-builders/custom-webpack']).toBeDefined();
@@ -62,7 +64,7 @@ describe('ng-add', () => {
 
   test('should add main-single-spa.ts', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .runSchematicAsync<NgAddOptions>('ng-add', { project: 'ss-angular-cli-app' }, appTree)
       .toPromise();
     expect(
       tree.files.indexOf('/projects/ss-angular-cli-app/src/main.single-spa.ts'),
@@ -71,7 +73,7 @@ describe('ng-add', () => {
 
   test('should use correct prefix for root', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', {}, appTree)
+      .runSchematicAsync<NgAddOptions>('ng-add', { project: 'ss-angular-cli-app' }, appTree)
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
@@ -82,7 +84,11 @@ describe('ng-add', () => {
 
   test('should not add router dependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', { routing: false }, appTree)
+      .runSchematicAsync<NgAddOptions>(
+        'ng-add',
+        { project: 'ss-angular-cli-app', routing: false },
+        appTree,
+      )
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
@@ -93,7 +99,11 @@ describe('ng-add', () => {
 
   test('should add router dependencies', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, appTree)
+      .runSchematicAsync<NgAddOptions>(
+        'ng-add',
+        { project: 'ss-angular-cli-app', routing: true },
+        appTree,
+      )
       .toPromise();
     const mainModuleContent = getFileContent(
       tree,
@@ -130,12 +140,16 @@ describe('ng-add', () => {
     });
   });
 
-  test('should add build:single-spa npm script', async () => {
+  test('should add build:single-spa:PROJECT_NAME npm script', async () => {
     const tree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, appTree)
+      .runSchematicAsync<NgAddOptions>(
+        'ng-add',
+        { project: 'ss-angular-cli-app', routing: true },
+        appTree,
+      )
       .toPromise();
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
-    expect(packageJSON.scripts['build:single-spa']).toBeDefined();
-    expect(packageJSON.scripts['serve:single-spa']).toBeDefined();
+    expect(packageJSON.scripts['build:single-spa:ss-angular-cli-app']).toBeDefined();
+    expect(packageJSON.scripts['serve:single-spa:ss-angular-cli-app']).toBeDefined();
   });
 });

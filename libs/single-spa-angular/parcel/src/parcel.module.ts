@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ParcelComponent } from './parcel.component';
 
 @NgModule({
-  declarations: [ParcelComponent],
+  imports: [ParcelComponent],
   exports: [ParcelComponent],
 })
 export class ParcelModule {}
