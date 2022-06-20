@@ -5,7 +5,7 @@ const collectionPath = join(__dirname, '../../schematics.json');
 
 export const VERSION: string = require('@angular/core/package.json').version;
 
-export async function createWorkspace<WorkspaceOptions, AppOptions>(
+export async function createWorkspace<WorkspaceOptions extends object, AppOptions extends object>(
   testRunner: SchematicTestRunner,
   appTree: UnitTestTree,
   workspaceOptions: WorkspaceOptions,

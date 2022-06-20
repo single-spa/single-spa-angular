@@ -49,4 +49,6 @@ jobs:
         run: yarn build:all
 
       - name: Run end-to-end tests via Cypress
+        env:
+          NO_UPDATE_CHECK: 1
         run: yarn test:ci:integration

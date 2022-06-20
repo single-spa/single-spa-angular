@@ -76,42 +76,4 @@ describe('ng-add', () => {
       'http://localhost:4201/',
     );
   });
-
-  test('should create 2 apps but one app should be default and second one is additional', async () => {
-    // Arrange & act
-    await generateApplication('default-project');
-    await generateApplication('additional-project');
-
-    await testRunner.runSchematicAsync('ng-add', undefined, workspaceTree).toPromise();
-
-    const tree = await testRunner
-      .runSchematicAsync('ng-add', { project: 'additional-project', port: 4201 }, workspaceTree)
-      .toPromise();
-
-    const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
-
-    // Assert `package.json` scripts
-    expect(scripts['build:single-spa']).toBe('ng build --configuration production');
-    expect(scripts['serve:single-spa']).toBe(
-      'ng s --disable-host-check --port 4200 --live-reload false',
-    );
-
-    expect(scripts['build:single-spa:additional-project']).toBe(
-      'ng build additional-project --configuration production',
-    );
-    expect(scripts['serve:single-spa:additional-project']).toBe(
-      'ng s --project additional-project --disable-host-check --port 4201 --live-reload false',
-    );
-
-    // Assert `angular.json` `deployUrl` option
-    const config = JSON.parse(tree.get('/angular.json')!.content.toString());
-
-    expect(config.projects['default-project'].architect.build.options.deployUrl).toBe(
-      'http://localhost:4200/',
-    );
-
-    expect(config.projects['additional-project'].architect.build.options.deployUrl).toBe(
-      'http://localhost:4201/',
-    );
-  });
 });

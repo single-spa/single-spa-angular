@@ -19,8 +19,16 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "accessToken": "YmQwMTE3MTMtOTE0YS00ZjUwLTliN2ItMWI4N2NmMmQ1MTUzfHJlYWQtd3JpdGU=",
-        "cacheableOperations": ["build", "test", "lint", "e2e"],
-        "runtimeCacheInputs": ["node -v", "node ./scripts/get-os.js"],
+        "cacheableOperations": [
+          "build",
+          "test",
+          "lint",
+          "e2e"
+        ],
+        "runtimeCacheInputs": [
+          "node -v",
+          "node ./scripts/get-os.js"
+        ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true,
         "parallel": 1
@@ -28,7 +36,6 @@
     }
   },
   "cli": {
-    "defaultCollection": "@nrwl/angular",
     "analytics": false
   },
   "generators": {
@@ -52,5 +59,6 @@
       "changeDetection": "OnPush"
     }
   },
-  "defaultProject": "single-spa-angular"
+  "defaultProject": "single-spa-angular",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

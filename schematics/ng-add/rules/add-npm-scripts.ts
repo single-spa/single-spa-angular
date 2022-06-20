@@ -44,12 +44,7 @@ export function addNPMScripts(
  * - serve:single-spa:second-cool-app
  */
 function addScripts(tree: Tree, pkgPath: string, pkg: any, options: NgAddOptions): void {
-  if (options.project) {
-    addScriptsForTheSpecificProject(pkg, options.project, options.port!);
-  } else {
-    addDefaultScripts(pkg, options.port!);
-  }
-
+  addScriptsForTheSpecificProject(pkg, options.project, options.port!);
   tree.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 }
 
@@ -58,15 +53,6 @@ function addScriptsForTheSpecificProject(pkg: any, project: string, port: number
   pkg.scripts[
     `serve:single-spa:${project}`
   ] = `ng s --project ${project} --disable-host-check --port ${port} --live-reload false`;
-}
-
-/**
- * In that case the user didn't provide any `--project` argument, that probably means
- * that he has a single project in his workspace and we want to provide a default script.
- */
-function addDefaultScripts(pkg: any, port: number): void {
-  pkg.scripts['build:single-spa'] = `ng build --configuration production`;
-  pkg.scripts['serve:single-spa'] = `ng s --disable-host-check --port ${port} --live-reload false`;
 }
 
 /**

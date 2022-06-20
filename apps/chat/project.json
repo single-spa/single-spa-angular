@@ -1,11 +1,11 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/chat",
   "sourceRoot": "apps/chat/src",
   "prefix": "single-spa-angular",
-  "architect": {
+  "targets": {
     "build": {
-      "builder": "@angular-builders/custom-webpack:browser",
+      "executor": "@angular-builders/custom-webpack:browser",
       "options": {
         "customWebpackConfig": {
           "libraryTarget": "system",
@@ -61,7 +61,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "builder": "@angular-builders/custom-webpack:dev-server",
+      "executor": "@angular-builders/custom-webpack:dev-server",
       "options": {
         "browserTarget": "chat:build:development"
       },

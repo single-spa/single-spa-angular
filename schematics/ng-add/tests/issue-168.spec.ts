@@ -45,7 +45,9 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Act
     appTree.overwrite('/angular.json', JSON.stringify(buildTarget));
 
-    await testRunner.runSchematicAsync('ng-add', undefined, appTree).toPromise();
+    await testRunner
+      .runSchematicAsync('ng-add', { project: 'first-cool-app' }, appTree)
+      .toPromise();
 
     buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     configurations = buildTarget.projects['first-cool-app'].architect.build.configurations;

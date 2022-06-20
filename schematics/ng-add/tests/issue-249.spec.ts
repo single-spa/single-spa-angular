@@ -43,7 +43,11 @@ describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
 
   test('should update `tsconfig.app.json` and add `main.single-spa.ts` to `files`', async () => {
     appTree = await testRunner
-      .runSchematicAsync<NgAddOptions>('ng-add', { routing: true }, appTree)
+      .runSchematicAsync<NgAddOptions>(
+        'ng-add',
+        { project: 'ss-angular-cli-app', routing: true },
+        appTree,
+      )
       .toPromise();
 
     const expectedTsConfigPath = normalize('projects/ss-angular-cli-app/tsconfig.app.json');

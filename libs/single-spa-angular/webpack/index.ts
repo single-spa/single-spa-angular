@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { findUp } from '@angular/cli/utilities/find-up';
+import { findUp } from '@angular/cli/src/utilities/find-up';
 
 import { externals } from './externals';
 import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';

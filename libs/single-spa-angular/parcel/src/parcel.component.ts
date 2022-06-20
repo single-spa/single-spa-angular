@@ -23,6 +23,7 @@ declare const ngDevMode: boolean;
   selector: 'parcel',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
   @Input() config: ParcelConfig | null = null;
