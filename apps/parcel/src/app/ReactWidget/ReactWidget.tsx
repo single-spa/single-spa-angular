@@ -4,23 +4,22 @@ import singleSpaReact from 'single-spa-react';
 
 const ReactLogo = React.lazy(() => import('./ReactLogo'));
 
-class ReactWidget extends React.Component<ReactWidgetProps> {
-  componentDidMount(): void {
-    console.log('ReactWidget.componentDidMount()');
-  }
+interface ReactWidgetProps {
+  hello: string;
+}
 
-  componentWillUnmount(): void {
-    console.log('ReactWidget.componentWillUnmount()');
-  }
+function ReactWidget(props: React.PropsWithChildren<ReactWidgetProps>) {
+  React.useEffect(() => {
+    console.log('ReactWidget.useEffect is being called');
+    return () => console.log('ReactWidget.useEffect returned callback is being called');
+  });
 
-  render() {
-    return (
-      <React.Suspense fallback={<div>Loading ReactLogo...</div>}>
-        <ReactLogo />
-        <h1>{this.props.hello} world</h1>
-      </React.Suspense>
-    );
-  }
+  return (
+    <React.Suspense fallback={<div>Loading ReactLogo...</div>}>
+      <ReactLogo />
+      <h1>{props.hello} world</h1>
+    </React.Suspense>
+  );
 }
 
 export const config = singleSpaReact({
