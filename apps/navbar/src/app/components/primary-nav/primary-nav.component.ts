@@ -28,6 +28,10 @@ export class PrimaryNavComponent {
       label: 'Angular parcel',
       url: '/parcel',
     },
+    {
+      label: 'Angular standalone',
+      url: '/standalone',
+    },
   ];
 
   constructor(private router: Router) {}

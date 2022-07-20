@@ -10,20 +10,20 @@ import { BootstrappedSingleSpaAngularElementsOptions } from './types';
 const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
   element: null,
   template: null!,
-  ngModuleRef: null,
+  ngModuleRefOrAppRef: null,
   bootstrapFunction: null!,
   domElementGetter: undefined,
 };
 
 async function bootstrap(options: BootstrappedSingleSpaAngularElementsOptions, props: any) {
-  if (options.ngModuleRef !== null) {
+  if (options.ngModuleRefOrAppRef !== null) {
     return;
   }
 
   // We call `bootstrapFunction()` inside the bootstrap lifecycle hook
   // because Angular modules that expose custom elements should be
   // bootstrapped only once.
-  options.ngModuleRef = await options.bootstrapFunction(props);
+  options.ngModuleRefOrAppRef = await options.bootstrapFunction(props);
 }
 
 async function mount(options: BootstrappedSingleSpaAngularElementsOptions, props: any) {
