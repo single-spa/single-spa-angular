@@ -1,4 +1,4 @@
-import { NgModuleRef, NgZone } from '@angular/core';
+import { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LifeCycles } from 'single-spa';
 import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
@@ -15,7 +15,7 @@ const defaultOptions = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   updateFunction: () => Promise.resolve(),
-  bootstrappedModule: null,
+  bootstrappedNgModuleRefOrAppRef: null,
 };
 
 // This will be provided through Terser global definitions by Angular CLI. This will
@@ -90,7 +90,10 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: an
   };
 }
 
-async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgModuleRef<any>> {
+async function mount(
+  options: SingleSpaAngularOptions,
+  props: any,
+): Promise<NgModuleRef<any> | ApplicationRef> {
   getContainerElementAndSetTemplate(options, props);
 
   const bootstrapPromise = options.bootstrapFunction(props);
@@ -101,20 +104,18 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
     );
   }
 
-  const module: NgModuleRef<any> = await bootstrapPromise;
+  const ngModuleRefOrAppRef: NgModuleRef<any> | ApplicationRef = await bootstrapPromise;
 
   if (NG_DEV_MODE) {
-    if (!module || typeof module.destroy !== 'function') {
+    if (!ngModuleRefOrAppRef || typeof ngModuleRefOrAppRef.destroy !== 'function') {
       throw Error(
-        `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
+        `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module or ApplicationRef. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
       );
     }
   }
 
-  const singleSpaPlatformLocation: SingleSpaPlatformLocation | null = module.injector.get(
-    SingleSpaPlatformLocation,
-    null,
-  );
+  const singleSpaPlatformLocation: SingleSpaPlatformLocation | null =
+    ngModuleRefOrAppRef.injector.get(SingleSpaPlatformLocation, null);
 
   const ngZoneEnabled = options.NgZone !== 'noop';
 
@@ -131,13 +132,13 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
   const bootstrappedOptions = options as BootstrappedSingleSpaAngularOptions;
 
   if (ngZoneEnabled) {
-    const ngZone: NgZone = module.injector.get(options.NgZone);
+    const ngZone: NgZone = ngModuleRefOrAppRef.injector.get(options.NgZone);
     const zoneIdentifier: string = bootstrappedOptions.zoneIdentifier!;
 
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
     if (singleSpaPlatformLocation !== null) {
-      skipLocationChangeOnNonImperativeRoutingTriggers(module, options);
+      skipLocationChangeOnNonImperativeRoutingTriggers(ngModuleRefOrAppRef, options);
     }
 
     bootstrappedOptions.bootstrappedNgZone = ngZone;
@@ -145,8 +146,8 @@ async function mount(options: SingleSpaAngularOptions, props: any): Promise<NgMo
     window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
   }
 
-  bootstrappedOptions.bootstrappedModule = module;
-  return module;
+  bootstrappedOptions.bootstrappedNgModuleRefOrAppRef = ngModuleRefOrAppRef;
+  return ngModuleRefOrAppRef;
 }
 
 function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
@@ -155,13 +156,13 @@ function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
       window.removeEventListener('single-spa:routing-event', options.routingEventListener);
     }
 
-    options.bootstrappedModule!.destroy();
-    options.bootstrappedModule = null;
+    options.bootstrappedNgModuleRefOrAppRef!.destroy();
+    options.bootstrappedNgModuleRefOrAppRef = null;
   });
 }
 
 function skipLocationChangeOnNonImperativeRoutingTriggers(
-  module: NgModuleRef<any>,
+  ngModuleRefOrAppRef: NgModuleRef<any> | ApplicationRef,
   options: SingleSpaAngularOptions,
 ): void {
   if (!options.NavigationStart) {
@@ -170,7 +171,7 @@ function skipLocationChangeOnNonImperativeRoutingTriggers(
     return;
   }
 
-  const router = module.injector.get(options.Router);
+  const router = ngModuleRefOrAppRef.injector.get(options.Router);
   const subscription: Subscription = router.events.subscribe((event: any) => {
     if (event instanceof options.NavigationStart!) {
       const currentNavigation = router.getCurrentNavigation();
@@ -188,7 +189,8 @@ function skipLocationChangeOnNonImperativeRoutingTriggers(
     }
   });
 
-  module.onDestroy(() => {
+  // The `ApplicationRef` also has `onDestroy` method, but it's marked as internal.
+  ngModuleRefOrAppRef['onDestroy'](() => {
     subscription.unsubscribe();
   });
 }

@@ -24,7 +24,7 @@
   "homepage": "https://github.com/single-spa/single-spa-angular#readme",
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/core": ">=14.0.0",
+    "@angular/core": ">=14.1.0",
     "json5": "*",
     "single-spa": ">=4.0.0",
     "style-loader": "^3.3.1"

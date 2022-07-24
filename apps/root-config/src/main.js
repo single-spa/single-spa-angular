@@ -35,5 +35,11 @@ System.import('single-spa').then(({ registerApplication, start }) => {
     activeWhen: location => location.pathname.startsWith('/parcel'),
   });
 
+  registerApplication({
+    name: 'standalone',
+    app: () => System.import('standalone'),
+    activeWhen: location => location.pathname.startsWith('/standalone'),
+  });
+
   start();
 });
