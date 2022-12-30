@@ -5,7 +5,8 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsconfig: {
-        downlevelIteration: false,
+        downlevelIteration: true,
+        lib: ['es2018', 'dom', 'ES2019.Array'],
       },
     },
   },

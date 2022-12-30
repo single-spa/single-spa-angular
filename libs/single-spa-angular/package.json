@@ -4,6 +4,9 @@
   "version": "5.0.2",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "schematics": "./schematics/schematics.json",
+  "ng-update": {
+    "migrations": "./schematics/migration.json"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/single-spa/single-spa-angular.git"

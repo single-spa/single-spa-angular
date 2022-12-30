@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./lib/schematics/ng-add",
+    "outDir": "./lib/schematics",
     "target": "ES2015",
     "module": "CommonJS",
     "types": ["node"]

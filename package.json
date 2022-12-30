@@ -40,6 +40,7 @@
     "copy:schematics:json": "cpx schematics/schematics.json lib/schematics",
     "copy:schematics:schema": "cpx \"schematics/ng-add/schema*\" lib/schematics/ng-add",
     "copy:schematics:files": "cpx \"schematics/ng-add/_files/**/**\" lib/schematics/ng-add/_files",
+    "copy:schematics:migrations": "cpx schematics/migration.json lib/schematics",
     "format": "prettier './**/*' --write",
     "// - INTEGRATION INSTALLS": "Install packages for integration apps",
     "serve:app:common": "nx serve --disable-host-check --live-reload false",
@@ -126,7 +127,7 @@
     "start-server-and-test": "^1.12.0",
     "ts-jest": "26.5.5",
     "tslib": "^2.0.0",
-    "typescript": "4.2.4",
+    "typescript": "4.3.5",
     "zone.js": "0.11.4"
   },
   "dependencies": {
@@ -153,4 +154,3 @@
     ]
   }
 }
-

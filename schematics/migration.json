@@ -1,0 +1,11 @@
+{
+    "$schema": "https://raw.githubusercontent.com/angular/angular-devkit-schematics-builds/master/collection-schema.json",
+    "schematics": {
+      "migration-v5": {
+        "version": "5",
+        "description": "Updates single-spa-angular to v5",
+        "factory": "./ng-update/index#updateToV5"
+      }
+    }
+  }
+  
