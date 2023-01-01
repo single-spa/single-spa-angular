@@ -7,8 +7,8 @@
     "noop-zone": "apps/noop-zone",
     "parcel": "apps/parcel",
     "shop": "apps/shop",
-    "standalone": "apps/standalone",
-    "single-spa-angular": "libs/single-spa-angular"
+    "single-spa-angular": "libs/single-spa-angular",
+    "standalone": "apps/standalone"
   },
   "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

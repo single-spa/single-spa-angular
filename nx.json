@@ -3,32 +3,13 @@
   "affected": {
     "defaultBase": "master"
   },
-  "implicitDependencies": {
-    "angular.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
-    "tsconfig.json": "*",
-    "tslint.json": "*",
-    ".eslintrc.json": "*",
-    "nx.json": "*"
-  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
         "accessToken": "YmQwMTE3MTMtOTE0YS00ZjUwLTliN2ItMWI4N2NmMmQ1MTUzfHJlYWQtd3JpdGU=",
-        "cacheableOperations": [
-          "build",
-          "test",
-          "lint",
-          "e2e"
-        ],
-        "runtimeCacheInputs": [
-          "node -v",
-          "node ./scripts/get-os.js"
-        ],
+        "cacheableOperations": ["build", "test", "lint", "e2e"],
+        "runtimeCacheInputs": ["node -v", "node ./scripts/get-os.js"],
         "canTrackAnalytics": false,
         "showUsageWarnings": true,
         "parallel": 1
@@ -60,5 +41,20 @@
     }
   },
   "defaultProject": "single-spa-angular",
-  "$schema": "./node_modules/nx/schemas/nx-schema.json"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "sharedGlobals": [
+      "{workspaceRoot}/angular.json",
+      "{workspaceRoot}/tsconfig.json",
+      "{workspaceRoot}/tslint.json",
+      "{workspaceRoot}/nx.json"
+    ],
+    "production": ["default"]
+  },
+  "targetDefaults": {
+    "build": {
+      "inputs": ["production", "^production"]
+    }
+  }
 }

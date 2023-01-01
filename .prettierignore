@@ -13,3 +13,7 @@ browserslist
 *.ico
 dist
 .cache
+*.snap
+assets
+.husky
+*.ejs

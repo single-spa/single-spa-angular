@@ -34,7 +34,7 @@ jobs:
         # Do not install dependencies again if checksum for the
         # `yarn.lock` is the same.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --pure-lockfile --non-interactive --no-progress
+        run: yarn --pure-lockfile --non-interactive --no-progress --ignore-optional
 
       - name: Run ESLint
         run: yarn lint
