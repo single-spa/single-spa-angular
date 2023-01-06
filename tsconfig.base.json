@@ -9,7 +9,7 @@
     },
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2018", "dom"],
+    "lib": ["es2018", "dom", "ES2019.Array"],
     "moduleResolution": "node",
     "typeRoots": ["node_modules/@types"],
     "strict": true,
