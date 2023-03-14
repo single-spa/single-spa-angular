@@ -13,26 +13,26 @@ describe('ng-add', () => {
   const testRunner = createTestRunner();
 
   async function generateApplication(name: string) {
-    await testRunner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'application',
-        {
-          name,
-          routing: true,
-          skipTests: true,
-          style: 'scss',
-        },
-        workspaceTree,
-      )
-      .toPromise();
+    await testRunner.runExternalSchematic(
+      '@schematics/angular',
+      'application',
+      {
+        name,
+        routing: true,
+        skipTests: true,
+        style: 'scss',
+      },
+      workspaceTree,
+    );
   }
 
   beforeEach(async () => {
     // Generate workspace w/o application.
-    workspaceTree = await testRunner
-      .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
-      .toPromise();
+    workspaceTree = await testRunner.runExternalSchematic(
+      '@schematics/angular',
+      'workspace',
+      workspaceOptions,
+    );
   });
 
   test('should create 2 apps in an empty workspace and generate appropriate scripts', async () => {
@@ -40,13 +40,13 @@ describe('ng-add', () => {
     await generateApplication('first-cool-app');
     await generateApplication('second-cool-app');
 
-    await testRunner
-      .runSchematicAsync('ng-add', { project: 'first-cool-app' }, workspaceTree)
-      .toPromise();
+    await testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, workspaceTree);
 
-    const tree = await testRunner
-      .runSchematicAsync('ng-add', { project: 'second-cool-app', port: 4201 }, workspaceTree)
-      .toPromise();
+    const tree = await testRunner.runSchematic(
+      'ng-add',
+      { project: 'second-cool-app', port: 4201 },
+      workspaceTree,
+    );
 
     const { scripts } = JSON.parse(tree.get('/package.json')!.content.toString());
 

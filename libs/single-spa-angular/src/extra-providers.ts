@@ -1,6 +1,6 @@
 import { Injectable, StaticProvider, Inject } from '@angular/core';
 import {
-  ɵBrowserPlatformLocation,
+  BrowserPlatformLocation,
   PlatformLocation,
   LocationChangeEvent,
   LocationChangeListener,
@@ -10,7 +10,7 @@ import {
 declare const Zone: any;
 
 @Injectable()
-export class SingleSpaPlatformLocation extends ɵBrowserPlatformLocation {
+export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
   // This is a simple marker that helps us to ignore PopStateEvents
   // that was not dispatched by the browser.
   private skipNextPopState = false;
