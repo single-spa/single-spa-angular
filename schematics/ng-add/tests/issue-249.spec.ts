@@ -1,10 +1,9 @@
 import { normalize } from '@angular-devkit/core';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import { getFileContent } from '@schematics/angular/utility/test';
 import * as JSON5 from 'json5';
 
 import { Schema as NgAddOptions } from '../schema';
-import { createWorkspace, createTestRunner, VERSION } from './utils';
+import { createWorkspace, createTestRunner, getFileContent, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'ss-workspace',
@@ -42,13 +41,11 @@ describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
   });
 
   test('should update `tsconfig.app.json` and add `main.single-spa.ts` to `files`', async () => {
-    appTree = await testRunner
-      .runSchematicAsync<NgAddOptions>(
-        'ng-add',
-        { project: 'ss-angular-cli-app', routing: true },
-        appTree,
-      )
-      .toPromise();
+    appTree = await testRunner.runSchematic<NgAddOptions>(
+      'ng-add',
+      { project: 'ss-angular-cli-app', routing: true },
+      appTree,
+    );
 
     const expectedTsConfigPath = normalize('projects/ss-angular-cli-app/tsconfig.app.json');
     const buffer: Buffer | null = appTree.read(expectedTsConfigPath);

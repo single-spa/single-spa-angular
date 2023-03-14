@@ -13,22 +13,22 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
   const testRunner = createTestRunner();
 
   function generateApplication(name: string) {
-    return testRunner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'application',
-        {
-          name,
-        },
-        workspaceTree,
-      )
-      .toPromise();
+    return testRunner.runExternalSchematic(
+      '@schematics/angular',
+      'application',
+      {
+        name,
+      },
+      workspaceTree,
+    );
   }
 
   beforeEach(async () => {
-    workspaceTree = await testRunner
-      .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
-      .toPromise();
+    workspaceTree = await testRunner.runExternalSchematic(
+      '@schematics/angular',
+      'workspace',
+      workspaceOptions,
+    );
   });
 
   test('should update all configurations and disable output hashing', async () => {
@@ -45,9 +45,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Act
     appTree.overwrite('/angular.json', JSON.stringify(buildTarget));
 
-    await testRunner
-      .runSchematicAsync('ng-add', { project: 'first-cool-app' }, appTree)
-      .toPromise();
+    await testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, appTree);
 
     buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     configurations = buildTarget.projects['first-cool-app'].architect.build.configurations;
@@ -75,9 +73,7 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Act
     appTree.overwrite('/angular.json', JSON.stringify(buildTarget));
 
-    await testRunner
-      .runSchematicAsync('ng-add', { project: 'second-cool-app' }, appTree)
-      .toPromise();
+    await testRunner.runSchematic('ng-add', { project: 'second-cool-app' }, appTree);
 
     buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     configurations = buildTarget.projects['second-cool-app'].architect.build.configurations;

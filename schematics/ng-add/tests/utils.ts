@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { Tree } from '@angular-devkit/schematics';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 
 const collectionPath = join(__dirname, '../../schematics.json');
@@ -11,17 +12,32 @@ export async function createWorkspace<WorkspaceOptions extends object, AppOption
   workspaceOptions: WorkspaceOptions,
   appOptions: AppOptions,
 ) {
-  appTree = await testRunner
-    .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
-    .toPromise();
+  appTree = await testRunner.runExternalSchematic(
+    '@schematics/angular',
+    'workspace',
+    workspaceOptions,
+  );
 
-  appTree = await testRunner
-    .runExternalSchematicAsync('@schematics/angular', 'application', appOptions, appTree)
-    .toPromise();
+  appTree = await testRunner.runExternalSchematic(
+    '@schematics/angular',
+    'application',
+    appOptions,
+    appTree,
+  );
 
   return appTree;
 }
 
 export function createTestRunner(): SchematicTestRunner {
   return new SchematicTestRunner('single-spa-angular', collectionPath);
+}
+
+export function getFileContent(tree: Tree, path: string): string {
+  const fileEntry = tree.get(path);
+
+  if (!fileEntry) {
+    throw new Error(`The file (${path}) does not exist.`);
+  }
+
+  return fileEntry.content.toString();
 }
