@@ -10,12 +10,18 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.2/css/bulma.min.css"
     />
 
+    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.11.5/zone.min.js"
-      integrity="sha512-fm6Z1HSpsFZ5H96eo9QkRhQEHhqCwAsjLUFv8TbnqCOIOzVgj2k9FTOqv4GTF1GlOsLHeo3s6Xm0fT5IF4KgIw=="
+      src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.js">
+    </script>
+    <% } else { %>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.min.js"
+      integrity="sha512-+cWrFbFSw+41uXDoayGA63htnbwihSP7gbW5dwd7zK2lf7uvy0TmORZPtlWr/41sHRwSZTkO3Fav7bd8fvLiqg=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+      referrerpolicy="no-referrer">
+    </script>
+    <% } %>
 
     <meta name="importmap-type" content="systemjs-importmap" />
     <script type="systemjs-importmap">
@@ -80,12 +86,16 @@
     </script>
     <% } %>
 
+    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.14.1/system.js"></script>
+    <% } else { %>
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/system.min.js"
+      src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.14.1/system.min.js"
       integrity="sha512-hEUZNXwXBrWqdzUGvBheCYyBwT3OfFuc1HwumDzeMDK54TUioKjanhZiylIyREGBF/XXHtRx1q/Z4O1XANG4zg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    %> } %>
   </head>
   <body></body>
 </html>

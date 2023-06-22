@@ -27,10 +27,10 @@ const cp = require('child_process');
 const isWindows = os.platform() === 'win32';
 let output;
 try {
-  output = require('@nrwl/workspace').output;
+  output = require('@nx/workspace').output;
 } catch (e) {
   console.warn(
-    'Angular CLI could not be decorated to enable computation caching. Please ensure @nrwl/workspace is installed.',
+    'Angular CLI could not be decorated to enable computation caching. Please ensure @nx/workspace is installed.',
   );
   process.exit(0);
 }
@@ -51,7 +51,7 @@ function patchAngularCLI(initPath) {
       initPath,
       `
 if (!process.env['NX_CLI_SET']) {
-  const { output } = require('@nrwl/workspace');
+  const { output } = require('@nx/workspace');
   output.warn({ title: 'The Angular CLI was invoked instead of the Nx CLI. Use "npx ng [command]" or "nx [command]" instead.' });
 }
 ${angularCLIInit}
