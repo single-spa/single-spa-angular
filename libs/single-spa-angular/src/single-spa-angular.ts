@@ -142,7 +142,7 @@ async function mount(
     }
 
     bootstrappedOptions.bootstrappedNgZone = ngZone;
-    bootstrappedOptions.bootstrappedNgZone['_inner']._properties[zoneIdentifier] = true;
+    (bootstrappedOptions.bootstrappedNgZone as any)._inner._properties[zoneIdentifier] = true;
     window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
   }
 
@@ -189,8 +189,5 @@ function skipLocationChangeOnNonImperativeRoutingTriggers(
     }
   });
 
-  // The `ApplicationRef` also has `onDestroy` method, but it's marked as internal.
-  ngModuleRefOrAppRef['onDestroy'](() => {
-    subscription.unsubscribe();
-  });
+  ngModuleRefOrAppRef.onDestroy(() => subscription.unsubscribe());
 }

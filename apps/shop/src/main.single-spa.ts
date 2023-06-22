@@ -12,17 +12,10 @@ if (environment.production) {
 }
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: async () => {
-    await loadMontserrat();
-    const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
-      AppModule,
-    );
-    ngModuleRef.onDestroy(() => {
-      // This is used only for testing purposes.
-      window.dispatchEvent(new CustomEvent('shopDestroyed'));
-    });
-    return ngModuleRef;
-  },
+  bootstrapFunction: () =>
+    loadMontserrat().then(() =>
+      platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
+    ),
   template: '<shop-root />',
   Router,
   NavigationStart,

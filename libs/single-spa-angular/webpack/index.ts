@@ -241,7 +241,7 @@ function createLogger() {
   try {
     // If we're in an Nx workspace then use its logger.
     // eslint-disable-next-line
-    const { output } = require('@nrwl/workspace');
+    const { output } = require('@nx/workspace');
     return {
       warn: (message: string) => output.warn({ title: message }),
     };
