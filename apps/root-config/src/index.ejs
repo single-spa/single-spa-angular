@@ -10,18 +10,18 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.2/css/bulma.min.css"
     />
 
-    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
+    {% if (htmlWebpackPlugin.options.isDevelopment) { %}
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.js">
     </script>
-    <% } else { %>
+    {% } else { %}
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.min.js"
       integrity="sha512-+cWrFbFSw+41uXDoayGA63htnbwihSP7gbW5dwd7zK2lf7uvy0TmORZPtlWr/41sHRwSZTkO3Fav7bd8fvLiqg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer">
     </script>
-    <% } %>
+    {% } %}
 
     <meta name="importmap-type" content="systemjs-importmap" />
     <script type="systemjs-importmap">
@@ -40,7 +40,7 @@
       }
     </script>
 
-    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
+    {% if (htmlWebpackPlugin.options.isDevelopment) { %}
     <script type="systemjs-importmap">
       {
         "imports": {
@@ -63,8 +63,8 @@
         }
       }
     </script>
-    <% } else { %>
-    <script type="systemjs-importmap">
+    {% } else { %}
+    <script type="systemjs-importmap ">
       {
         "imports": {
           "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/5.9.3/system/single-spa.min.js",
@@ -84,18 +84,18 @@
         }
       }
     </script>
-    <% } %>
+    {% } %}
 
-    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
+    {% if (htmlWebpackPlugin.options.isDevelopment)  { %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.14.1/system.js"></script>
-    <% } else { %>
+    {% } else { %}
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.14.1/system.min.js"
       integrity="sha512-hEUZNXwXBrWqdzUGvBheCYyBwT3OfFuc1HwumDzeMDK54TUioKjanhZiylIyREGBF/XXHtRx1q/Z4O1XANG4zg=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    %> } %>
+    {> } %}
   </head>
   <body></body>
 </html>
