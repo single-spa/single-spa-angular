@@ -1,5 +1,5 @@
-import { LifeCycles } from 'single-spa';
-import { NgElement } from '@angular/elements';
+import type { LifeCycles } from 'single-spa';
+import type { NgElement } from '@angular/elements';
 import {
   BaseSingleSpaAngularOptions,
   getContainerElementAndSetTemplate,
