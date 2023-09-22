@@ -78,6 +78,41 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
     // matters -- only the last item in the array will have its exports become the exports for the entire
     // webpack bundle
     mergedConfig.entry.main = [...mergedConfig.entry.styles, ...mergedConfig.entry.main];
+  } else {
+    // The `entry` doesn't have a `styles` property, which means we're on the Angular
+    // 15+ version where `StylesWebpackPlugin` was introduced to resolve module resolution
+    // issues related to Yarn PNP.
+    const stylesWebpackPluginName = 'StylesWebpackPlugin';
+    const stylesWebpackPlugin = mergedConfig.plugins.find(
+      (plugin: any) => plugin.constructor.name === stylesWebpackPluginName,
+    );
+
+    const entryPoints: Record<string, string[]> | undefined =
+      stylesWebpackPlugin?.options?.entryPoints;
+
+    if (entryPoints) {
+      // The `ngGlobalStyle` is a Webpack query required by Angular to
+      // apply a specific list of Webpack loaders to these files. There
+      // are only two queries available: `ngGlobalStyle` and `ngResource`
+      // (used for component styles).
+      // Webpack would then do the following:
+      // `{ use: globalStyleLoaders, resourceQuery: /\?ngGlobalStyle/ }`
+      const query = `?ngGlobalStyle`;
+
+      Object.keys(entryPoints).forEach(entryPoint => {
+        // `styles` is the primary styles that must be loaded with the main entry point.
+        if (entryPoint === 'styles') {
+          const styles = entryPoints.styles.map(path => `${path}${query}`);
+          mergedConfig.entry.main = [...styles, ...mergedConfig.entry.main];
+        } else {
+          // Other entry points (which are lazy bundles) must be a part of entries to resolve
+          // to separate JS files.
+          mergedConfig.entry[entryPoint] = entryPoints[entryPoint].map(path => `${path}${query}`);
+        }
+      });
+
+      removePluginByName(mergedConfig.plugins, stylesWebpackPluginName);
+    }
   }
 
   // Remove bundles
