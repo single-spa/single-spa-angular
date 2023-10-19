@@ -1,4 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "files": ["src/main.single-spa.ts"]
+  "files": ["src/main.single-spa.ts"],
+  "include": ["./shared-library/**/*.ts"]
 }
