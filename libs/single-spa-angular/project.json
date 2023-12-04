@@ -9,8 +9,7 @@
       "executor": "@nx/angular:package",
       "options": {
         "tsConfig": "libs/single-spa-angular/tsconfig.lib.json",
-        "project": "libs/single-spa-angular/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/single-spa-angular/ng-package.json"
       }
     }
   },
