@@ -17,3 +17,5 @@ dist
 assets
 .husky
 *.ejs
+
+/.nx/cache
