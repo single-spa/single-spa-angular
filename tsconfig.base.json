@@ -7,9 +7,9 @@
       "single-spa-angular/internals": ["libs/single-spa-angular/internals/src/index.ts"],
       "single-spa-angular/parcel": ["libs/single-spa-angular/parcel/src/index.ts"]
     },
-    "target": "es2015",
+    "target": "ES2022",
     "module": "esnext",
-    "lib": ["es2018", "dom"],
+    "lib": ["ES2022", "dom"],
     "moduleResolution": "node",
     "typeRoots": ["node_modules/@types"],
     "strict": true,

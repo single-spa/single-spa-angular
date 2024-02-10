@@ -64,11 +64,11 @@
     "serve": {
       "executor": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "noop-zone:build:development"
+        "buildTarget": "noop-zone:build:development"
       },
       "configurations": {
         "production": {
-          "browserTarget": "noop-zone:build:production"
+          "buildTarget": "noop-zone:build:production"
         }
       }
     }
