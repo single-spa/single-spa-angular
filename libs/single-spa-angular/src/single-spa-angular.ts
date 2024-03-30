@@ -15,7 +15,7 @@ const defaultOptions = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   updateFunction: () => Promise.resolve(),
-  bootstrappedNgModuleRefOrAppRef: null,
+  instances: {},
 };
 
 // This will be provided through Terser global definitions by Angular CLI. This will
@@ -38,8 +38,8 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (NG_DEV_MODE && typeof options.template !== 'string') {
-    throw Error('single-spa-angular must be passed options.template string');
+  if (NG_DEV_MODE && typeof options.template !== 'string' && typeof options.template !== 'function') {
+    throw Error('single-spa-angular must be passed an options.template string or function');
   }
 
   if (NG_DEV_MODE && !options.NgZone) {
@@ -62,7 +62,7 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
 
 async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
   const instance: Instance = {
-    bootstrappedNgModuleRefOrAppRef: null
+    bootstrappedNgModuleRefOrAppRef: null,
   };
   options.instances[props.name || props.appName] = instance;
 
@@ -73,9 +73,6 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: an
     return;
   }
 
-  // Set NgZone on instance.
-  instance.NgZone = options.NgZone;
-
   // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
   instance.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
 
@@ -84,9 +81,10 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: an
   // https://github.com/single-spa/single-spa-angular/issues/47,
   // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
   // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-  instance.NgZone.isInAngularZone = () => {
+  options.NgZone.isInAngularZone = () => {
     // @ts-ignore
-    return window.Zone.current._properties[options.zoneIdentifier] === true;
+    // Check zone for any instance. 
+    return Object.values(options.instances).some(instance => window.Zone.current._properties[instance.zoneIdentifier] === true);
   };
 
   instance.routingEventListener = () => {
@@ -170,6 +168,9 @@ function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Prom
 
     instance.bootstrappedNgModuleRefOrAppRef!.destroy();
     instance.bootstrappedNgModuleRefOrAppRef = null;
+
+    // Delete instance from array of instances.
+    delete options.instances[props.name || props.appName];
   });
 }
 
