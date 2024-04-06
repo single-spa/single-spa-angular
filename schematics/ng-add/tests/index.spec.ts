@@ -147,6 +147,7 @@ describe('ng-add', () => {
     const expectedCustomWebpackConfigPath = normalize(
       'projects/ss-angular-cli-app/extra-webpack.config.js',
     );
+    expect(ssApp.architect.build.options.hasOwnProperty('browser')).toBeFalsy();
     expect(ssApp.architect.build.options.customWebpackConfig).toEqual({
       libraryName: 'ss-angular-cli-app',
       libraryTarget: 'umd',

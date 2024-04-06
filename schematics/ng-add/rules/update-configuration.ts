@@ -141,6 +141,7 @@ function updateBuildTarget(
 
   buildTarget.builder = '@angular-builders/custom-webpack:browser';
   buildTarget.options!.main = join(root, normalize('src/main.single-spa.ts'));
+  delete buildTarget.options!.browser;
   (buildTarget.options as unknown as CustomWebpackBuilderOptions).customWebpackConfig = {
     path: join(root, 'extra-webpack.config.js'),
     libraryName: options.project,
