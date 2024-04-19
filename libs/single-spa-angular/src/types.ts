@@ -20,5 +20,4 @@ export interface BootstrappedSingleSpaAngularOptions extends SingleSpaAngularOpt
   // `SingleSpaAngularOpts.NgZone` is a `noop` string and not an `NgZone` class.
   bootstrappedNgZone?: NgZone;
   routingEventListener?: () => void;
-  zoneIdentifier?: string;
 }
