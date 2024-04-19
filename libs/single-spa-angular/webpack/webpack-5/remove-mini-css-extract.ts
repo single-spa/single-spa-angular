@@ -66,13 +66,7 @@ function tryToRemoveMiniCssExtractThroughConditions(childRule: ChildRule): void 
     );
 
     if (cssMiniExtractIndex >= 0) {
-      childRuleCondition.use![cssMiniExtractIndex] = {
-        loader: 'style-loader',
-        // @ts-ignore
-        options: {
-          styleTagTransform: require.resolve('./styleTagTransform.js'),
-        },
-      };
+      childRuleCondition.use![cssMiniExtractIndex] = { loader: 'style-loader' };
     }
   }
 }
