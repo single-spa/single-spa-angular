@@ -74,6 +74,7 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<
   // is being executed or under which application, making it difficult to assert whether this
   // app is running under its zone.
   options.NgZone.assertInAngularZone = () => {};
+  options.NgZone.assertNotInAngularZone = () => {};
 
   options.routingEventListener = () => {
     options.bootstrappedNgZone!.run(() => {
