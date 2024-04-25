@@ -1,12 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2015",
+    "target": "ES2022",
+    "module": "ES2022",
     "inlineSources": true,
     "importHelpers": true,
     "downlevelIteration": true,
-    "lib": ["dom", "es2018"],
+    "lib": ["dom", "ES2022"],
     "types": ["node"],
     "useDefineForClassFields": false
   },
