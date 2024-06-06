@@ -38,7 +38,11 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (NG_DEV_MODE && typeof options.template !== 'string' && typeof options.template !== 'function') {
+  if (
+    NG_DEV_MODE &&
+    typeof options.template !== 'string' &&
+    typeof options.template !== 'function'
+  ) {
     throw Error('single-spa-angular must be passed an options.template string or function');
   }
 
@@ -162,7 +166,7 @@ function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Prom
     instance.bootstrappedNgModuleRefOrAppRef = null;
 
     // Delete instance from array of instances.
-    delete options.instances[props.name || props.appName];
+    // delete options.instances[props.name || props.appName];
   });
 }
 
