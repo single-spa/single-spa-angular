@@ -32,6 +32,10 @@ export class PrimaryNavComponent {
       label: 'Angular standalone',
       url: '/standalone',
     },
+    {
+      label: "Multiple parcels from same config",
+      url: "/multiple-parcels-same-config"
+    }
   ];
 
   constructor(private router: Router) {}
