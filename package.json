@@ -73,6 +73,7 @@
     "start:app:elements": "yarn serve dist/apps/elements -s -l 4000 --cors",
     "start:app:parcel": "yarn serve dist/apps/parcel -s -l 4400 --cors",
     "start:app:standalone": "yarn serve dist/apps/standalone -s -l 4500 --cors",
+    "start:app:multiple-parcels-same-config": "yarn serve dist/apps/multiple-parcels-same-config-parent -s -l 4600 --cors & yarn serve dist/apps/multiple-parcels-same-config-child -s -l 4700 --cors",
     "start:app:root-config": "yarn serve dist/apps/root-config -s -l 8080 --cors",
     "// - E2E": "E2E testing",
     "cy:open": "cypress open",
