@@ -4,7 +4,7 @@ import { LifeCycles } from 'single-spa';
 import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
-import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
+import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions, Instance } from './types';
 
 const defaultOptions = {
   // Required options that will be set by the library consumer.
@@ -15,7 +15,7 @@ const defaultOptions = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   updateFunction: () => Promise.resolve(),
-  bootstrappedNgModuleRefOrAppRef: null,
+  instances: {},
 };
 
 // This will be provided through Terser global definitions by Angular CLI. This will
@@ -38,8 +38,12 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (NG_DEV_MODE && typeof options.template !== 'string') {
-    throw Error('single-spa-angular must be passed options.template string');
+  if (
+    NG_DEV_MODE &&
+    typeof options.template !== 'string' &&
+    typeof options.template !== 'function'
+  ) {
+    throw Error('single-spa-angular must be passed an options.template string or function');
   }
 
   if (NG_DEV_MODE && !options.NgZone) {
@@ -60,7 +64,12 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
   };
 }
 
-async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
+async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
+  const instance: Instance = {
+    bootstrappedNgModuleRefOrAppRef: null,
+  };
+  options.instances[props.name || props.appName] = instance;
+
   // Angular provides an opportunity to develop `zone-less` application, where developers
   // have to trigger change detection manually.
   // See https://angular.io/guide/zone#noopzone
@@ -76,8 +85,8 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<
   options.NgZone.assertInAngularZone = () => {};
   options.NgZone.assertNotInAngularZone = () => {};
 
-  options.routingEventListener = () => {
-    options.bootstrappedNgZone!.run(() => {
+  instance.routingEventListener = () => {
+    instance.bootstrappedNgZone!.run(() => {
       // See https://github.com/single-spa/single-spa-angular/issues/86
       // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
       // unless we tell Zone that something happened
@@ -126,6 +135,8 @@ async function mount(
 
   const bootstrappedOptions = options as BootstrappedSingleSpaAngularOptions;
 
+  const instance = bootstrappedOptions.instances[props.name || props.appName];
+
   if (ngZoneEnabled) {
     const ngZone: NgZone = ngModuleRefOrAppRef.injector.get(options.NgZone);
 
@@ -135,22 +146,32 @@ async function mount(
       skipLocationChangeOnNonImperativeRoutingTriggers(ngModuleRefOrAppRef, options);
     }
 
-    bootstrappedOptions.bootstrappedNgZone = ngZone;
-    window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
+    instance.bootstrappedNgZone = ngZone;
+    window.addEventListener('single-spa:routing-event', instance.routingEventListener!);
   }
 
-  bootstrappedOptions.bootstrappedNgModuleRefOrAppRef = ngModuleRefOrAppRef;
+  instance.bootstrappedNgModuleRefOrAppRef = ngModuleRefOrAppRef;
   return ngModuleRefOrAppRef;
 }
 
-function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
+function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
+  const instance: Instance = options.instances[props.name || props.appName];
+
   return Promise.resolve().then(() => {
-    if (options.routingEventListener) {
-      window.removeEventListener('single-spa:routing-event', options.routingEventListener);
+    if (instance.routingEventListener) {
+      window.removeEventListener('single-spa:routing-event', instance.routingEventListener);
     }
 
-    options.bootstrappedNgModuleRefOrAppRef!.destroy();
-    options.bootstrappedNgModuleRefOrAppRef = null;
+    instance.bootstrappedNgModuleRefOrAppRef!.destroy();
+    instance.bootstrappedNgModuleRefOrAppRef = null;
+
+    /**
+     * Don't delete the instance from the array of instances,
+     * because instance is created in bootstrap and not in mount.
+     * If we delete it here, then the instance can't be mounted again.
+     */
+    // Delete instance from array of instances.
+    // delete options.instances[props.name || props.appName];
   });
 }
 

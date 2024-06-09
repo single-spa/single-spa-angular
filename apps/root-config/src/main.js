@@ -41,5 +41,11 @@ System.import('single-spa').then(({ registerApplication, start }) => {
     activeWhen: location => location.pathname.startsWith('/standalone'),
   });
 
+  registerApplication({
+    name: 'multiple-parcels-same-config',
+    app: () => System.import('multiple-parcels-same-config'),
+    activeWhen: location => location.pathname.startsWith('/multiple-parcels-same-config'),
+  });
+
   start();
 });

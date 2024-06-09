@@ -1,0 +1,77 @@
+{
+  "name": "multiple-parcels-same-config-child",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/multiple-parcels-same-config/child/src",
+  "prefix": "single-spa-angular",
+  "targets": {
+    "build": {
+      "executor": "@angular-builders/custom-webpack:browser",
+      "options": {
+        "customWebpackConfig": {
+          "libraryTarget": "system",
+          "excludeAngularDependencies": true,
+          "path": "apps/multiple-parcels-same-config/child/webpack.config.ts"
+        },
+        "outputPath": "dist/apps/multiple-parcels-same-config-child",
+        "index": "apps/multiple-parcels-same-config/child/src/index.html",
+        "main": "apps/multiple-parcels-same-config/child/src/main.single-spa.ts",
+        "tsConfig": "apps/multiple-parcels-same-config/child/tsconfig.app.json",
+        "aot": true,
+        "assets": ["apps/multiple-parcels-same-config/child/src/favicon.ico", "apps/multiple-parcels-same-config/child/src/assets"],
+        "styles": ["apps/multiple-parcels-same-config/child/src/styles.scss"],
+        "deployUrl": "http://localhost:9000/"
+      },
+      "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/multiple-parcels-same-config/child/src/environments/environment.ts",
+              "with": "apps/multiple-parcels-same-config/child/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "none",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "browserTarget": "multiple-parcels-same-config-child:build:development"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "multiple-parcels-same-config-child:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
