@@ -3,7 +3,7 @@ import { mountRootParcel } from 'single-spa';
 
 @Component({
   selector: 'multiple-parcels-same-config',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
   constructor() {}
@@ -38,10 +38,14 @@ export class AppComponent {
   }
 
   unmount1() {
-    this.parcel1.unmount();
+    if (this.parcel1) {
+      this.parcel1.unmount();
+    }
   }
 
   unmount2() {
-    this.parcel2.unmount();
+    if (this.parcel2) {
+      this.parcel2.unmount();
+    }
   }
 }
