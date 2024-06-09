@@ -165,6 +165,11 @@ function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Prom
     instance.bootstrappedNgModuleRefOrAppRef!.destroy();
     instance.bootstrappedNgModuleRefOrAppRef = null;
 
+    /**
+     * Don't delete the instance from the array of instances,
+     * because instance is created in bootstrap and not in mount.
+     * If we delete it here, then the instance can't be mounted again.
+     */
     // Delete instance from array of instances.
     // delete options.instances[props.name || props.appName];
   });
