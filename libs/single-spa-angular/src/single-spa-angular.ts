@@ -73,19 +73,13 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: an
     return;
   }
 
-  // In order for multiple Angular apps to work concurrently on a page, they each need a unique identifier.
-  instance.zoneIdentifier = `single-spa-angular:${props.name || props.appName}`;
-
-  // This is a hack, since NgZone doesn't allow you to configure the property that identifies your zone.
-  // See https://github.com/PlaceMe-SAS/single-spa-angular-cli/issues/33,
-  // https://github.com/single-spa/single-spa-angular/issues/47,
-  // https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L144,
-  // and https://github.com/angular/angular/blob/a14dc2d7a4821a19f20a9547053a5734798f541e/packages/core/src/zone/ng_zone.ts#L257
-  options.NgZone.isInAngularZone = () => {
-    // @ts-ignore
-    // Check zone for any instance. 
-    return Object.values(options.instances).some(instance => window.Zone.current._properties[instance.zoneIdentifier] === true);
-  };
+  // Note that we have to make it a noop function because it's a static property and not
+  // an instance property. We're unable to configure it for multiple apps when dependencies
+  // are shared and reference the same `NgZone` class. We can't determine where this function
+  // is being executed or under which application, making it difficult to assert whether this
+  // app is running under its zone.
+  options.NgZone.assertInAngularZone = () => {};
+  options.NgZone.assertNotInAngularZone = () => {};
 
   instance.routingEventListener = () => {
     instance.bootstrappedNgZone!.run(() => {
@@ -141,7 +135,6 @@ async function mount(
 
   if (ngZoneEnabled) {
     const ngZone: NgZone = ngModuleRefOrAppRef.injector.get(options.NgZone);
-    const zoneIdentifier: string = instance.zoneIdentifier!;
 
     // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
     // function was not called.
@@ -150,7 +143,6 @@ async function mount(
     }
 
     instance.bootstrappedNgZone = ngZone;
-    (instance.bootstrappedNgZone as any)._inner._properties[zoneIdentifier] = true;
     window.addEventListener('single-spa:routing-event', instance.routingEventListener!);
   }
 

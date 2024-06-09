@@ -6,36 +6,40 @@ export const externals = [
   'rxjs',
   'rxjs/operators',
 
-  '@angular/core',
-  '@angular/compiler',
+  '@angular/animations',
+  '@angular/animations/browser',
 
   '@angular/common',
   '@angular/common/http',
   '@angular/common/upgrade',
 
+  '@angular/compiler',
+
+  '@angular/core/primitives/signals',
+  '@angular/core',
+  '@angular/core/rxjs-interop',
+
+  '@angular/elements',
+
+  '@angular/forms',
+
+  '@angular/localize',
+  '@angular/localize/init',
+
   '@angular/platform-browser',
   '@angular/platform-browser/animations',
+  '@angular/platform-browser/animations/async',
 
   '@angular/platform-browser-dynamic',
 
   '@angular/router',
   '@angular/router/upgrade',
 
-  '@angular/animations',
-  '@angular/animations/browser',
-
-  '@angular/forms',
-
-  '@angular/elements',
-
-  '@angular/upgrade',
-  '@angular/upgrade/static',
-
   '@angular/service-worker',
   '@angular/service-worker/config',
 
-  '@angular/localize',
-  '@angular/localize/init',
+  '@angular/upgrade',
+  '@angular/upgrade/static',
 
   'single-spa',
   'single-spa-angular/internals',
