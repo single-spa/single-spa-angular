@@ -16,6 +16,7 @@ export const externals = [
   '@angular/compiler',
 
   '@angular/core/primitives/signals',
+  '@angular/core/primitives/event-dispatch',
   '@angular/core',
   '@angular/core/rxjs-interop',
 

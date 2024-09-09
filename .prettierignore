@@ -19,3 +19,4 @@ assets
 *.ejs
 
 /.nx/cache
+/.nx/workspace-data

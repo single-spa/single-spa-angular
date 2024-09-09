@@ -1,13 +1,14 @@
 import { NgModule, Injector, DoBootstrap } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  imports: [BrowserModule, HttpClientModule],
   declarations: [AppComponent],
+  imports: [BrowserModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) {}
