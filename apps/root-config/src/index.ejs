@@ -10,19 +10,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.2/css/bulma.min.css"
     />
 
-    <% if (htmlWebpackPlugin.options.isDevelopment) { %>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.js">
-    </script>
-    <% } else { %>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.13.1/zone.min.js"
-      integrity="sha512-+cWrFbFSw+41uXDoayGA63htnbwihSP7gbW5dwd7zK2lf7uvy0TmORZPtlWr/41sHRwSZTkO3Fav7bd8fvLiqg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer">
-    </script>
-    <% } %>
-
     <meta name="importmap-type" content="systemjs-importmap" />
     <script type="systemjs-importmap">
       {
@@ -48,6 +35,7 @@
           "@angular/compiler": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-compiler.js",
 
           "@angular/core/primitives/signals": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core-primitives-signals.js",
+          "@angular/core/primitives/event-dispatch": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core-primitives-event-dispatch.js",
           "@angular/core": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core.js",
 
           "@angular/common": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-common.js",
@@ -65,10 +53,10 @@
 
           "@angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-elements.js",
 
-          "single-spa-angular/internals": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-internals.js",
-          "single-spa-angular": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular.js",
-          "single-spa-angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-elements.js",
-          "single-spa-angular/parcel": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-parcel.js"
+          "single-spa-angular/internals": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-internals.js",
+          "single-spa-angular": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular.js",
+          "single-spa-angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-elements.js",
+          "single-spa-angular/parcel": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-parcel.js"
         }
       }
     </script>
@@ -79,6 +67,7 @@
           "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/5.9.3/system/single-spa.min.js",
 
           "@angular/core/primitives/signals": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core-primitives-signals.min.js",
+          "@angular/core/primitives/event-dispatch": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core-primitives-event-dispatch.min.js",
           "@angular/core": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-core.min.js",
 
           "@angular/common": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-common.min.js",
@@ -96,10 +85,10 @@
 
           "@angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular/system/es2022/angular-elements.min.js",
 
-          "single-spa-angular/internals": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-internals.min.js",
-          "single-spa-angular": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular.min.js",
-          "single-spa-angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-elements.min.js",
-          "single-spa-angular/parcel": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.0.1/system/es2022/single-spa-angular-parcel.min.js"
+          "single-spa-angular/internals": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-internals.min.js",
+          "single-spa-angular": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular.min.js",
+          "single-spa-angular/elements": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-elements.min.js",
+          "single-spa-angular/parcel": "https://cdn.jsdelivr.net/npm/@esm-bundle/single-spa-angular@9.1.2/system/es2022/single-spa-angular-parcel.min.js"
         }
       }
     </script>

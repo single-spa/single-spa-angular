@@ -71,11 +71,11 @@
     "serve": {
       "executor": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "elements:build:development"
+        "buildTarget": "elements:build:development"
       },
       "configurations": {
         "production": {
-          "browserTarget": "elements:build:production"
+          "buildTarget": "elements:build:production"
         }
       }
     }

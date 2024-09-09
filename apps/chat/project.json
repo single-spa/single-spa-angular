@@ -64,11 +64,11 @@
     "serve": {
       "executor": "@angular-builders/custom-webpack:dev-server",
       "options": {
-        "browserTarget": "chat:build:development"
+        "buildTarget": "chat:build:development"
       },
       "configurations": {
         "production": {
-          "browserTarget": "chat:build:production"
+          "buildTarget": "chat:build:production"
         }
       }
     }
