@@ -5,16 +5,29 @@ import { enableProdMode, getSingleSpaExtraProviders } from 'single-spa-angular';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
+// @ts-ignore
+import unmountableStyles from './main.scss?unmountable';
+
 if (environment.production) {
   enableProdMode();
 }
 
 const lifecycles = singleSpaAngularElements({
   template: '<elements-root />',
-  bootstrapFunction: () =>
-    platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule, {
-      ngZone: 'noop',
-    }),
+  bootstrapFunction: async () => {
+    unmountableStyles.use();
+
+    const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
+      AppModule,
+      {
+        ngZone: 'noop',
+      },
+    );
+
+    ngModuleRef.onDestroy(() => unmountableStyles.unuse());
+
+    return ngModuleRef;
+  },
 });
 
 export const bootstrap = lifecycles.bootstrap;
