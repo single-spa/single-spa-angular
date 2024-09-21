@@ -11,7 +11,7 @@
         "customWebpackConfig": {
           "libraryTarget": "system",
           "excludeAngularDependencies": true,
-          "path": "apps/elements/webpack.config.ts"
+          "path": "apps/elements/webpack.config.js"
         },
         "outputPath": "dist/apps/elements",
         "index": "apps/elements/src/index.html",

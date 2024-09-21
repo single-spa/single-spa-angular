@@ -30,4 +30,17 @@ describe('Custom element application', () => {
       );
     });
   });
+
+  describe('https://github.com/single-spa/single-spa-angular/issues/502', () => {
+    it('should navigate to /elements, inject <style> and remove it, when navigated to /', () => {
+      cy.visit('/').visit('/elements');
+
+      // See `apps/elements/src/main.scss`.
+      cy.get('style').should('contain.text', 'body.this-class-is-for-e2e-testing');
+
+      cy.visit('/');
+
+      cy.get('style').should('not.contain.text', 'body.this-class-is-for-e2e-testing');
+    });
+  });
 });
