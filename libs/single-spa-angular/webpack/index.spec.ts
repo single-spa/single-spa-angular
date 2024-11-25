@@ -187,5 +187,40 @@ describe('Webpack config', () => {
       // Assert
       expect(singleSpaConfig.devtool).toEqual('source-map');
     });
+
+    test('should not set a library name when exporting in module format', () => {
+      // Arrange
+      const customWebpackConfig = {
+        libraryName: 'my-library',
+        libraryTarget: 'module'
+      };
+
+      // Act
+      const singleSpaConfig = singleSpaAngularWebpack(
+        { ...defaultConfig },
+        { customWebpackConfig },
+      );
+
+      // Assert
+      expect(singleSpaConfig.output.library).toBeUndefined();
+    });
+
+
+    test('should set a library name when exporting in umd format', () => {
+      // Arrange
+      const customWebpackConfig = {
+        libraryName: 'my-library',
+        libraryTarget: 'umd'
+      };
+
+      // Act
+      const singleSpaConfig = singleSpaAngularWebpack(
+        { ...defaultConfig },
+        { customWebpackConfig },
+      );
+
+      // Assert
+      expect(singleSpaConfig.output.library).toBe(customWebpackConfig.libraryName);
+    });
   });
 });

@@ -63,8 +63,8 @@ export default (config: any, options?: Options, extraOptions?: DefaultExtraOptio
 
   const mergedConfig = mergeConfigs(config, singleSpaConfig);
 
-  if (mergedConfig.output.libraryTarget === 'system') {
-    // Don't used named exports when exporting in System.register format.
+  if (mergedConfig.output.libraryTarget === 'system' || mergedConfig.output.libraryTarget === 'module') {
+    // Don't used named exports when exporting in System.register or ES Module format.
     delete mergedConfig.output.library;
   }
 
