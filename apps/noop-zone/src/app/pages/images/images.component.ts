@@ -6,7 +6,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
   styleUrls: ['./images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ImagesComponent {
+export default class ImagesComponent {
   images = Array.from({ length: 5 });
 
   imagesShown = false;

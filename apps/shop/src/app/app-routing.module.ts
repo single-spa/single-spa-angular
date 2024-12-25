@@ -3,15 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./pages/transmissions/transmissions.module').then(m => m.TransmissionsModule),
+    loadComponent: () => import('./pages/transmissions/transmissions.component'),
   },
   {
     path: 'transmission/:id',
-    loadChildren: () =>
-      import('./pages/transmission-details/transmission-details.module').then(
-        m => m.TransmissionDetailsModule,
-      ),
+    loadComponent: () => import('./pages/transmission-details/transmission-details.component'),
   },
 ];
 

@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class AppComponent {
   constructor(public router: Router) {}

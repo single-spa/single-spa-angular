@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   templateUrl: './groups.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupsComponent {
+export default class GroupsComponent {
   constructor(private router: Router) {}
 
   tryToReproduce113Issue(): void {
