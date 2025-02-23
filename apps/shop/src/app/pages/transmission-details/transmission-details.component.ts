@@ -5,4 +5,4 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './transmission-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TransmissionDetailsComponent {}
+export default class TransmissionDetailsComponent {}

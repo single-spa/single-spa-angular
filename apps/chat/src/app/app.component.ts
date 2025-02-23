@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
   selector: 'chat-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class AppComponent {
   constructor(private router: Router) {}
