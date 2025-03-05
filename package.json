@@ -5,6 +5,7 @@
   "description": "Lifecycle function implementation for single-spa applications/parcels that use Angular 19 or greater",
   "scripts": {
     "build": "rimraf lib && tsc",
+    "prepublishOnly": "pnpm run build",
     "prepare": "husky",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
