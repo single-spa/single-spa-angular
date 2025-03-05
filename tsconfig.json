@@ -1,0 +1,10 @@
+{
+  "files": ["src/single-spa-angular.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "lib",
+    "declaration": true,
+    "lib": ["DOM", "ES2022"]
+  }
+}
