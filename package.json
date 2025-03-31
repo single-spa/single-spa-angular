@@ -1,6 +1,6 @@
 {
   "name": "single-spa-angular",
-  "version": "10.0.0-beta.0",
+  "version": "10.0.0-beta.1",
   "type": "module",
   "description": "Lifecycle function implementation for single-spa applications/parcels that use Angular 19 or greater",
   "scripts": {
@@ -20,19 +20,19 @@
     "angular",
     "microfrontends"
   ],
-  "author": "Joel Denning",
+  "author": "Jolyn Denning",
   "license": "MIT",
   "devDependencies": {
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
     "rimraf": "^6.0.1",
-    "single-spa": "7.0.0-beta.2",
+    "single-spa": "^7.0.0-beta.3",
     "typescript": "^5.8.2"
   },
   "packageManager": "pnpm@10.5.2",
   "dependencies": {
-    "@angular/core": "^19.2.0",
-    "dom-element-getter-helpers": "^2.0.1"
+    "@angular/core": "^19.2.4",
+    "dom-element-getter-helpers": "^2.0.2"
   }
 }

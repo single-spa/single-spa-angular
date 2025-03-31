@@ -8,11 +8,11 @@ importers:
   .:
     dependencies:
       "@angular/core":
-        specifier: ^19.2.0
-        version: 19.2.0(rxjs@7.8.2)(zone.js@0.15.0)
+        specifier: ^19.2.4
+        version: 19.2.4(rxjs@7.8.2)(zone.js@0.15.0)
       dom-element-getter-helpers:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.2
+        version: 2.0.2
     devDependencies:
       husky:
         specifier: ^9.1.7
@@ -27,17 +27,17 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       single-spa:
-        specifier: 7.0.0-beta.2
-        version: 7.0.0-beta.2
+        specifier: ^7.0.0-beta.3
+        version: 7.0.0-beta.3
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
 
 packages:
-  "@angular/core@19.2.0":
+  "@angular/core@19.2.4":
     resolution:
       {
-        integrity: sha512-WKTRltOt3MMWWuhRX7Y9RonKxIYjZeBDE6XRwceHMgaEDS2d8I2D3AIuqizRsgHpJqDPnQnH+vxcek4FivcSGA==,
+        integrity: sha512-ZuSMg+LWG0ADLEvMzSqU+D6M5KcQtxBssEFq4UskGIYuvNGqC91hAl4sbnXDQ5C7GgFcLY6ouaemS6dBOIfc/g==,
       }
     engines: { node: ^18.19.1 || ^20.11.1 || >=22.0.0 }
     peerDependencies:
@@ -111,10 +111,10 @@ packages:
       }
     engines: { node: ">= 8" }
 
-  dom-element-getter-helpers@2.0.1:
+  dom-element-getter-helpers@2.0.2:
     resolution:
       {
-        integrity: sha512-twVEJNoOI25r4ndruZT53CaHCvtOTpZNZ1+khwEG59xVG/nq7GO10XP1Z9+sF95KdDjhw+LCXEy5zlt0JllxVw==,
+        integrity: sha512-jmT8RpdIDHRg0AgTu9mfH1ed3m5Xn53Q6zg+NzCK//Imdm3oNQJRsL4LG50wqwPSK4Iy5dd/Knc1gOj1aguZUw==,
       }
 
   eastasianwidth@0.2.0:
@@ -334,10 +334,10 @@ packages:
       }
     engines: { node: ">=14" }
 
-  single-spa@7.0.0-beta.2:
+  single-spa@7.0.0-beta.3:
     resolution:
       {
-        integrity: sha512-fjvXiiZSj+Hv5LUSOeuAnYFutXJcUmHPoJp5NJ0SrD84jvji0r/y01IrpYizOTAXTag9x4yxLBpb1hnAi7qI2g==,
+        integrity: sha512-uvL704bNHBp/uQ/HZL6KteXVoFCpfpDfBw9s5KCUO9kysoUZHhpEg9SColA9iVjXPyBeR2bEDbKDdXeU98onHw==,
       }
 
   string-width@4.2.3:
@@ -424,7 +424,7 @@ packages:
       }
 
 snapshots:
-  "@angular/core@19.2.0(rxjs@7.8.2)(zone.js@0.15.0)":
+  "@angular/core@19.2.4(rxjs@7.8.2)(zone.js@0.15.0)":
     dependencies:
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -467,9 +467,9 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  dom-element-getter-helpers@2.0.1:
+  dom-element-getter-helpers@2.0.2:
     dependencies:
-      single-spa: 7.0.0-beta.2
+      single-spa: 7.0.0-beta.3
 
   eastasianwidth@0.2.0: {}
 
@@ -575,7 +575,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  single-spa@7.0.0-beta.2: {}
+  single-spa@7.0.0-beta.3: {}
 
   string-width@4.2.3:
     dependencies:
