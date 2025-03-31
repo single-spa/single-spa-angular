@@ -1,6 +1,6 @@
 import { registerApplication, mountRootParcel } from "single-spa";
 import { chooseDomElementGetter } from "dom-element-getter-helpers";
-import { ApplicationConfig, Type, WritableSignal } from "@angular/core";
+import { ApplicationConfig, Type } from "@angular/core";
 
 type CustomProps = Parameters<typeof mountRootParcel>[1];
 type Application<Props extends CustomProps> = Extract<
@@ -21,6 +21,7 @@ export function singleSpaAngular<Props extends CustomProps>(
   let applicationRef: Destroyable | null = null;
   let selectorElement: HTMLElement | null = null;
   const selector = opts.selector ?? opts.rootComponent["ɵcmp"]?.selectors?.[0];
+  let currentProps: AppProps<Props> | null = null;
 
   if (!selector) {
     throw Error(
@@ -30,16 +31,15 @@ export function singleSpaAngular<Props extends CustomProps>(
 
   return {
     async bootstrap(props: AppProps<Props>) {
-      opts.propsSignal.set(props);
+      currentProps = props;
     },
     async mount(props: AppProps<Props>) {
       const domElement = chooseDomElementGetter(opts, props)();
       selectorElement = document.createElement(selector);
       domElement.appendChild(selectorElement);
-      opts.propsSignal.set(props);
       opts.appConfig.providers.push({
         provide: opts.propsInjectionToken,
-        useValue: opts.propsSignal,
+        useFactory: () => currentProps,
       });
       applicationRef = await opts.bootstrapApplication(
         opts.rootComponent,
@@ -47,11 +47,11 @@ export function singleSpaAngular<Props extends CustomProps>(
       );
     },
     async update(props: AppProps<Props>) {
-      opts.propsSignal.set(props);
+      currentProps = props;
     },
     async unmount(props: AppProps<Props>) {
+      currentProps = props;
       await applicationRef!.destroy();
-      opts.propsSignal.set(props);
       applicationRef = null;
       selectorElement.remove();
     },
@@ -70,7 +70,6 @@ export interface SingleSpaAngularOpts<ExtraProps> {
     typeof chooseDomElementGetter
   >[0]["domElementGetter"];
   propsInjectionToken: any;
-  propsSignal: WritableSignal<AppProps<ExtraProps>>;
 }
 
 interface Destroyable {
