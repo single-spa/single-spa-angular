@@ -7,7 +7,8 @@
     "build": "rimraf lib && tsc",
     "prepublishOnly": "pnpm run build",
     "prepare": "husky",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "exports": {
     ".": {
