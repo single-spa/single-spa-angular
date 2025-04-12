@@ -4,17 +4,25 @@
   "type": "module",
   "description": "Lifecycle function implementation for single-spa applications/parcels that use Angular 19 or greater",
   "scripts": {
-    "build": "rimraf lib && tsc",
-    "prepublishOnly": "pnpm run build",
+    "clean": "rimraf lib",
+    "build": "concurrently pnpm:build:*",
+    "build:lib": "tsc",
+    "build:schematics": "tsc -p schematics/tsconfig.schematics.json && copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/* lib",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "prepare": "husky",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
+  },
+  "schematics": "./lib/schematics/collection.json",
+  "ng-add": {
+    "save": "dependencies"
   },
   "exports": {
     ".": {
       "default": "./lib/single-spa-angular.js",
       "types": "./lib/single-spa-angular.d.ts"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "lib"
@@ -27,16 +35,22 @@
   "author": "Jolyn Denning",
   "license": "MIT",
   "devDependencies": {
+    "concurrently": "^9.1.2",
+    "copyfiles": "^2.4.1",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
     "rimraf": "^6.0.1",
     "single-spa": "^7.0.0-beta.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@10.5.2",
   "dependencies": {
-    "@angular/core": "^19.2.4",
+    "@angular-devkit/core": "^19.2.7",
+    "@angular-devkit/schematics": "^19.2.7",
+    "@angular/core": "^19.2.6",
+    "@schematics/angular": "^19.2.7",
+    "@types/node": "^22.14.0",
     "dom-element-getter-helpers": "^2.0.2"
   }
 }
