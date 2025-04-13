@@ -1,10 +1,10 @@
-import { Application, AppProps, ParcelConfigObject } from "single-spa";
+import { AppProps, LifeCycles } from "single-spa";
 import { chooseDomElementGetter } from "dom-element-getter-helpers";
 import { ApplicationConfig, Type } from "@angular/core";
 
 export function singleSpaAngular<Props>(
   opts: SingleSpaAngularOpts<Props>,
-): Application<Props> | ParcelConfigObject<Props> {
+): LifeCycles<Props> {
   let applicationRef: Destroyable | null = null;
   let selectorElement: HTMLElement | null = null;
   const selector = opts.selector ?? opts.rootComponent["ɵcmp"]?.selectors?.[0];
