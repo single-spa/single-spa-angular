@@ -19,8 +19,8 @@
   },
   "exports": {
     ".": {
-      "default": "./lib/single-spa-angular.js",
-      "types": "./lib/single-spa-angular.d.ts"
+      "types": "./lib/single-spa-angular.d.ts",
+      "default": "./lib/single-spa-angular.js"
     },
     "./package.json": "./package.json"
   },
