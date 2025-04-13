@@ -1,27 +1,14 @@
-import { registerApplication, mountRootParcel } from "single-spa";
+import { Application, AppProps, ParcelConfigObject } from "single-spa";
 import { chooseDomElementGetter } from "dom-element-getter-helpers";
 import { ApplicationConfig, Type } from "@angular/core";
 
-type CustomProps = Parameters<typeof mountRootParcel>[1];
-type Application<Props extends CustomProps> = Extract<
-  Parameters<typeof registerApplication<Props>>[1],
-  { bootstrap }
->;
-type LifecycleFn<Props extends CustomProps> = Extract<
-  Application<Props>["bootstrap"],
-  (config: any) => Promise<any>
->;
-export type AppProps<Props extends CustomProps> = Parameters<
-  LifecycleFn<Props>
->[0];
-
-export function singleSpaAngular<Props extends CustomProps>(
+export function singleSpaAngular<Props>(
   opts: SingleSpaAngularOpts<Props>,
-): Application<Props> {
+): Application<Props> | ParcelConfigObject<Props> {
   let applicationRef: Destroyable | null = null;
   let selectorElement: HTMLElement | null = null;
   const selector = opts.selector ?? opts.rootComponent["ɵcmp"]?.selectors?.[0];
-  let currentProps: AppProps<Props> | null = null;
+  let currentProps = null;
 
   if (!selector) {
     throw Error(
@@ -30,10 +17,10 @@ export function singleSpaAngular<Props extends CustomProps>(
   }
 
   return {
-    async bootstrap(props: AppProps<Props>) {
+    async bootstrap(props: AppProps & Props) {
       currentProps = props;
     },
-    async mount(props: AppProps<Props>) {
+    async mount(props: AppProps & Props) {
       const domElement = chooseDomElementGetter(opts, props)();
       selectorElement = document.createElement(selector);
       domElement.appendChild(selectorElement);
@@ -46,10 +33,10 @@ export function singleSpaAngular<Props extends CustomProps>(
         opts.appConfig,
       );
     },
-    async update(props: AppProps<Props>) {
+    async update(props: AppProps & Props) {
       currentProps = props;
     },
-    async unmount(props: AppProps<Props>) {
+    async unmount(props: AppProps & Props) {
       currentProps = props;
       await applicationRef!.destroy();
       applicationRef = null;
