@@ -7,7 +7,7 @@
     "clean": "rimraf lib",
     "build": "concurrently pnpm:build:*",
     "build:lib": "tsc",
-    "build:schematics": "tsc -p schematics/tsconfig.schematics.json && copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/* lib",
+    "build:schematics": "tsc -p schematics/tsconfig.schematics.json && copyfiles schematics/collection.json schematics/*/schema.json schematics/*/files/* schematics/*/buried-config/* lib",
     "prepublishOnly": "pnpm run clean && pnpm run build",
     "prepare": "husky",
     "format": "prettier --write .",
