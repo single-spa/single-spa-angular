@@ -17,6 +17,20 @@
       "$default": {
         "$source": "false"
       }
+    },
+    "outputMainJs": {
+      "type": "boolean",
+      "description": "Whether to configure angular.json to build a main.js file, rather than content hashed.",
+      "$default": {
+        "$source": "false"
+      }
+    },
+    "routing": {
+      "type": "boolean",
+      "description": "Whether to add an EmptyRoute component",
+      "$default": {
+        "$source": "false"
+      }
     }
   },
   "required": []
