@@ -1,64 +1,221 @@
-import { virtualFs, workspaces } from '@angular-devkit/core';
-import { chain, Rule, Tree, SchematicsException } from '@angular-devkit/schematics';
+import {
+  apply,
+  applyTemplates,
+  chain,
+  externalSchematic,
+  mergeWith,
+  move,
+  Rule,
+  SchematicContext,
+  Tree,
+  url,
+} from "@angular-devkit/schematics";
+import { NodePackageInstallTask } from "@angular-devkit/schematics/tasks/index.js";
+import { ReplaceChange } from "@schematics/angular/utility/change";
+import { applyChangesToFile } from "@schematics/angular/utility/standalone/util";
+import { Schema } from "./schema.js";
+import { insertImport } from "@schematics/angular/utility/ast-utils";
+import ts, { Expression, Identifier, VariableStatement } from "typescript";
+import { normalize } from "path";
+import { JSONFile } from "@schematics/angular/utility/json-file";
+import {
+  addPackageJsonDependency,
+  NodeDependencyType,
+} from "@schematics/angular/utility/dependencies";
 
-import { Schema as NgAddOptions } from './schema';
+export function ngAdd(options: Schema): Rule {
+  return chain([
+    updateMain(),
+    copyFiles(),
+    alterAngularJson(options),
+    addDependencies(),
+    removeIndexHtml(),
+    addEmptyRoute(options),
+  ]);
+}
 
-import { addDependencies } from './rules/add-dependencies';
-import { createMainEntry } from './rules/create-main-entry';
-import { updateConfiguration } from './rules/update-configuration';
-import { addNPMScripts } from './rules/add-npm-scripts';
-import { showWarningIfRoutingIsEnabled } from './rules/show-warning-if-routing-is-enabled';
+function alterAngularJson(options: Schema): Rule {
+  return (tree: Tree) => {
+    const angularJson = new JSONFile(tree, "angular.json");
 
-export default function (options: NgAddOptions): Rule {
-  return async (tree: Tree) => {
-    const { workspace, project, host } = await getWorkspace(tree, options.project);
+    angularJson.modify(
+      ["projects", options.project, "architect", "build", "options", "index"],
+      "./node_modules/single-spa-angular/lib/schematics/ng-add/buried-config/index.html",
+    );
 
-    return chain([
-      addDependencies(),
-      createMainEntry(project, options),
-      updateConfiguration(workspace, project, host, options),
-      addNPMScripts(workspace, project, host, options),
-      showWarningIfRoutingIsEnabled(options),
+    if (options.cors) {
+      // Read the current value, if it exists.
+      angularJson.modify(
+        [
+          "projects",
+          options.project,
+          "architect",
+          "serve",
+          "options",
+          "headers",
+          "Access-Control-Allow-Origin",
+        ],
+        "*",
+      );
+    }
+
+    if (options.outputMainJs) {
+      angularJson.modify(
+        [
+          "projects",
+          options.project,
+          "architect",
+          "build",
+          "configurations",
+          "outputHashing",
+        ],
+        "none",
+      );
+    }
+
+    return tree;
+  };
+}
+
+function copyFiles(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const templateSource = apply(url("./files"), [
+      applyTemplates({}),
+      move(normalize("src/app")),
+    ]);
+
+    return mergeWith(templateSource);
+  };
+}
+
+function updateMain(): Rule {
+  const oldText = `bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));`;
+  const newText = `export const { bootstrap, mount, unmount } = singleSpaAngular<SingleSpaExtraProps>({
+  bootstrapApplication,
+  rootComponent: AppComponent,
+  appConfig,
+  propsInjectionToken: SINGLE_SPA_PROPS,
+});`;
+
+  return (tree: Tree, context: SchematicContext) => {
+    const sourceFile = ts.createSourceFile(
+      "src/main.ts",
+      tree.readText("src/main.ts"),
+      ts.ScriptTarget.Latest,
+      true,
+    );
+    const initializationChange = new ReplaceChange(
+      "src/main.ts",
+      165,
+      oldText,
+      newText,
+    );
+    const singleSpaAngularImportChange = insertImport(
+      sourceFile,
+      "src/main.ts",
+      "singleSpaAngular",
+      "single-spa-angular",
+    );
+    const propsImportChange = insertImport(
+      sourceFile,
+      "src/main.ts",
+      "SINGLE_SPA_PROPS, SingleSpaExtraProps",
+      "./app/single-spa-props",
+    );
+    // const extraPropsImportChange = insertImport(sourceFile, "src/main.ts", "SingleSpaPropExtraProps", "./app/single-spa-props");
+    applyChangesToFile(tree, "src/main.ts", [
+      initializationChange,
+      singleSpaAngularImportChange,
+      propsImportChange,
     ]);
   };
 }
 
-async function getWorkspace(tree: Tree, projectName: string | undefined) {
-  const host = createVirtualHost(tree);
-  const { workspace } = await workspaces.readWorkspace('/', host);
-  // Previously, we used `projectName` or `workspace.extensions.defaultProject`.
-  // The defaultProject workspace option has been deprecated.
-  // The project to use will be determined from the current working directory.
-  if (!projectName) {
-    throw new SchematicsException('The project name is not specified.');
-  }
-
-  const project = workspace.projects.get(projectName);
-
-  if (!project) {
-    throw new SchematicsException(`Invalid project name: ${projectName}`);
-  }
-
-  return { workspace, project, host };
+function removeIndexHtml(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    tree.delete("src/index.html");
+    return tree;
+  };
 }
 
-function createVirtualHost(tree: Tree): workspaces.WorkspaceHost {
-  return {
-    async readFile(path: string): Promise<string> {
-      const data = tree.read(path);
-      if (!data) {
-        throw new SchematicsException('File not found.');
-      }
-      return virtualFs.fileBufferToString(data);
-    },
-    async writeFile(path: string, data: string): Promise<void> {
-      return tree.overwrite(path, data);
-    },
-    async isDirectory(path: string): Promise<boolean> {
-      return !tree.exists(path) && tree.getDir(path).subfiles.length > 0;
-    },
-    async isFile(path: string): Promise<boolean> {
-      return tree.exists(path);
-    },
+function addDependencies(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    addPackageJsonDependency(tree, {
+      type: NodeDependencyType.Default,
+      name: "single-spa",
+      version: "^7.0.0-beta.3",
+    });
+
+    context.addTask(new NodePackageInstallTask());
+
+    return tree;
+  };
+}
+
+function addEmptyRoute(options: Schema): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    if (options.routing) {
+      const path = "src/app/app.routes.ts";
+      const sourceFile = ts.createSourceFile(
+        path,
+        tree.readText(path),
+        ts.ScriptTarget.Latest,
+        true,
+      );
+
+      const routesStatement: VariableStatement = sourceFile.statements.find(
+        (s) =>
+          ts.isVariableStatement(s) &&
+          s.declarationList.declarations.some(
+            (d) => (d.name as Identifier)?.escapedText,
+          ),
+      ) as VariableStatement;
+      const routesInitializer: Expression =
+        routesStatement.declarationList.declarations[0].initializer!;
+
+      const newRoute = ts.factory.createObjectLiteralExpression([
+        ts.factory.createPropertyAssignment(
+          "path",
+          ts.factory.createStringLiteral("**"),
+        ),
+        ts.factory.createPropertyAssignment(
+          "component",
+          ts.factory.createIdentifier("EmptyRouteComponent"),
+        ),
+      ]);
+
+      const newRoutesExpressions: Expression[] = [];
+      routesInitializer.forEachChild((child) => {
+        newRoutesExpressions.push(child as Expression);
+      });
+      newRoutesExpressions.push(newRoute);
+
+      const newRoutes: Expression =
+        ts.factory.createArrayLiteralExpression(newRoutesExpressions);
+
+      applyChangesToFile(tree, path, [
+        insertImport(
+          sourceFile,
+          path,
+          "EmptyRouteComponent",
+          "./empty-route/empty-route.component",
+        ),
+        new ReplaceChange(
+          path,
+          routesInitializer.getStart(sourceFile),
+          routesInitializer.getText(sourceFile),
+          ts
+            .createPrinter({})
+            .printNode(ts.EmitHint.Expression, newRoutes, sourceFile),
+        ),
+      ]);
+
+      return externalSchematic("@schematics/angular", "component", {
+        name: "EmptyRoute",
+        path: "src/app",
+        style: "css",
+      });
+    }
   };
 }

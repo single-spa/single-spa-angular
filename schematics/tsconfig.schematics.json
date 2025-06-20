@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es2018", "dom"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "declaration": true,
+    "outDir": "../lib/schematics",
+    "rootDir": ".",
+    "target": "es6"
+  },
+  "include": ["./**/*"],
+  "exclude": ["./*/files/**/*"]
+}

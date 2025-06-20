@@ -1,1 +1,0 @@
-See https://github.com/single-spa/single-spa-angular/releases.
