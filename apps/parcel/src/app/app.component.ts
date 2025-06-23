@@ -17,6 +17,7 @@ const singleSpa$ = defer(() => System.import('single-spa')).pipe(
   selector: 'parcel-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
   config = config;

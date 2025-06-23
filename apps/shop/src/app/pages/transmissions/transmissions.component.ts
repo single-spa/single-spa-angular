@@ -1,11 +1,13 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'shop-transmissions',
   templateUrl: './transmissions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink],
 })
-export class TransmissionsComponent {
+export default class TransmissionsComponent {
   transmissions = [
     {
       id: 1,
