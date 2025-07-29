@@ -3,7 +3,7 @@ import type { NgElement } from '@angular/elements';
 import {
   BaseSingleSpaAngularOptions,
   getContainerElementAndSetTemplate,
-} from 'single-spa-angular/internals';
+} from '@eyesoft/single-spa-angular/internals';
 
 import { BootstrappedSingleSpaAngularElementsOptions } from './types';
 

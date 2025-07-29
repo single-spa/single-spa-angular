@@ -30,8 +30,8 @@ export function addNPMScripts(
  * - `yarn ng new --createApplication false workspace`
  * - `yarn ng generate application first-cool-app`
  * - `yarn ng generate application second-cool-app`
- * - `yarn ng add single-spa-angular --project first-cool-app`
- * - `yarn ng add single-spa-angular --project second-cool-app`
+ * - `yarn ng add @eyesoft/single-spa-angular --project first-cool-app`
+ * - `yarn ng add @eyesoft/single-spa-angular --project second-cool-app`
  *
  * In that case our schematics should respect passed `--project` argument.
  * Basically it will create different scripts for different applications, thus the

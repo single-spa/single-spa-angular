@@ -1,7 +1,7 @@
 import { NgZone } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { singleSpaAngular, enableProdMode } from 'single-spa-angular';
+import { singleSpaAngular, enableProdMode } from '@eyesoft/single-spa-angular';
 
 import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';

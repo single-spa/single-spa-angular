@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ParcelModule } from 'single-spa-angular/parcel';
+import { ParcelModule } from '@eyesoft/single-spa-angular/parcel';
 
 import { AppComponent } from './app.component';
 

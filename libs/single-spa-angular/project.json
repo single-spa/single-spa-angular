@@ -1,5 +1,5 @@
 {
-  "name": "single-spa-angular",
+  "name": "@eyesoft/single-spa-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/single-spa-angular/src",

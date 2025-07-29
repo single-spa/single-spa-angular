@@ -39,7 +39,7 @@ describe('ng-add', () => {
     expect(tree.files).toBeDefined();
   });
 
-  test('should add single-spa and single-spa-angular to dependencies', async () => {
+  test('should add single-spa and @eyesoft/single-spa-angular to dependencies', async () => {
     const tree = await testRunner.runSchematic<NgAddOptions>(
       'ng-add',
       { project: 'ss-angular-cli-app' },
@@ -48,7 +48,7 @@ describe('ng-add', () => {
 
     const packageJSON = JSON.parse(getFileContent(tree, '/package.json'));
     expect(packageJSON.dependencies['single-spa']).toBeDefined();
-    expect(packageJSON.dependencies['single-spa-angular']).toBeDefined();
+    expect(packageJSON.dependencies['@eyesoft/single-spa-angular']).toBeDefined();
   });
 
   test('should add style-laoder to devDependencies', async () => {

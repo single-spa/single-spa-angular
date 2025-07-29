@@ -1,6 +1,6 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngularElements } from 'single-spa-angular/elements';
-import { enableProdMode, getSingleSpaExtraProviders } from 'single-spa-angular';
+import { singleSpaAngularElements } from '@eyesoft/single-spa-angular/elements';
+import { enableProdMode, getSingleSpaExtraProviders } from '@eyesoft/single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

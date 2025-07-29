@@ -51,7 +51,7 @@ function getSingleSpaDependency(): NodeDependency {
 
 function getSingleSpaAngularDependency(): NodeDependency {
   return {
-    name: 'single-spa-angular',
+    name: '@eyesoft/single-spa-angular',
     version,
     overwrite: false,
     type: NodeDependencyType.Default,

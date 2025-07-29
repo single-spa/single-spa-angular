@@ -29,7 +29,7 @@ export async function createWorkspace<WorkspaceOptions extends object, AppOption
 }
 
 export function createTestRunner(): SchematicTestRunner {
-  return new SchematicTestRunner('single-spa-angular', collectionPath);
+  return new SchematicTestRunner('@eyesoft/single-spa-angular', collectionPath);
 }
 
 export function getFileContent(tree: Tree, path: string): string {

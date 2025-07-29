@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
-  "name": "single-spa-angular",
+  "name": "@eyesoft/single-spa-angular",
   "version": "9.2.0",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "schematics": "./schematics/schematics.json",
@@ -25,6 +25,7 @@
   "sideEffects": false,
   "peerDependencies": {
     "@angular/core": ">=16.0.0",
+    "@angular/common": ">=16.0.0",
     "json5": "*",
     "single-spa": ">=4.0.0",
     "style-loader": "^3.3.1"

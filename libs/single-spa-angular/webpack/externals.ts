@@ -43,8 +43,8 @@ export const externals = [
   '@angular/upgrade/static',
 
   'single-spa',
-  'single-spa-angular/internals',
-  'single-spa-angular',
-  'single-spa-angular/elements',
-  'single-spa-angular/parcel',
+  '@eyesoft/single-spa-angular/internals',
+  '@eyesoft/single-spa-angular',
+  '@eyesoft/single-spa-angular/elements',
+  '@eyesoft/single-spa-angular/parcel',
 ];

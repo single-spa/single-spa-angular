@@ -1,5 +1,5 @@
 {
-  "name": "single-spa-angular",
+  "name": "@eyesoft/single-spa-angular",
   "version": "0.0.0",
   "description": "Helpers for building single-spa applications which use Angular 2+",
   "repository": {

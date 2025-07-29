@@ -32,7 +32,7 @@
       "changeDetection": "OnPush"
     }
   },
-  "defaultProject": "single-spa-angular",
+  "defaultProject": "@eyesoft/single-spa-angular",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
