@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
   selector: 'standalone-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [RouterModule],
 })
 export class AppComponent {}

@@ -58,3 +58,5 @@ migrations.json
 
 .nx/cache
 .nx/workspace-data
+
+system/es2022

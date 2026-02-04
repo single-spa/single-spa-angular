@@ -4,5 +4,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'noop-zone-home',
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HomeComponent {}

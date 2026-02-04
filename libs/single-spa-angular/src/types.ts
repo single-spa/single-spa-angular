@@ -2,8 +2,9 @@ import { NgModuleRef, Type, NgZone, ApplicationRef } from '@angular/core';
 import { AppProps } from 'single-spa';
 import { BaseSingleSpaAngularOptions } from 'single-spa-angular/internals';
 
-export interface SingleSpaAngularOptions<T = Record<string, unknown>>
-  extends BaseSingleSpaAngularOptions {
+export interface SingleSpaAngularOptions<
+  T = Record<string, unknown>,
+> extends BaseSingleSpaAngularOptions {
   // This might be `noop` if the root module is bootstrapped
   // with `{ ngZone: 'noop' }` options.
   NgZone: typeof NgZone | 'noop';

@@ -5,6 +5,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
   templateUrl: './images.component.html',
   styleUrls: ['./images.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ImagesComponent {
   images = Array.from({ length: 5 });
