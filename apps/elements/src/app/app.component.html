@@ -2,21 +2,23 @@
   Lazy load the style that is extracted into a separate file (#187 issue)
 </button>
 
-<p *ngIf="lazyStylesHaveBeenLoaded" class="subtitle is-5 lazy-styles-have-been-loaded">
-  Lazy styles have been loaded
-</p>
+@if (lazyStylesHaveBeenLoaded()) {
+  <p class="subtitle is-5 lazy-styles-have-been-loaded">Lazy styles have been loaded</p>
+}
 
 <div class="columns is-multiline users">
-  <div class="column is-one-third" *ngFor="let user of users">
-    <div class="card">
-      <div class="card-content">
-        <p class="title username">
-          {{ user.name }}
-        </p>
-        <p class="subtitle">
-          {{ user.email }}
-        </p>
+  @for (user of users(); track user) {
+    <div class="column is-one-third">
+      <div class="card">
+        <div class="card-content">
+          <p class="title username">
+            {{ user.name }}
+          </p>
+          <p class="subtitle">
+            {{ user.email }}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

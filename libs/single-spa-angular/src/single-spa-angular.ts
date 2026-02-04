@@ -1,10 +1,9 @@
-import { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { LifeCycles } from 'single-spa';
+import type { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
+import type { LifeCycles } from 'single-spa';
 import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
-import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
+import type { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
 
 const defaultOptions = {
   // Required options that will be set by the library consumer.
@@ -109,8 +108,10 @@ async function mount(
     }
   }
 
-  const singleSpaPlatformLocation: SingleSpaPlatformLocation | null =
-    ngModuleRefOrAppRef.injector.get(SingleSpaPlatformLocation, null);
+  const singleSpaPlatformLocation = ngModuleRefOrAppRef.injector.get(
+    SingleSpaPlatformLocation,
+    null,
+  );
 
   const ngZoneEnabled = options.NgZone !== 'noop';
 
@@ -158,15 +159,16 @@ function skipLocationChangeOnNonImperativeRoutingTriggers(
   ngModuleRefOrAppRef: NgModuleRef<any> | ApplicationRef,
   options: SingleSpaAngularOptions,
 ): void {
-  if (!options.NavigationStart) {
+  const { NavigationStart, Router } = options;
+  if (!NavigationStart || !Router) {
     // As discussed we don't do anything right now if the developer doesn't provide
     // `options.NavigationStart` since this might be a breaking change.
     return;
   }
 
-  const router = ngModuleRefOrAppRef.injector.get(options.Router);
-  const subscription: Subscription = router.events.subscribe((event: any) => {
-    if (event instanceof options.NavigationStart!) {
+  const router = ngModuleRefOrAppRef.injector.get(Router);
+  const subscription = router.events.subscribe((event: any) => {
+    if (event instanceof NavigationStart) {
       const currentNavigation = router.getCurrentNavigation();
       // This listener will be set up for each Angular application
       // that has routing capabilities.

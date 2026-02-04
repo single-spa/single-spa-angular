@@ -1,0 +1,28 @@
+diff --git a/node_modules/@nx/angular/src/executors/utilities/ng-packagr/stylesheet-processor.di.js b/node_modules/@nx/angular/src/executors/utilities/ng-packagr/stylesheet-processor.di.js
+index 1b019fa..e9e2107 100644
+--- a/node_modules/@nx/angular/src/executors/utilities/ng-packagr/stylesheet-processor.di.js
++++ b/node_modules/@nx/angular/src/executors/utilities/ng-packagr/stylesheet-processor.di.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.STYLESHEET_PROCESSOR = void 0;
+-const stylesheet_processor_di_1 = require("ng-packagr/lib/styles/stylesheet-processor.di");
++const stylesheet_processor_di_1 = require("ng-packagr/src/lib/styles/stylesheet-processor.di");
+ const angular_version_utils_1 = require("../angular-version-utils");
+ exports.STYLESHEET_PROCESSOR = {
+     provide: stylesheet_processor_di_1.STYLESHEET_PROCESSOR_TOKEN,
+diff --git a/node_modules/@nx/angular/src/executors/utilities/ng-packagr/v19+/stylesheet-processor.js b/node_modules/@nx/angular/src/executors/utilities/ng-packagr/v19+/stylesheet-processor.js
+index ee16df4..f1e98de 100644
+--- a/node_modules/@nx/angular/src/executors/utilities/ng-packagr/v19+/stylesheet-processor.js
++++ b/node_modules/@nx/angular/src/executors/utilities/ng-packagr/v19+/stylesheet-processor.js
+@@ -9,8 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.StylesheetProcessor = exports.CssUrl = void 0;
+ const tslib_1 = require("tslib");
+ const browserslist_1 = tslib_1.__importDefault(require("browserslist"));
+-const component_stylesheets_1 = require("ng-packagr/lib/styles/component-stylesheets");
+-const postcss_configuration_1 = require("ng-packagr/lib/styles/postcss-configuration");
++const component_stylesheets_1 = require("ng-packagr/src/lib/styles/component-stylesheets");
++const postcss_configuration_1 = require("ng-packagr/src/lib/styles/postcss-configuration");
+ const devkit_1 = require("@nx/devkit");
+ var CssUrl;
+ (function (CssUrl) {

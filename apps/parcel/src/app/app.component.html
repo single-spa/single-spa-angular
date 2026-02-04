@@ -1,6 +1,3 @@
-<parcel
-  *ngIf="mountRootParcel"
-  [config]="config"
-  [mountParcel]="mountRootParcel"
-  [customProps]="customProps"
-></parcel>
+@if (mountRootParcel) {
+  <parcel [config]="config" [mountParcel]="mountRootParcel" [customProps]="customProps"></parcel>
+}
