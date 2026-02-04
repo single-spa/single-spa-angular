@@ -4,6 +4,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'shop-transmissions',
   templateUrl: './transmissions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TransmissionsComponent {
   transmissions = [

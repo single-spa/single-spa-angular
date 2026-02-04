@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
   selector: 'navbar-primary-nav',
   templateUrl: './primary-nav.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class PrimaryNavComponent {
   links = [

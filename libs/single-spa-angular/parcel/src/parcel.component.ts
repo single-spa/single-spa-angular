@@ -1,11 +1,13 @@
 import {
   Component,
   ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
   ChangeDetectionStrategy,
+  input,
+  effect,
+  untracked,
+  afterNextRender,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { Parcel, ParcelConfig, AppProps } from 'single-spa';
 
@@ -25,14 +27,14 @@ declare const ngDevMode: boolean;
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
-  @Input() config: ParcelConfig | null = null;
-  @Input() mountParcel: AppProps['mountParcel'] | null = null;
-  @Input() onParcelMount: (() => void) | null = null;
-  @Input() wrapWith = 'div';
-  @Input() customProps: Record<string, unknown> = {};
-  @Input() appendTo: Node | null = null;
-  @Input() handleError = (error: Error) => console.error(error);
+export class ParcelComponent {
+  readonly config = input<ParcelConfig | null>(null);
+  readonly mountParcel = input<AppProps['mountParcel'] | null>(null);
+  readonly onParcelMount = input<(() => void) | null>(null);
+  readonly wrapWith = input('div');
+  readonly customProps = input<Record<string, unknown>>({});
+  readonly appendTo = input<Node | null>(null);
+  readonly handleError = input((error: Error) => console.error(error));
 
   private hasError = false;
   private unmounted?: boolean;
@@ -40,58 +42,62 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
   private parcel: Parcel | null = null;
   private task: Promise<void> | null = null;
 
-  constructor(private host: ElementRef<HTMLElement>) {}
-
-  ngOnChanges(): void {
-    this.scheduleTask(Action.Update, () => {
-      if (this.parcel !== null && this.parcel.update) {
-        return this.parcel.update(this.customProps);
-      }
+  constructor(private host: ElementRef<HTMLElement>) {
+    effect(() => {
+      const customProps = this.customProps();
+      untracked(() => {
+        this.scheduleTask(Action.Update, () => {
+          this.parcel?.update?.(customProps);
+        });
+      });
     });
-  }
 
-  ngOnInit(): void {
-    this.scheduleTask(Action.Mount, () => {
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && this.mountParcel === null) {
-        throw new Error(
-          'single-spa-angular: the [mountParcel] binding is required when using the <parcel> component. You can either (1) import mountRootParcel from single-spa or (2) use the mountParcel prop provided to single-spa applications.',
-        );
-      }
+    afterNextRender(() => {
+      this.scheduleTask(Action.Mount, () => {
+        if ((typeof ngDevMode === 'undefined' || ngDevMode) && this.mountParcel === null) {
+          throw new Error(
+            'single-spa-angular: the [mountParcel] binding is required when using the <parcel> component. You can either (1) import mountRootParcel from single-spa or (2) use the mountParcel prop provided to single-spa applications.',
+          );
+        }
 
-      this.wrapper = document.createElement(this.wrapWith);
+        this.wrapper = document.createElement(this.wrapWith());
 
-      if (this.appendTo !== null) {
-        this.appendTo.appendChild(this.wrapper);
-      } else {
-        this.host.nativeElement.appendChild(this.wrapper);
-      }
+        const appendTo = this.appendTo();
+        if (appendTo !== null) {
+          appendTo.appendChild(this.wrapper);
+        } else {
+          this.host.nativeElement.appendChild(this.wrapper);
+        }
 
-      this.parcel = this.mountParcel!(this.config!, {
-        ...this.customProps,
-        domElement: this.wrapper,
+        const mountParcel = this.mountParcel();
+        this.parcel = mountParcel!(this.config()!, {
+          ...this.customProps(),
+          domElement: this.wrapper,
+        });
+
+        const onParcelMount = this.onParcelMount();
+        if (onParcelMount !== null) {
+          this.parcel.mountPromise.then(onParcelMount);
+        }
+
+        this.unmounted = false;
+        return this.parcel.mountPromise;
+      });
+    });
+
+    inject(DestroyRef).onDestroy(() => {
+      this.scheduleTask(Action.Unmount, () => {
+        if (this.parcel?.getStatus() === 'MOUNTED') {
+          return this.parcel.unmount();
+        }
       });
 
-      if (this.onParcelMount !== null) {
-        this.parcel.mountPromise.then(this.onParcelMount);
+      if (this.wrapper !== null) {
+        this.wrapper.parentNode!.removeChild(this.wrapper);
       }
 
-      this.unmounted = false;
-      return this.parcel.mountPromise;
+      this.unmounted = true;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.scheduleTask(Action.Unmount, () => {
-      if (this.parcel !== null && this.parcel.getStatus() === 'MOUNTED') {
-        return this.parcel.unmount();
-      }
-    });
-
-    if (this.wrapper !== null) {
-      this.wrapper.parentNode!.removeChild(this.wrapper);
-    }
-
-    this.unmounted = true;
   }
 
   private scheduleTask(action: Action, task: () => void | Promise<any>): void {
@@ -117,8 +123,9 @@ export class ParcelComponent implements OnChanges, OnInit, OnDestroy {
           error.message = `During '${action}', parcel threw an error: ${error.message}`;
         }
 
-        if (typeof this.handleError === 'function') {
-          this.handleError(error);
+        const handleError = this.handleError();
+        if (typeof handleError === 'function') {
+          handleError(error);
         } else {
           setTimeout(() => {
             throw error;
