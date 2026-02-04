@@ -61,8 +61,6 @@ export default packages
       format: 'system',
       filename,
     }),
-    createConfig({ ecma, prod: false, format: 'es', filename }),
-    createConfig({ ecma, prod: true, format: 'es', filename }),
   ])
   .flat();
 

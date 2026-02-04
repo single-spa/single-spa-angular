@@ -59,4 +59,6 @@ migrations.json
 .nx/cache
 .nx/workspace-data
 
+# SystemJS directories
+es2022
 system/es2022
