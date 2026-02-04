@@ -1,10 +1,14 @@
 <button (click)="showSearchBar()">Show search bar</button>
-<input type="search" *ngIf="searchBarShown" placeholder="Search for transmissions..." />
+@if (searchBarShown) {
+  <input type="search" placeholder="Search for transmissions..." />
+}
 
 <hr />
 
 <p>Transmissions</p>
 
-<a *ngFor="let transmission of transmissions" routerLink="/transmission/{{ transmission.id }}">
-  {{ transmission.label }}
-</a>
+@for (transmission of transmissions; track transmission) {
+  <a routerLink="/transmission/{{ transmission.id }}">
+    {{ transmission.label }}
+  </a>
+}

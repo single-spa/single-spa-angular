@@ -49,10 +49,10 @@ function createVirtualHost(tree: Tree): workspaces.WorkspaceHost {
       if (!data) {
         throw new SchematicsException('File not found.');
       }
-      return virtualFs.fileBufferToString(data);
+      return data.toString('utf-8');
     },
     async writeFile(path: string, data: string): Promise<void> {
-      return tree.overwrite(path, data);
+      tree.overwrite(path, data);
     },
     async isDirectory(path: string): Promise<boolean> {
       return !tree.exists(path) && tree.getDir(path).subfiles.length > 0;

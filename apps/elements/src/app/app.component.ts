@@ -1,10 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  OnDestroy,
-  ChangeDetectorRef,
-  OnInit,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnDestroy, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { assetUrl, urlWithPublicPath } from '../single-spa/asset-url';
@@ -20,22 +14,17 @@ interface User {
   selector: 'elements-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
-  users: User[] = [];
+  readonly users = signal<User[]>([]);
 
-  lazyStylesHaveBeenLoaded = false;
+  readonly lazyStylesHaveBeenLoaded = signal(false);
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    private http: HttpClient,
-  ) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.http.get<User[]>(assetUrl('/users.json')).subscribe(users => {
-      this.users = users;
-      this.ref.detectChanges();
+      this.users.set(users);
     });
   }
 
@@ -45,8 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   tryToReproduce187Issue(): void {
     System.import(urlWithPublicPath('dark-theme.js')).then(() => {
-      this.lazyStylesHaveBeenLoaded = true;
-      this.ref.detectChanges();
+      this.lazyStylesHaveBeenLoaded.set(true);
     });
   }
 }
