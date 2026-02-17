@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'shop-transmissions',
   templateUrl: './transmissions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [RouterLink],
 })
 export class TransmissionsComponent {
   transmissions = [
@@ -18,9 +19,9 @@ export class TransmissionsComponent {
     },
   ];
 
-  searchBarShown = false;
+  readonly searchBarShown = signal(false);
 
   showSearchBar(): void {
-    this.searchBarShown = true;
+    this.searchBarShown.set(true);
   }
 }

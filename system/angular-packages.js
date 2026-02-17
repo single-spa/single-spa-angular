@@ -54,43 +54,13 @@ const angularPackages = [
     external: ['rxjs', 'rxjs/operators'],
   },
 
-  // @angular/core primitives
+  // @angular/core (merged)
   {
-    name: '@angular/core/primitives/event-dispatch',
-    input: `${fesm('@angular/core')}/primitives/event-dispatch.mjs`,
-    outputFile: 'angular-core-primitives-event-dispatch',
+    name: '@angular/core-full',
+    input: wrapper('angular-core-merged.js'),
+    outputFile: 'angular-core-full',
     packageJson: pkg('@angular/core'),
     external: [],
-  },
-  {
-    name: '@angular/core/primitives/signals',
-    input: `${fesm('@angular/core')}/primitives/signals.mjs`,
-    outputFile: 'angular-core-primitives-signals',
-    packageJson: pkg('@angular/core'),
-    external: [],
-  },
-  {
-    name: '@angular/core/primitives/di',
-    input: `${fesm('@angular/core')}/primitives/di.mjs`,
-    outputFile: 'angular-core-primitives-di',
-    packageJson: pkg('@angular/core'),
-    external: [],
-  },
-
-  // @angular/core
-  {
-    name: '@angular/core',
-    input: `${fesm('@angular/core')}/core.mjs`,
-    outputFile: 'angular-core',
-    packageJson: pkg('@angular/core'),
-    external: ['@angular/core/primitives/signals', '@angular/core/primitives/di'],
-  },
-  {
-    name: '@angular/core/rxjs-interop',
-    input: `${fesm('@angular/core')}/rxjs-interop.mjs`,
-    outputFile: 'angular-core-rxjs-interop',
-    packageJson: pkg('@angular/core'),
-    external: ['@angular/core/primitives/signals', '@angular/core/primitives/di'],
   },
 
   // @angular/elements
@@ -140,6 +110,10 @@ const angularPackages = [
 ];
 
 // Add rxjs to all externals
-angularPackages.forEach(p => p.external.unshift(/rxjs/));
+angularPackages.forEach(p => {
+  if (p.name !== 'tslib') {
+    p.external.unshift('rxjs', 'rxjs/operators', 'tslib');
+  }
+});
 
 export { angularPackages };

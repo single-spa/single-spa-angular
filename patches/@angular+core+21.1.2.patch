@@ -1,0 +1,95 @@
+diff --git a/node_modules/@angular/core/fesm2022/_effect-chunk.mjs b/node_modules/@angular/core/fesm2022/_effect-chunk.mjs
+index 3d388e9..b3c0b65 100755
+--- a/node_modules/@angular/core/fesm2022/_effect-chunk.mjs
++++ b/node_modules/@angular/core/fesm2022/_effect-chunk.mjs
+@@ -397,7 +397,9 @@ function signalValueChanged(node) {
+   postSignalSetFn?.(node);
+ }
+ 
+-function untracked(nonReactiveReadsFn) {
++// Both @angular/core and @angular/core/primitives/signals export a function named
++// untracked, causing a named export conflict when merging into a single SystemJS bundle.
++function untracked_internal(nonReactiveReadsFn) {
+   const prevConsumer = setActiveConsumer(null);
+   try {
+     return nonReactiveReadsFn();
+@@ -428,5 +430,5 @@ function runEffect(node) {
+   }
+ }
+ 
+-export { BASE_EFFECT_NODE, COMPUTING, ERRORED, REACTIVE_NODE, SIGNAL, SIGNAL_NODE, UNSET, consumerAfterComputation, consumerBeforeComputation, consumerDestroy, consumerMarkDirty, consumerPollProducersForChange, createComputed, createSignal, defaultEquals, finalizeConsumerAfterComputation, getActiveConsumer, isInNotificationPhase, isReactive, producerAccessed, producerIncrementEpoch, producerMarkClean, producerNotifyConsumers, producerUpdateValueVersion, producerUpdatesAllowed, resetConsumerBeforeComputation, runEffect, runPostProducerCreatedFn, runPostSignalSetFn, setActiveConsumer, setPostProducerCreatedFn, setPostSignalSetFn, setThrowInvalidWriteToSignalError, signalGetFn, signalSetFn, signalUpdateFn, untracked };
++export { BASE_EFFECT_NODE, COMPUTING, ERRORED, REACTIVE_NODE, SIGNAL, SIGNAL_NODE, UNSET, consumerAfterComputation, consumerBeforeComputation, consumerDestroy, consumerMarkDirty, consumerPollProducersForChange, createComputed, createSignal, defaultEquals, finalizeConsumerAfterComputation, getActiveConsumer, isInNotificationPhase, isReactive, producerAccessed, producerIncrementEpoch, producerMarkClean, producerNotifyConsumers, producerUpdateValueVersion, producerUpdatesAllowed, resetConsumerBeforeComputation, runEffect, runPostProducerCreatedFn, runPostSignalSetFn, setActiveConsumer, setPostProducerCreatedFn, setPostSignalSetFn, setThrowInvalidWriteToSignalError, signalGetFn, signalSetFn, signalUpdateFn, untracked_internal };
+ //# sourceMappingURL=_effect-chunk.mjs.map
+diff --git a/node_modules/@angular/core/fesm2022/_not_found-chunk.mjs b/node_modules/@angular/core/fesm2022/_not_found-chunk.mjs
+index bcd7450..12ea54d 100755
+--- a/node_modules/@angular/core/fesm2022/_not_found-chunk.mjs
++++ b/node_modules/@angular/core/fesm2022/_not_found-chunk.mjs
+@@ -13,7 +13,12 @@ function setCurrentInjector(injector) {
+   _currentInjector = injector;
+   return former;
+ }
+-function inject(token, options) {
++// Both @angular/core and @angular/core/primitives/di export a function named
++// inject, causing a named export conflict when merging into a single SystemJS
++// bundle. Rename the primitives/di version to injectFromCurrentInjector to
++// reflect its actual behavior and align with the existing getCurrentInjector
++// and setCurrentInjector naming convention in that module.
++function injectFromCurrentInjector(token, options) {
+   const currentInjector = getCurrentInjector();
+   if (!currentInjector) {
+     throw new Error('Current injector is not set.');
+@@ -35,5 +40,5 @@ function isNotFound(e) {
+   return e === NOT_FOUND || e?.name === 'ɵNotFound';
+ }
+ 
+-export { NOT_FOUND, NotFoundError, getCurrentInjector, inject, isNotFound, setCurrentInjector };
++export { NOT_FOUND, NotFoundError, getCurrentInjector, injectFromCurrentInjector, isNotFound, setCurrentInjector };
+ //# sourceMappingURL=_not_found-chunk.mjs.map
+diff --git a/node_modules/@angular/core/fesm2022/_untracked-chunk.mjs b/node_modules/@angular/core/fesm2022/_untracked-chunk.mjs
+index 6b357a6..ddf70be 100755
+--- a/node_modules/@angular/core/fesm2022/_untracked-chunk.mjs
++++ b/node_modules/@angular/core/fesm2022/_untracked-chunk.mjs
+@@ -4,7 +4,7 @@
+  * License: MIT
+  */
+ 
+-import { getActiveConsumer, setActiveConsumer as setActiveConsumer$1, createSignal, SIGNAL, consumerDestroy, BASE_EFFECT_NODE, isInNotificationPhase, runEffect, untracked as untracked$1 } from './_effect-chunk.mjs';
++import { getActiveConsumer, setActiveConsumer as setActiveConsumer$1, createSignal, SIGNAL, consumerDestroy, BASE_EFFECT_NODE, isInNotificationPhase, runEffect, untracked_internal } from './_effect-chunk.mjs';
+ import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+ import { isNotFound, getCurrentInjector, setCurrentInjector } from './_not_found-chunk.mjs';
+ import { setActiveConsumer } from '@angular/core/primitives/signals';
+@@ -2966,7 +2966,7 @@ function createEffectFn(node, fn) {
+ }
+ 
+ function untracked(nonReactiveReadsFn) {
+-  return untracked$1(nonReactiveReadsFn);
++  return untracked_internal(nonReactiveReadsFn);
+ }
+ 
+ export { AFTER_RENDER_SEQUENCES_TO_ADD, ANIMATIONS, CHILD_HEAD, CHILD_TAIL, CLEANUP, CONTAINER_HEADER_OFFSET, CONTEXT, ChangeDetectionScheduler, CheckNoChangesMode, DEBUG_TASK_TRACKER, DECLARATION_COMPONENT_VIEW, DECLARATION_LCONTAINER, DECLARATION_VIEW, DEHYDRATED_VIEWS, DOCUMENT, DOC_PAGE_BASE_URL, DestroyRef, EFFECTS, EFFECTS_TO_SCHEDULE, EMBEDDED_VIEW_INJECTOR, EMPTY_ARRAY, EMPTY_OBJ, ENVIRONMENT, ENVIRONMENT_INITIALIZER, ERROR_DETAILS_PAGE_BASE_URL, EffectRefImpl, EffectScheduler, EnvironmentInjector, ErrorHandler, EventEmitter, FLAGS, HEADER_OFFSET, HOST, HYDRATION, ID, INJECTOR$1 as INJECTOR, INJECTOR as INJECTOR$1, INJECTOR_DEF_TYPES, INJECTOR_SCOPE, INTERNAL_APPLICATION_ERROR_HANDLER, InjectionToken, Injector, MATH_ML_NAMESPACE, MOVED_VIEWS, NATIVE, NEXT, NG_COMP_DEF, NG_DIR_DEF, NG_ELEMENT_ID, NG_FACTORY_DEF, NG_INJ_DEF, NG_MOD_DEF, NG_PIPE_DEF, NG_PROV_DEF, NgZone, NoopNgZone, NullInjector, ON_DESTROY_HOOKS, PARENT, PREORDER_HOOK_FLAGS, PROVIDED_ZONELESS, PendingTasks, PendingTasksInternal, QUERIES, R3Injector, REACTIVE_TEMPLATE_CONSUMER, RENDERER, RuntimeError, SCHEDULE_IN_ROOT_ZONE, SCHEDULE_IN_ROOT_ZONE_DEFAULT, SVG_NAMESPACE, TVIEW, T_HOST, VERSION, VIEW_REFS, Version, ViewContext, XSS_SECURITY_URL, ZONELESS_ENABLED, _global, addToArray, angularZoneInstanceIdProperty, arrayEquals, arrayInsert2, arraySplice, assertComponentType, assertDefined, assertDirectiveDef, assertDomNode, assertElement, assertEqual, assertFirstCreatePass, assertFirstUpdatePass, assertFunction, assertGreaterThan, assertGreaterThanOrEqual, assertHasParent, assertInInjectionContext, assertIndexInDeclRange, assertIndexInExpandoRange, assertIndexInRange, assertInjectImplementationNotEqual, assertLContainer, assertLView, assertLessThan, assertNgModuleType, assertNodeInjector, assertNotDefined, assertNotEqual, assertNotInReactiveContext, assertNotReactive, assertNotSame, assertNumber, assertNumberInRange, assertOneOf, assertParentView, assertProjectionSlots, assertSame, assertString, assertTIcu, assertTNode, assertTNodeCreationIndex, assertTNodeForLView, assertTNodeForTView, attachInjectFlag, concatStringsWithSpace, convertToBitFlags, createInjector, createInjectorWithoutInjectorInstances, cyclicDependencyError, cyclicDependencyErrorWithDetails, debugStringifyTypeForError, decreaseElementDepthCount, deepForEach, effect, emitAfterRenderEffectPhaseCreatedEvent, emitInjectEvent, emitInjectorToCreateInstanceEvent, emitInstanceCreatedByInjectorEvent, emitProviderConfiguredEvent, enterDI, enterSkipHydrationBlock, enterView, errorHandlerEnvironmentInitializer, fillProperties, flatten, formatRuntimeError, forwardRef, getBindingIndex, getBindingRoot, getBindingsEnabled, getClosureSafeProperty, getComponentDef, getComponentLViewByIndex, getConstant, getContextLView, getCurrentDirectiveDef, getCurrentDirectiveIndex, getCurrentParentTNode, getCurrentQueryIndex, getCurrentTNode, getCurrentTNodePlaceholderOk, getDirectiveDef, getDirectiveDefOrThrow, getElementDepthCount, getFactoryDef, getInjectableDef, getInjectorDef, getLView, getLViewParent, getNamespace, getNativeByIndex, getNativeByTNode, getNativeByTNodeOrNull, getNgModuleDef, getNgModuleDefOrThrow, getNullInjector, getOrCreateLViewCleanup, getOrCreateTViewCleanup, getPipeDef, getSelectedIndex, getSelectedTNode, getTNode, getTView, hasI18n, importProvidersFrom, increaseElementDepthCount, incrementBindingIndex, initNgDevMode, inject, injectRootLimpMode, internalImportProvidersFrom, isClassProvider, isComponentDef, isComponentHost, isContentQueryHost, isCreationMode, isCurrentTNodeParent, isDestroyed, isDirectiveHost, isEnvironmentProviders, isExhaustiveCheckNoChanges, isForwardRef, isInCheckNoChangesMode, isInI18nBlock, isInInjectionContext, isInSkipHydrationBlock, isInjectable, isLContainer, isLView, isProjectionTNode, isRefreshingViews, isRootView, isSkipHydrationRootTNode, isStandalone, isTypeProvider, keyValueArrayGet, keyValueArrayIndexOf, keyValueArraySet, lastNodeWasCreated, leaveDI, leaveSkipHydrationBlock, leaveView, load, makeEnvironmentProviders, markAncestorsForTraversal, markViewForRefresh, newArray, nextBindingIndex, nextContextImpl, provideBrowserGlobalErrorListeners, provideEnvironmentInitializer, providerToFactory, removeFromArray, removeLViewOnDestroy, renderStringify, requiresRefreshOrTraversal, resetPreOrderHookFlags, resolveForwardRef, runInInjectionContext, runInInjectorProfilerContext, scheduleCallbackWithMicrotask, scheduleCallbackWithRafRace, setBindingIndex, setBindingRootForHostBindings, setCurrentDirectiveIndex, setCurrentQueryIndex, setCurrentTNode, setCurrentTNodeAsNotParent, setInI18nBlock, setInjectImplementation, setInjectorProfiler, setInjectorProfilerContext, setIsInCheckNoChangesMode, setIsRefreshingViews, setSelectedIndex, signal, signalAsReadonlyFn, store, storeCleanupWithContext, storeLViewOnDestroy, stringify, stringifyForError, throwError, throwProviderNotFoundError, truncateMiddle, untracked, unwrapLView, unwrapRNode, updateAncestorTraversalFlagsOnAttach, viewAttachedToChangeDetector, viewAttachedToContainer, walkProviderTree, walkUpViews, wasLastNodeCreated, ɵunwrapWritableSignal, ɵɵdefineInjectable, ɵɵdefineInjector, ɵɵdisableBindings, ɵɵenableBindings, ɵɵinject, ɵɵinvalidFactoryDep, ɵɵnamespaceHTML, ɵɵnamespaceMathML, ɵɵnamespaceSVG, ɵɵresetView, ɵɵrestoreView };
+diff --git a/node_modules/@angular/core/fesm2022/primitives-di.mjs b/node_modules/@angular/core/fesm2022/primitives-di.mjs
+index 8dd1983..9ae55a9 100755
+--- a/node_modules/@angular/core/fesm2022/primitives-di.mjs
++++ b/node_modules/@angular/core/fesm2022/primitives-di.mjs
+@@ -4,7 +4,7 @@
+  * License: MIT
+  */
+ 
+-export { NOT_FOUND, NotFoundError, getCurrentInjector, inject, isNotFound, setCurrentInjector } from './_not_found-chunk.mjs';
++export { NOT_FOUND, NotFoundError, getCurrentInjector, injectFromCurrentInjector, isNotFound, setCurrentInjector } from './_not_found-chunk.mjs';
+ 
+ function defineInjectable(opts) {
+   return {
+diff --git a/node_modules/@angular/core/fesm2022/primitives-signals.mjs b/node_modules/@angular/core/fesm2022/primitives-signals.mjs
+index 9910a43..e4353e6 100755
+--- a/node_modules/@angular/core/fesm2022/primitives-signals.mjs
++++ b/node_modules/@angular/core/fesm2022/primitives-signals.mjs
+@@ -5,7 +5,7 @@
+  */
+ 
+ import { SIGNAL, consumerMarkDirty, REACTIVE_NODE, consumerDestroy, isInNotificationPhase, consumerPollProducersForChange, consumerBeforeComputation, consumerAfterComputation } from './_effect-chunk.mjs';
+-export { BASE_EFFECT_NODE, SIGNAL_NODE, createComputed, createSignal, defaultEquals, finalizeConsumerAfterComputation, getActiveConsumer, isReactive, producerAccessed, producerIncrementEpoch, producerMarkClean, producerNotifyConsumers, producerUpdateValueVersion, producerUpdatesAllowed, resetConsumerBeforeComputation, runEffect, runPostProducerCreatedFn, runPostSignalSetFn, setActiveConsumer, setPostProducerCreatedFn, setPostSignalSetFn, setThrowInvalidWriteToSignalError, signalGetFn, signalSetFn, signalUpdateFn, untracked } from './_effect-chunk.mjs';
++export { BASE_EFFECT_NODE, SIGNAL_NODE, createComputed, createSignal, defaultEquals, finalizeConsumerAfterComputation, getActiveConsumer, isReactive, producerAccessed, producerIncrementEpoch, producerMarkClean, producerNotifyConsumers, producerUpdateValueVersion, producerUpdatesAllowed, resetConsumerBeforeComputation, runEffect, runPostProducerCreatedFn, runPostSignalSetFn, setActiveConsumer, setPostProducerCreatedFn, setPostSignalSetFn, setThrowInvalidWriteToSignalError, signalGetFn, signalSetFn, signalUpdateFn, untracked_internal } from './_effect-chunk.mjs';
+ export { createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn } from './_linked_signal-chunk.mjs';
+ export { setAlternateWeakRefImpl } from './_weak_ref-chunk.mjs';
+ 
