@@ -3,8 +3,8 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if (routing) { %>
 import { Router, NavigationStart } from '@angular/router';<% } %>
 
-<% if (routing) { %>import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
-<% } else { %>import { singleSpaAngular } from 'single-spa-angular';<% } %>
+<% if (routing) { %>import { singleSpaAngular, getSingleSpaExtraProviders } from '@single-spa-community/angular';
+<% } else { %>import { singleSpaAngular } from '@single-spa-community/angular';<% } %>
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
