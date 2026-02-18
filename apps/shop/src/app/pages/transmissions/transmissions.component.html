@@ -1,5 +1,5 @@
 <button (click)="showSearchBar()">Show search bar</button>
-@if (searchBarShown) {
+@if (searchBarShown()) {
   <input type="search" placeholder="Search for transmissions..." />
 }
 

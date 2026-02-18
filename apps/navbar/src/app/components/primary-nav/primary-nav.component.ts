@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
   selector: 'navbar-primary-nav',
   templateUrl: './primary-nav.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
 })
 export class PrimaryNavComponent {
   links = [
@@ -18,20 +17,12 @@ export class PrimaryNavComponent {
       url: '/chat',
     },
     {
-      label: 'Noop zone application',
-      url: '/noop-zone',
-    },
-    {
       label: 'Custom element',
       url: '/elements',
     },
     {
       label: 'Angular parcel',
       url: '/parcel',
-    },
-    {
-      label: 'Angular standalone',
-      url: '/standalone',
     },
   ];
 

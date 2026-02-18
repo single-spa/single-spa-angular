@@ -34,9 +34,6 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
-      - name: Run Jest
-        run: yarn test:ci
-
       - name: Build packages
         run: yarn build
 
@@ -47,3 +44,6 @@ jobs:
         env:
           NO_UPDATE_CHECK: 1
         run: yarn test:ci:integration
+
+      - name: Run Jest
+        run: yarn test:ci

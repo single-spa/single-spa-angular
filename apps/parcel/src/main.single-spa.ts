@@ -1,18 +1,21 @@
-import { NgZone } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngular, enableProdMode } from 'single-spa-angular';
+import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
+import { getSingleSpaExtraProviders, singleSpaAngular } from 'single-spa-angular';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
+import { AppComponent } from './app/app.component';
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: () => platformBrowserDynamic().bootstrapModule(AppModule),
+  bootstrapFunction: () => {
+    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    return bootstrapApplication(
+      AppComponent,
+      {
+        providers: [],
+      },
+      { platformRef },
+    );
+  },
   template: '<parcel-root />',
-  NgZone,
+  NgZone: 'noop',
 });
 
 export const bootstrap = lifecycles.bootstrap;

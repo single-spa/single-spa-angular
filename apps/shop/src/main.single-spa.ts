@@ -1,25 +1,21 @@
-import { NgZone } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngular, getSingleSpaExtraProviders, enableProdMode } from 'single-spa-angular';
+import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
+import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
 
 import { loadMontserrat } from './fonts';
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: () =>
-    loadMontserrat().then(() =>
-      platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
-    ),
+  bootstrapFunction: async () => {
+    await loadMontserrat();
+    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    return bootstrapApplication(AppComponent, appConfig, { platformRef });
+  },
   template: '<shop-root />',
+  NgZone: 'noop',
   Router,
   NavigationStart,
-  NgZone,
 });
 
 export const bootstrap = lifecycles.bootstrap;

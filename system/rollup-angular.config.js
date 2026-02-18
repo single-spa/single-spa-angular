@@ -20,7 +20,9 @@ function createConfig({ input, outputFile, external, prod }) {
     },
     plugins: [
       babel({ plugins: [linkerPlugin] }),
-      nodeResolve({ resolveOnly: [/^@angular\/(common|platform-browser)/] }),
+      nodeResolve({
+        resolveOnly: [/^@angular\//, /^tslib$/],
+      }),
       prod &&
         terser({
           format: { ecma: '2022' },

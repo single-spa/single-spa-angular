@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
   selector: 'chat-groups',
   templateUrl: './groups.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
 })
 export class GroupsComponent {
   constructor(private router: Router) {}

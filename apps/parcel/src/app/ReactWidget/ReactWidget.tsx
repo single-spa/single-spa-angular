@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+// @ts-ignore
 import singleSpaReact from 'single-spa-react';
 
 const ReactLogo = React.lazy(() => import('./ReactLogo'));

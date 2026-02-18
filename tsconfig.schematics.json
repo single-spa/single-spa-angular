@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./lib/schematics/ng-add",
     "target": "ES2015",
-    "module": "CommonJS",
+    "module": "es2020",
+    "moduleResolution": "bundler",
     "types": ["node", "jest"]
   },
   "include": ["./schematics/**/*"],

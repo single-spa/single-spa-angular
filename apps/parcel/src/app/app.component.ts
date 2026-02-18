@@ -1,11 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { defer, shareReplay, Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { defer, shareReplay } from 'rxjs';
+import { ParcelModule } from 'single-spa-angular/parcel';
 
 import { config } from './ReactWidget/ReactWidget';
 
@@ -17,27 +13,18 @@ const singleSpa$ = defer(() => System.import('single-spa')).pipe(
   selector: 'parcel-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [ParcelModule],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
   config = config;
-  mountRootParcel: typeof import('single-spa').mountRootParcel | null = null;
+  readonly mountRootParcel = signal<typeof import('single-spa').mountRootParcel | null>(null);
   customProps = {
     hello: 'Hola',
   };
 
-  private destroy$ = new Subject<void>();
-
-  constructor(private ref: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    singleSpa$.pipe(takeUntil(this.destroy$)).subscribe(({ mountRootParcel }) => {
-      this.mountRootParcel = mountRootParcel;
-      this.ref.detectChanges();
+  constructor() {
+    singleSpa$.pipe(takeUntilDestroyed()).subscribe(({ mountRootParcel }) => {
+      this.mountRootParcel.set(mountRootParcel);
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
   }
 }
