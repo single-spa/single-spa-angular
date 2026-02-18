@@ -1,7 +1,7 @@
 import { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LifeCycles } from 'single-spa';
-import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
+import { getContainerElementAndSetTemplate } from '@single-spa-community/angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
 import { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';

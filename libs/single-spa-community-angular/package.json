@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
-  "name": "single-spa-angular",
+  "name": "@single-spa-community/angular",
   "version": "19.0.0",
   "description": "Helpers for building single-spa applications which use Angular 2",
   "schematics": "./schematics/schematics.json",
