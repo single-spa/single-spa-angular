@@ -1,4 +1,6 @@
 @let _mountRootParcel = mountRootParcel();
+@let _customProps = customProps();
 @if (_mountRootParcel) {
-  <parcel [config]="config" [mountParcel]="_mountRootParcel" [customProps]="customProps" />
+  <parcel [config]="config" [mountParcel]="_mountRootParcel" [customProps]="_customProps" />
+  <button (click)="updateCustomProps()" id="update-custom-props">Update custom props</button>
 }

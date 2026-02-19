@@ -5,8 +5,10 @@ import {
   type LocationChangeEvent,
   type LocationChangeListener,
 } from '@angular/common';
-import { asyncScheduler, Subject, timer } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import { runOutsideAngular } from './run-outside-angular';
 
 declare const Zone: any;
 
@@ -39,13 +41,21 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
         // arrives. This is the key to avoiding infinite loops and race conditions during fast
         // navigation: if the user navigates rapidly (e.g., hitting back/forward quickly),
         // only the most recent popstate event will be processed. Earlier ones are discarded.
-        switchMap(state =>
-          // `timer(0, asyncScheduler)` defers execution to the next macrotask (via setTimeout).
-          // This gives single-spa time to finish its own synchronous URL/state updates before
-          // Angular's router reacts. Without this delay, Angular and single-spa could both
-          // attempt to modify history state simultaneously, causing conflicts or infinite
-          // navigation loops.
-          timer(0, asyncScheduler).pipe(map(() => state)),
+        switchMap(
+          state =>
+            // setTimeout defers execution to the next macrotask.
+            // This gives single-spa time to finish its own synchronous URL/state updates before
+            // Angular's router reacts. Without this delay, Angular and single-spa could both
+            // attempt to modify history state simultaneously, causing conflicts or infinite
+            // navigation loops.
+            new Observable<[LocationChangeListener, LocationChangeEvent]>(subscriber =>
+              runOutsideAngular(() => {
+                const timeoutId = setTimeout(() => {
+                  subscriber.next(state);
+                });
+                return () => clearTimeout(timeoutId);
+              }),
+            ),
         ),
       )
       .subscribe(([fn, event]) => {

@@ -14,17 +14,11 @@ const defaultOptions = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   updateFunction: () => Promise.resolve(),
-  bootstrappedNgModuleRefOrAppRef: null,
+  bootstrappedRef: null,
 };
 
-// This will be provided through Terser global definitions by Angular CLI. This will
-// help to tree-shake away the code unneeded for production bundles.
-declare const ngDevMode: boolean;
-
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
-
 export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): LifeCycles<T> {
-  if (NG_DEV_MODE && typeof userOptions !== 'object') {
+  if (typeof userOptions !== 'object') {
     throw Error('single-spa-angular requires a configuration object');
   }
 
@@ -33,19 +27,19 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
     ...userOptions,
   };
 
-  if (NG_DEV_MODE && typeof options.bootstrapFunction !== 'function') {
+  if (typeof options.bootstrapFunction !== 'function') {
     throw Error('single-spa-angular must be passed an options.bootstrapFunction');
   }
 
-  if (NG_DEV_MODE && typeof options.template !== 'string') {
+  if (typeof options.template !== 'string') {
     throw Error('single-spa-angular must be passed options.template string');
   }
 
-  if (NG_DEV_MODE && !options.NgZone) {
+  if (!options.NgZone) {
     throw Error(`single-spa-angular must be passed the NgZone option`);
   }
 
-  if (NG_DEV_MODE && options.Router && !options.NavigationStart) {
+  if (options.Router && !options.NavigationStart) {
     // We call `console.warn` except of throwing `new Error()` since this will not
     // be a breaking change.
     console.warn(`single-spa-angular must be passed the NavigationStart option`);
@@ -60,27 +54,31 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
 }
 
 async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
-  // Angular provides an opportunity to develop `zone-less` application, where developers
-  // have to trigger change detection manually.
-  // See https://angular.io/guide/zone#noopzone
   if (options.NgZone === 'noop') {
     return;
   }
 
-  // Note that we have to make it a noop function because it's a static property and not
-  // an instance property. We're unable to configure it for multiple apps when dependencies
-  // are shared and reference the same `NgZone` class. We can't determine where this function
-  // is being executed or under which application, making it difficult to assert whether this
-  // app is running under its zone.
+  // `NgZone.assertInAngularZone` and `NgZone.assertNotInAngularZone` are static methods,
+  // meaning they are shared across all instances of `NgZone`. When multiple Angular apps
+  // share dependencies (i.e. the same `NgZone` class reference), these assertions become
+  // unreliable because they cannot distinguish which application's zone is currently active.
+  // For example, app A's zone could be active while app B's assertion fires, causing false
+  // negatives. To avoid misleading errors in a microfrontend environment where multiple
+  // Angular zones coexist on the same page, we replace both methods with no-ops.
   options.NgZone.assertInAngularZone = () => {};
   options.NgZone.assertNotInAngularZone = () => {};
 
+  // single-spa intercepts browser navigation events (pushState, replaceState, popstate)
+  // and orchestrates routing across all mounted microfrontends. However, Zone.js is unaware
+  // of these navigation changes because they happen outside Angular's zone — single-spa
+  // dispatches its own routing events rather than going through Angular's router lifecycle.
+  // As a result, Angular's change detection is never triggered after a single-spa navigation.
+  // To fix this, we register a routing event listener that explicitly re-enters the app's
+  // Angular zone via `NgZone.run()`, which signals to Angular that something has changed
+  // and change detection should run.
+  // See https://github.com/single-spa/single-spa-angular/issues/86
   options.routingEventListener = () => {
-    options.bootstrappedNgZone!.run(() => {
-      // See https://github.com/single-spa/single-spa-angular/issues/86
-      // Zone is unaware of the single-spa navigation change and so Angular change detection doesn't work
-      // unless we tell Zone that something happened
-    });
+    options.bootstrappedNgZone!.run(() => {});
   };
 }
 
@@ -92,56 +90,62 @@ async function mount(
 
   const bootstrapPromise = options.bootstrapFunction(props);
 
-  if (NG_DEV_MODE && !(bootstrapPromise instanceof Promise)) {
+  if (!(bootstrapPromise instanceof Promise)) {
     throw Error(
       `single-spa-angular: the options.bootstrapFunction must return a promise, but instead returned a '${typeof bootstrapPromise}' that is not a Promise`,
     );
   }
 
-  const ngModuleRefOrAppRef: NgModuleRef<any> | ApplicationRef = await bootstrapPromise;
+  const bootstrappedRef = await bootstrapPromise;
 
-  if (NG_DEV_MODE) {
-    if (!ngModuleRefOrAppRef || typeof ngModuleRefOrAppRef.destroy !== 'function') {
-      throw Error(
-        `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module or ApplicationRef. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
-      );
-    }
+  if (typeof bootstrappedRef?.destroy !== 'function') {
+    throw Error(
+      `single-spa-angular: the options.bootstrapFunction returned a promise that did not resolve with a valid Angular module or ApplicationRef. Did you call platformBrowserDynamic().bootstrapModule() correctly?`,
+    );
   }
 
-  const singleSpaPlatformLocation = ngModuleRefOrAppRef.injector.get(
-    SingleSpaPlatformLocation,
-    null,
-  );
+  const singleSpaPlatformLocation = bootstrappedRef.injector.get(SingleSpaPlatformLocation, null);
 
-  const ngZoneEnabled = options.NgZone !== 'noop';
-
-  // The user has to provide `BrowserPlatformLocation` only if his application uses routing.
-  // So if he provided `Router` but didn't provide `BrowserPlatformLocation` then we have to inform him.
-  // Also `getSingleSpaExtraProviders()` function should be called only if the user doesn't use
-  // `zone-less` change detection, if `NgZone` is `noop` then we can skip it.
-  if (NG_DEV_MODE && ngZoneEnabled && options.Router && singleSpaPlatformLocation === null) {
+  // `getSingleSpaExtraProviders()` must be passed to `platformBrowser()` when the application
+  // uses Angular's router. It registers `SingleSpaPlatformLocation` which overrides
+  // `BrowserPlatformLocation` to handle popstate events correctly in a microfrontend environment.
+  // Without it, Angular's router and single-spa will conflict when handling browser navigation,
+  // leading to infinite loops or incorrect routing behavior.
+  //
+  // However, if the app is running in zoneless mode (`NgZone: 'noop'`), change detection is
+  // managed manually and the platform location override is not needed, so we skip this check.
+  //
+  // If the user provided a `Router` but `SingleSpaPlatformLocation` is not present in the
+  // platform injector, it means `getSingleSpaExtraProviders()` was not passed to `platformBrowser()`
+  // and we throw a descriptive error to guide them toward the fix.
+  if (options.Router && singleSpaPlatformLocation === null) {
     throw new Error(`
-      single-spa-angular: could not retrieve extra providers from the platform injector. Did you call platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule()?
-    `);
+    single-spa-angular: could not retrieve extra providers from the platform injector. Did you add getSingleSpaExtraProviders()?
+  `);
   }
 
   const bootstrappedOptions = options as BootstrappedSingleSpaAngularOptions;
 
-  if (ngZoneEnabled) {
-    const ngZone: NgZone = ngModuleRefOrAppRef.injector.get(options.NgZone);
+  if (options.NgZone !== 'noop') {
+    const ngZone: NgZone = bootstrappedRef.injector.get(options.NgZone);
 
-    // `NgZone` can be enabled but routing may not be used thus `getSingleSpaExtraProviders()`
-    // function was not called.
+    // The app may use `NgZone` but not Angular's router (e.g. a microfrontend that manages
+    // its own navigation or has no routing at all). In that case, `getSingleSpaExtraProviders()`
+    // would not have been called and `SingleSpaPlatformLocation` would not be registered in
+    // the platform injector. We only wire up the popstate skip logic when we can confirm
+    // that `SingleSpaPlatformLocation` is present, since `skipLocationChangeOnNonImperativeRoutingTriggers`
+    // relies on it to distinguish synthetic single-spa navigation events from genuine
+    // browser back/forward navigation.
     if (singleSpaPlatformLocation !== null) {
-      skipLocationChangeOnNonImperativeRoutingTriggers(ngModuleRefOrAppRef, options);
+      skipLocationChangeOnNonImperativeRoutingTriggers(bootstrappedRef, options);
     }
 
     bootstrappedOptions.bootstrappedNgZone = ngZone;
     window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
   }
 
-  bootstrappedOptions.bootstrappedNgModuleRefOrAppRef = ngModuleRefOrAppRef;
-  return ngModuleRefOrAppRef;
+  bootstrappedOptions.bootstrappedRef = bootstrappedRef;
+  return bootstrappedRef;
 }
 
 function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
@@ -150,33 +154,44 @@ function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
       window.removeEventListener('single-spa:routing-event', options.routingEventListener);
     }
 
-    options.bootstrappedNgModuleRefOrAppRef!.destroy();
-    options.bootstrappedNgModuleRefOrAppRef = null;
+    options.bootstrappedRef!.destroy();
+    options.bootstrappedRef = null;
   });
 }
 
 function skipLocationChangeOnNonImperativeRoutingTriggers(
-  ngModuleRefOrAppRef: NgModuleRef<any> | ApplicationRef,
+  bootstrappedRef: NgModuleRef<any> | ApplicationRef,
   options: SingleSpaAngularOptions,
 ): void {
   const { NavigationStart, Router } = options;
   if (!NavigationStart || !Router) {
-    // As discussed we don't do anything right now if the developer doesn't provide
-    // `options.NavigationStart` since this might be a breaking change.
+    // `NavigationStart` and `Router` must both be provided in `singleSpaAngular()` options
+    // for this optimization to work. We intentionally do nothing if they are absent rather
+    // than throwing, because adding this as a hard requirement would be a breaking change
+    // for existing users who haven't provided these options.
     return;
   }
 
-  const router = ngModuleRefOrAppRef.injector.get(Router);
+  const router = bootstrappedRef.injector.get(Router);
   const subscription = router.events.subscribe((event: any) => {
     if (event instanceof NavigationStart) {
       const currentNavigation = router.getCurrentNavigation();
-      // This listener will be set up for each Angular application
-      // that has routing capabilities.
-      // We set `skipLocationChange` for each non-imperative navigation,
-      // Angular router checks under the hood if it has to change
-      // the browser URL or not.
-      // If `skipLocationChange` is truthy then Angular router will not call
-      // `setBrowserUrl()` which calls `history.replaceState()` and dispatches `popstate` event.
+
+      // In a single-spa microfrontend environment, multiple apps share the same browser URL.
+      // When single-spa triggers a routing change (e.g. via popstate or its own navigation
+      // events), Angular's router responds and would normally call `setBrowserUrl()` internally,
+      // which calls `history.replaceState()` and dispatches a new `popstate` event. This creates
+      // a feedback loop: single-spa triggers Angular, Angular updates the URL, which triggers
+      // single-spa again, and so on.
+      //
+      // To break this cycle, we intercept every non-imperative navigation (i.e. navigations
+      // triggered by popstate or single-spa routing events, rather than by explicit router.navigate()
+      // calls in application code) and set `skipLocationChange: true`. This tells Angular's router
+      // to perform the navigation and update its internal state without calling `history.replaceState()`,
+      // preventing the redundant popstate event that would otherwise cause the infinite loop.
+      //
+      // `replaceUrl: false` is also set to ensure Angular does not attempt to replace the current
+      // history entry, which would have the same undesirable side effect.
       if (currentNavigation.trigger !== 'imperative') {
         currentNavigation.extras.skipLocationChange = true;
         currentNavigation.extras.replaceUrl = false;
@@ -184,5 +199,5 @@ function skipLocationChangeOnNonImperativeRoutingTriggers(
     }
   });
 
-  ngModuleRefOrAppRef.onDestroy(() => subscription.unsubscribe());
+  bootstrappedRef.onDestroy(() => subscription.unsubscribe());
 }

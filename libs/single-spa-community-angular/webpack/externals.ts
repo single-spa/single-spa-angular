@@ -17,12 +17,15 @@ export const externals = [
 
   '@angular/core/primitives/signals',
   '@angular/core/primitives/event-dispatch',
+  '@angular/core/primitives/di',
   '@angular/core',
   '@angular/core/rxjs-interop',
 
   '@angular/elements',
 
   '@angular/forms',
+  '@angular/forms/signals',
+  '@angular/forms/signals/compat',
 
   '@angular/localize',
   '@angular/localize/init',
@@ -43,8 +46,8 @@ export const externals = [
   '@angular/upgrade/static',
 
   'single-spa',
-  'single-spa-angular/internals',
-  'single-spa-angular',
-  'single-spa-angular/elements',
-  'single-spa-angular/parcel',
+  '@single-spa-community/angular/internals',
+  '@single-spa-community/angular',
+  '@single-spa-community/angular/elements',
+  '@single-spa-community/angular/parcel',
 ];

@@ -17,15 +17,10 @@ const enum Action {
   Unmount = 'unmount',
 }
 
-// This will be provided through Terser global definitions by Angular CLI. This will
-// help to tree-shake away the code unneeded for production bundles.
-declare const ngDevMode: boolean;
-
 @Component({
   selector: 'parcel',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class ParcelComponent {
   readonly config = input<ParcelConfig | null>(null);
@@ -47,14 +42,19 @@ export class ParcelComponent {
       const customProps = this.customProps();
       untracked(() => {
         this.scheduleTask(Action.Update, () => {
-          this.parcel?.update?.(customProps);
+          this.parcel?.update?.({
+            ...customProps,
+            domElement: this.wrapper,
+          });
         });
       });
     });
 
     afterNextRender(() => {
       this.scheduleTask(Action.Mount, () => {
-        if ((typeof ngDevMode === 'undefined' || ngDevMode) && this.mountParcel === null) {
+        const mountParcel = this.mountParcel();
+
+        if (mountParcel === null) {
           throw new Error(
             'single-spa-angular: the [mountParcel] binding is required when using the <parcel> component. You can either (1) import mountRootParcel from single-spa or (2) use the mountParcel prop provided to single-spa applications.',
           );
@@ -69,8 +69,7 @@ export class ParcelComponent {
           this.host.nativeElement.appendChild(this.wrapper);
         }
 
-        const mountParcel = this.mountParcel();
-        this.parcel = mountParcel!(this.config()!, {
+        this.parcel = mountParcel(this.config()!, {
           ...this.customProps(),
           domElement: this.wrapper,
         });
@@ -88,7 +87,9 @@ export class ParcelComponent {
     inject(DestroyRef).onDestroy(() => {
       this.scheduleTask(Action.Unmount, () => {
         if (this.parcel?.getStatus() === 'MOUNTED') {
-          return this.parcel.unmount();
+          return this.parcel.unmount().then(() => {
+            this.parcel = null;
+          });
         }
       });
 
