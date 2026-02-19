@@ -2,10 +2,16 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "single-spa-angular": ["libs/single-spa-angular/index.ts"],
-      "single-spa-angular/elements": ["libs/single-spa-angular/elements/src/index.ts"],
-      "single-spa-angular/internals": ["libs/single-spa-angular/internals/src/index.ts"],
-      "single-spa-angular/parcel": ["libs/single-spa-angular/parcel/src/index.ts"]
+      "@single-spa-community/angular": ["libs/single-spa-community-angular/index.ts"],
+      "@single-spa-community/angular/elements": [
+        "libs/single-spa-community-angular/elements/src/index.ts"
+      ],
+      "@single-spa-community/angular/internals": [
+        "libs/single-spa-community-angular/internals/src/index.ts"
+      ],
+      "@single-spa-community/angular/parcel": [
+        "libs/single-spa-community-angular/parcel/src/index.ts"
+      ]
     },
     "target": "es2015",
     "module": "esnext",

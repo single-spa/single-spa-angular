@@ -1,6 +1,6 @@
 import type { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
 import type { LifeCycles } from 'single-spa';
-import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
+import { getContainerElementAndSetTemplate } from '@single-spa-community/angular/internals';
 
 import { SingleSpaPlatformLocation } from './extra-providers';
 import type { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';

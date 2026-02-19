@@ -6,5 +6,5 @@
     "module": "CommonJS",
     "types": ["node"]
   },
-  "include": ["./libs/single-spa-angular/webpack/index.ts"]
+  "include": ["./libs/single-spa-community-angular/webpack/index.ts"]
 }

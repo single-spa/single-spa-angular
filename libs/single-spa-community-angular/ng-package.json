@@ -2,7 +2,7 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../lib",
   "lib": {
-    "flatModuleFile": "single-spa-angular",
+    "flatModuleFile": "single-spa-community-angular",
     "entryFile": "index.ts"
   }
 }
