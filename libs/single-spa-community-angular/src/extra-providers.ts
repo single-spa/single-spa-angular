@@ -1,9 +1,10 @@
-import { Injectable, StaticProvider, Inject, DOCUMENT } from '@angular/core';
+import { Injectable, StaticProvider, Inject } from '@angular/core';
 import {
   BrowserPlatformLocation,
   PlatformLocation,
-  LocationChangeEvent,
-  LocationChangeListener,
+  type LocationChangeEvent,
+  type LocationChangeListener,
+  DOCUMENT,
 } from '@angular/common';
 
 declare const Zone: any;

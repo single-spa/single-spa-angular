@@ -1,5 +1,5 @@
 {
-  "name": "single-spa-angular",
+  "name": "@single-spa-community/angular",
   "version": "0.0.0",
   "description": "Helpers for building single-spa applications which use Angular 2+",
   "repository": {
@@ -34,7 +34,7 @@
     "test": "yarn clean && jest",
     "lint": "eslint apps libs --ext ts",
     "// - SINGLE-SPA-ANGULAR": "Scripts for building single-spa-angular",
-    "build:single-spa-angular": "nx build single-spa-angular --skip-nx-cache && cpx README.md lib",
+    "build:single-spa-angular": "nx build single-spa-community-angular --skip-nx-cache && cpx README.md lib",
     "// - WEBPACK": "Scripts for building Webpack config transformer",
     "build:webpack": "rimraf lib/lib && tsc -p tsconfig.webpack.json",
     "// - SYSTEM": "Scripts for building singla-spa-angular in SystemJS format",
