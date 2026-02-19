@@ -1,1 +1,1 @@
-export { default } from '../../libs/single-spa-angular/webpack';
+export { default } from '../../libs/single-spa-community-angular/webpack';
