@@ -1,0 +1,17 @@
+{
+  "name": "single-spa-community-angular",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/single-spa-community-angular/src",
+  "prefix": "single-spa-community-angular",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "options": {
+        "tsConfig": "libs/single-spa-community-angular/tsconfig.lib.json",
+        "project": "libs/single-spa-community-angular/ng-package.json"
+      }
+    }
+  },
+  "tags": []
+}
