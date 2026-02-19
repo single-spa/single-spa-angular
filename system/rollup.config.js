@@ -26,23 +26,23 @@ const packages = ['2022']
   .map(ecma => [
     {
       ecma,
-      angularPackage: 'single-spa-angular/internals',
-      filename: 'single-spa-angular-internals',
+      angularPackage: '@single-spa-community/angular/internals',
+      filename: 'single-spa-community-angular-internals',
     },
     {
       ecma,
-      angularPackage: 'single-spa-angular',
-      filename: 'single-spa-angular',
+      angularPackage: '@single-spa-community/angular',
+      filename: 'single-spa-community-angular',
     },
     {
       ecma,
-      angularPackage: 'single-spa-angular/elements',
-      filename: 'single-spa-angular-elements',
+      angularPackage: '@single-spa-community/angular/elements',
+      filename: 'single-spa-community-angular-elements',
     },
     {
       ecma,
-      angularPackage: 'single-spa-angular/parcel',
-      filename: 'single-spa-angular-parcel',
+      angularPackage: '@single-spa-community/angular/parcel',
+      filename: 'single-spa-community-angular-parcel',
     },
   ])
   .flat();
@@ -97,7 +97,7 @@ function createConfig({ ecma, prod, format, filename }) {
       'rxjs/operators',
       '@angular/core',
       '@angular/common',
-      'single-spa-angular/internals',
+      '@single-spa-community/angular/internals',
     ],
   };
 }
