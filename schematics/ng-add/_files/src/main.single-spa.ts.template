@@ -1,25 +1,32 @@
-<% if (routing) { %>import { enableProdMode } from '@angular/core';<% } %>
-<% if (!routing) { %>import { enableProdMode } from '@angular/core';<% } %>
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';<% if (routing) { %>
-import { Router, NavigationStart } from '@angular/router';<% } %>
+import { ApplicationRef } from '@angular/core';
+<% if (routing) { %>
+import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
+import { NavigationStart, Router } from '@angular/router';
+import { singleSpaAngular, getSingleSpaExtraProviders } from '@single-spa-community/angular'
+<% } else { %>
+import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
+import { singleSpaAngular } from '@single-spa-community/angular'
+<% } %>
 
-<% if (routing) { %>import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular';
-<% } else { %>import { singleSpaAngular } from 'single-spa-angular';<% } %>
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-import { singleSpaPropsSubject } from './single-spa/single-spa-props';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+import { singleSpaProps } from './single-spa/single-spa-props';
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: singleSpaProps => {
-    singleSpaPropsSubject.next(singleSpaProps);<% if (routing) { %>
-    return platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule);<% } else { %>
-    return platformBrowserDynamic().bootstrapModule(AppModule);<% } %>
+    singleSpaProps.set(singleSpaProps);
+    <% if (routing) { %>
+    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    <% } else { %>
+    const platformRef = platformBrowser();
+    <% } %>
+    return bootstrapApplication(AppComponent, appConfig, { platformRef });
   },
+  NgZone: 'noop',
+  ApplicationRef,
   template: '<<%= prefix %>-root />',<% if (routing) { %>
   Router,
   NavigationStart,<% } %>
-  NgZone: 'noop',
 });
 
 export const bootstrap = lifecycles.bootstrap;

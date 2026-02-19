@@ -1,16 +1,12 @@
 import { DomElementGetter, BaseSingleSpaAngularOptions } from './types';
 
-// This will be provided through Terser global definitions by Angular CLI. This will
-// help to tree-shake away the code unneeded for production bundles.
-declare const ngDevMode: boolean;
-
 export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngularOptions>(
   options: T,
   props: any,
 ): HTMLElement {
   const domElementGetter = chooseDomElementGetter(options, props);
 
-  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !domElementGetter) {
+  if (!domElementGetter) {
     throw Error(
       `Cannot mount angular application '${
         props.name || props.appName
@@ -26,7 +22,7 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
 function getContainerElement(domElementGetter: DomElementGetter, props: any): never | HTMLElement {
   const element = domElementGetter(props);
 
-  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !element) {
+  if (!element) {
     throw Error('domElementGetter did not return a valid dom element');
   }
 

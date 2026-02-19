@@ -1,5 +1,5 @@
-import { singleSpaAngularElements } from 'single-spa-angular/elements';
-import { getSingleSpaExtraProviders } from 'single-spa-angular';
+import { singleSpaAngularElements } from '@single-spa-community/angular/elements';
+import { getSingleSpaExtraProviders } from '@single-spa-community/angular';
 
 import { AppModule } from './app/app.module';
 
