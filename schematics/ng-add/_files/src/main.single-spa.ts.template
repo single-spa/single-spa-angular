@@ -1,4 +1,3 @@
-import { ApplicationRef } from '@angular/core';
 <% if (routing) { %>
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
 import { NavigationStart, Router } from '@angular/router';
@@ -23,7 +22,6 @@ const lifecycles = singleSpaAngular({
     return bootstrapApplication(AppComponent, appConfig, { platformRef });
   },
   NgZone: 'noop',
-  ApplicationRef,
   template: '<<%= prefix %>-root />',<% if (routing) { %>
   Router,
   NavigationStart,<% } %>
