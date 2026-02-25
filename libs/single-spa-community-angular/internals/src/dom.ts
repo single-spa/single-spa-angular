@@ -14,8 +14,12 @@ export function getContainerElementAndSetTemplate<T extends BaseSingleSpaAngular
     );
   }
 
+  // If the template is a function, we call it with the props to get the string template.
+  const template =
+    typeof options.template === 'function' ? options.template(props) : options.template;
+
   const containerElement = getContainerElement(domElementGetter, props);
-  containerElement.innerHTML = options.template;
+  containerElement.innerHTML = template;
   return containerElement;
 }
 

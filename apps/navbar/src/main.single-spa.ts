@@ -10,7 +10,7 @@ const lifecycles = singleSpaAngular({
     const platformRef = platformBrowser(provideSingleSpaPlatform());
     return bootstrapApplication(AppComponent, appConfig, { platformRef });
   },
-  template: '<navbar-root />',
+  template: () => '<navbar-root />',
   NgZone: 'noop',
   Router,
   NavigationStart,
