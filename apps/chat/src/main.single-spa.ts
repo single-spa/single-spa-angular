@@ -1,5 +1,5 @@
 import { NavigationStart, Router } from '@angular/router';
-import { getSingleSpaExtraProviders, singleSpaAngular } from '@single-spa-community/angular';
+import { provideSingleSpaPlatform, singleSpaAngular } from '@single-spa-community/angular';
 
 import { singleSpaPropsSubject } from './single-spa/single-spa-props';
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import { appConfig } from './app/app.config';
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: async singleSpaProps => {
-    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    const platformRef = platformBrowser(provideSingleSpaPlatform());
     singleSpaPropsSubject.next(singleSpaProps);
     const appRef = await bootstrapApplication(AppComponent, appConfig, { platformRef });
     appRef.onDestroy(() => {

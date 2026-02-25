@@ -1,2 +1,3 @@
 export { singleSpaAngular } from './single-spa-angular';
-export { getSingleSpaExtraProviders } from './extra-providers';
+export { provideSingleSpaPlatform } from './platform-providers';
+export { provideSingleSpa } from './providers';

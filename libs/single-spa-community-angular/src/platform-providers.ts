@@ -10,8 +10,6 @@ import { switchMap } from 'rxjs/operators';
 
 import { runOutsideAngular } from './run-outside-angular';
 
-declare const Zone: any;
-
 export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
   // When `pushState` or `replaceState` is called, single-spa will dispatch a synthetic
   // `popstate` event to notify other apps of the URL change. We use this flag to
@@ -95,14 +93,6 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
   }
 
   onPopState(fn: LocationChangeListener): VoidFunction {
-    // Wrap the listener in the current Zone.js zone so that Angular's change detection
-    // is triggered correctly when the listener runs. This is necessary because popstate
-    // events from browser back/forward navigation are dispatched in the root zone, outside
-    // of Angular's zone. single-spa overrides `history.replaceState`, which prevents
-    // Angular's zone from intercepting these events automatically.
-    // See https://github.com/single-spa/single-spa-angular/issues/94 for full context.
-    fn = typeof Zone !== 'undefined' && Zone?.current ? Zone.current.wrap(fn, this.source) : fn;
-
     const onPopStateListener = (event: LocationChangeEvent) => {
       // Instead of calling `fn` directly, push the event into the Subject so it can be
       // debounced and deferred via the switchMap + timer pipeline in the constructor.
@@ -124,7 +114,7 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
  * @example
  * const lifecycles = singleSpaAngular({
  *   bootstrapFunction: async () => {
- *     const platformRef = platformBrowser(getSingleSpaExtraProviders());
+ *     const platformRef = platformBrowser(provideSingleSpaPlatform());
  *     return bootstrapApplication(AppComponent, appConfig, { platformRef });
  *   },
  *   template: '<app-root />',
@@ -133,7 +123,7 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
  *   NavigationStart,
  * });
  */
-export function getSingleSpaExtraProviders(): StaticProvider[] {
+export function provideSingleSpaPlatform(): StaticProvider[] {
   return [
     {
       provide: SingleSpaPlatformLocation,

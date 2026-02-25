@@ -1,11 +1,11 @@
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { getSingleSpaExtraProviders, singleSpaAngular } from '@single-spa-community/angular';
+import { provideSingleSpaPlatform, singleSpaAngular } from '@single-spa-community/angular';
 
 import { AppComponent } from './app/app.component';
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: () => {
-    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    const platformRef = platformBrowser(provideSingleSpaPlatform());
     return bootstrapApplication(
       AppComponent,
       {
