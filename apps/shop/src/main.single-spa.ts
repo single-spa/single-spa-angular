@@ -1,6 +1,6 @@
 import { NavigationStart, Router } from '@angular/router';
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { singleSpaAngular, getSingleSpaExtraProviders } from '@single-spa-community/angular';
+import { singleSpaAngular, provideSingleSpaPlatform } from '@single-spa-community/angular';
 
 import { loadMontserrat } from './fonts';
 import { appConfig } from './app/app.config';
@@ -9,7 +9,7 @@ import { AppComponent } from './app/app.component';
 const lifecycles = singleSpaAngular({
   bootstrapFunction: async () => {
     await loadMontserrat();
-    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    const platformRef = platformBrowser(provideSingleSpaPlatform());
     return bootstrapApplication(AppComponent, appConfig, { platformRef });
   },
   template: '<shop-root />',

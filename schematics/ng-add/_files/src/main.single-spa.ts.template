@@ -1,7 +1,7 @@
 <% if (routing) { %>
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
 import { NavigationStart, Router } from '@angular/router';
-import { singleSpaAngular, getSingleSpaExtraProviders } from '@single-spa-community/angular'
+import { singleSpaAngular, provideSingleSpaPlatform } from '@single-spa-community/angular'
 <% } else { %>
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
 import { singleSpaAngular } from '@single-spa-community/angular'
@@ -15,7 +15,7 @@ const lifecycles = singleSpaAngular({
   bootstrapFunction: singleSpaProps => {
     singleSpaProps.set(singleSpaProps);
     <% if (routing) { %>
-    const platformRef = platformBrowser(getSingleSpaExtraProviders());
+    const platformRef = platformBrowser(provideSingleSpaPlatform());
     <% } else { %>
     const platformRef = platformBrowser();
     <% } %>

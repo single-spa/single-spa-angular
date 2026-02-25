@@ -1,5 +1,5 @@
 import { singleSpaAngularElements } from '@single-spa-community/angular/elements';
-import { getSingleSpaExtraProviders } from '@single-spa-community/angular';
+import { provideSingleSpaPlatform } from '@single-spa-community/angular';
 
 import { AppModule } from './app/app.module';
 
@@ -12,7 +12,7 @@ const lifecycles = singleSpaAngularElements({
   bootstrapFunction: async () => {
     unmountableStyles.use();
 
-    const ngModuleRef = await platformBrowser(getSingleSpaExtraProviders()).bootstrapModule(
+    const ngModuleRef = await platformBrowser(provideSingleSpaPlatform()).bootstrapModule(
       AppModule,
     );
 

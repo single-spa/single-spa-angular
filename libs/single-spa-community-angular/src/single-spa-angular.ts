@@ -2,7 +2,7 @@ import type { ApplicationRef, NgModuleRef, NgZone } from '@angular/core';
 import type { LifeCycles } from 'single-spa';
 import { getContainerElementAndSetTemplate } from '@single-spa-community/angular/internals';
 
-import { SingleSpaPlatformLocation } from './extra-providers';
+import { SingleSpaPlatformLocation } from './platform-providers';
 import type { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
 
 const defaultOptions = {
@@ -106,7 +106,7 @@ async function mount(
 
   const singleSpaPlatformLocation = bootstrappedRef.injector.get(SingleSpaPlatformLocation, null);
 
-  // `getSingleSpaExtraProviders()` must be passed to `platformBrowser()` when the application
+  // `provideSingleSpaPlatform()` must be passed to `platformBrowser()` when the application
   // uses Angular's router. It registers `SingleSpaPlatformLocation` which overrides
   // `BrowserPlatformLocation` to handle popstate events correctly in a microfrontend environment.
   // Without it, Angular's router and single-spa will conflict when handling browser navigation,
@@ -116,11 +116,11 @@ async function mount(
   // managed manually and the platform location override is not needed, so we skip this check.
   //
   // If the user provided a `Router` but `SingleSpaPlatformLocation` is not present in the
-  // platform injector, it means `getSingleSpaExtraProviders()` was not passed to `platformBrowser()`
+  // platform injector, it means `provideSingleSpaPlatform()` was not passed to `platformBrowser()`
   // and we throw a descriptive error to guide them toward the fix.
   if (options.Router && singleSpaPlatformLocation === null) {
     throw new Error(`
-    single-spa-angular: could not retrieve extra providers from the platform injector. Did you add getSingleSpaExtraProviders()?
+    single-spa-angular: could not retrieve extra providers from the platform injector. Did you add provideSingleSpaPlatform()?
   `);
   }
 
@@ -130,7 +130,7 @@ async function mount(
     const ngZone: NgZone = bootstrappedRef.injector.get(options.NgZone);
 
     // The app may use `NgZone` but not Angular's router (e.g. a microfrontend that manages
-    // its own navigation or has no routing at all). In that case, `getSingleSpaExtraProviders()`
+    // its own navigation or has no routing at all). In that case, `provideSingleSpaPlatform()`
     // would not have been called and `SingleSpaPlatformLocation` would not be registered in
     // the platform injector. We only wire up the popstate skip logic when we can confirm
     // that `SingleSpaPlatformLocation` is present, since `skipLocationChangeOnNonImperativeRoutingTriggers`

@@ -27,3 +27,5 @@ The package has been republished under the `@single-spa-community` scope due to 
 | `21.x`                          | `21.x`  |
 | `20.x`                          | `20.x`  |
 | `19.x`                          | `19.x`  |
+
+> **Note:** This package follows a lock-step versioning strategy — the major version is aligned with Angular's major version to make compatibility obvious at a glance. This means a major bump does not necessarily indicate a breaking change in this package's own API.
