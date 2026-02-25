@@ -24,5 +24,6 @@ The package has been republished under the `@single-spa-community` scope due to 
 
 | `@single-spa-community/angular` | Angular |
 | ------------------------------- | ------- |
+| `21.x`                          | `21.x`  |
 | `20.x`                          | `20.x`  |
 | `19.x`                          | `19.x`  |
