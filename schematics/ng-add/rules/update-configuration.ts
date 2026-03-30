@@ -109,12 +109,16 @@ function updateTSConfig(tree: Tree, buildTarget: workspaces.TargetDefinition): v
 
   const tsConfig = parse(buffer.toString());
 
+  // Only update `files` when it already exists in the tsconfig.
+  // Older Angular versions (≤15) used a `files` array to declare entry points
+  // (`main.ts` and `polyfills.ts`). We replace it with just `main.single-spa.ts`
+  // because polyfills are handled separately via the Webpack `entry` property.
+  // Newer Angular versions use `include`/`exclude` instead; those projects do not
+  // need this transformation.
   if (!Array.isArray(tsConfig.files)) {
     return;
   }
 
-  // The "files" property will only contain path to `main.single-spa.ts` file,
-  // because we remove `polyfills` from Webpack `entry` property.
   tsConfig.files = [normalize('src/main.single-spa.ts')];
   tree.overwrite(tsConfigPath, JSON.stringify(tsConfig, null, 2));
 }

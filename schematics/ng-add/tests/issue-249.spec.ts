@@ -3,7 +3,13 @@ import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import * as JSON5 from 'json5';
 
 import { Schema as NgAddOptions } from '../schema';
-import { createWorkspace, createTestRunner, getFileContent, VERSION } from './utils';
+import {
+  createWorkspace,
+  createTestRunner,
+  getFileContent,
+  VERSION,
+  skipConsoleLogging,
+} from './utils';
 
 const workspaceOptions = {
   name: 'ss-workspace',
@@ -23,12 +29,21 @@ const appOptions = {
 
 const angular10Comment = '/* Unexpected comment from Angular */';
 
-// Simulate what angular 10 is doing adding a comment to the tsconfig file
+// Simulate what Angular 10 does: prepend a comment AND include a `files` array.
+// Newer Angular versions dropped `files` in favour of `include`/`exclude`, but
+// Angular 10–15 shipped both. The comment would break JSON.parse; JSON5 handles it.
 // https://github.com/single-spa/single-spa-angular/issues/249
-function appendCommentToTsConfig(tree: UnitTestTree) {
-  let content = getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json');
-  content = angular10Comment + '\n' + content;
-  tree.overwrite('/projects/ss-angular-cli-app/tsconfig.app.json', content);
+function patchTsConfigToSimulateAngular10(tree: UnitTestTree) {
+  const tsConfig = JSON5.parse(
+    getFileContent(tree, '/projects/ss-angular-cli-app/tsconfig.app.json'),
+  );
+
+  // Inject the `files` entry that older Angular versions included.
+  tsConfig.files = ['src/main.ts', 'src/polyfills.ts'];
+
+  // Prepend the comment that Angular 10 adds to every tsconfig.
+  const patched = angular10Comment + '\n' + JSON.stringify(tsConfig, null, 2);
+  tree.overwrite('/projects/ss-angular-cli-app/tsconfig.app.json', patched);
 }
 
 describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
@@ -37,15 +52,17 @@ describe('https://github.com/single-spa/single-spa-angular/issues/249', () => {
 
   beforeEach(async () => {
     appTree = await createWorkspace(testRunner, appTree, workspaceOptions, appOptions);
-    appendCommentToTsConfig(appTree);
+    patchTsConfigToSimulateAngular10(appTree);
   });
 
   test('should update `tsconfig.app.json` and add `main.single-spa.ts` to `files`', async () => {
-    appTree = await testRunner.runSchematic<NgAddOptions>(
-      'ng-add',
-      { project: 'ss-angular-cli-app', routing: true },
-      appTree,
-    );
+    appTree = await skipConsoleLogging(() => {
+      return testRunner.runSchematic<NgAddOptions>(
+        'ng-add',
+        { project: 'ss-angular-cli-app', routing: true },
+        appTree,
+      );
+    });
 
     const expectedTsConfigPath = normalize('projects/ss-angular-cli-app/tsconfig.app.json');
     const buffer: Buffer | null = appTree.read(expectedTsConfigPath);

@@ -1,7 +1,7 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
 import { Schema as NgAddOptions } from '../schema';
-import { createTestRunner, createWorkspace, VERSION } from './utils';
+import { createTestRunner, createWorkspace, skipConsoleLogging, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
@@ -27,11 +27,13 @@ describe('https://github.com/single-spa/single-spa-angular/issues/341', () => {
     });
 
     // Act
-    appTree = await testRunner.runSchematic<NgAddOptions>(
-      'ng-add',
-      { project: 'first-cool-app', routing: true },
-      appTree,
-    );
+    appTree = await skipConsoleLogging(() => {
+      return testRunner.runSchematic<NgAddOptions>(
+        'ng-add',
+        { project: 'first-cool-app', routing: true },
+        appTree,
+      );
+    });
 
     subscription.unsubscribe();
 
