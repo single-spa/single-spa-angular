@@ -1,6 +1,6 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
-import { createTestRunner, VERSION } from './utils';
+import { createTestRunner, skipConsoleLogging, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
@@ -45,7 +45,9 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Act
     appTree.overwrite('/angular.json', JSON.stringify(buildTarget));
 
-    await testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, appTree);
+    await skipConsoleLogging(() => {
+      return testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, appTree);
+    });
 
     buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     configurations = buildTarget.projects['first-cool-app'].architect.build.configurations;
@@ -73,7 +75,9 @@ describe('https://github.com/single-spa/single-spa-angular/issues/168', () => {
     // Act
     appTree.overwrite('/angular.json', JSON.stringify(buildTarget));
 
-    await testRunner.runSchematic('ng-add', { project: 'second-cool-app' }, appTree);
+    await skipConsoleLogging(() => {
+      return testRunner.runSchematic('ng-add', { project: 'second-cool-app' }, appTree);
+    });
 
     buildTarget = JSON.parse(`${appTree.get('/angular.json')!.content}`);
     configurations = buildTarget.projects['second-cool-app'].architect.build.configurations;
