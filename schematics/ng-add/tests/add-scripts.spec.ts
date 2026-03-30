@@ -1,6 +1,6 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 
-import { createTestRunner, VERSION } from './utils';
+import { createTestRunner, skipConsoleLogging, VERSION } from './utils';
 
 const workspaceOptions = {
   name: 'workspace',
@@ -40,7 +40,9 @@ describe('ng-add', () => {
     await generateApplication('first-cool-app');
     await generateApplication('second-cool-app');
 
-    await testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, workspaceTree);
+    await skipConsoleLogging(() => {
+      return testRunner.runSchematic('ng-add', { project: 'first-cool-app' }, workspaceTree);
+    });
 
     const tree = await testRunner.runSchematic(
       'ng-add',

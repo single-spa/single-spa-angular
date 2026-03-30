@@ -272,7 +272,16 @@ function mergeConfigs(
   }
 }
 
+declare const jest: any;
 function createLogger() {
+  // Under Jest, skip the NX logger and fall back to console.warn.
+  // Tests that care about suppressing output should wrap their call with `skipConsoleLogging`.
+  if (typeof jest !== 'undefined') {
+    return {
+      warn: (message: string) => console.warn(message),
+    };
+  }
+
   try {
     // If we're in an Nx workspace then use its logger.
     // eslint-disable-next-line
