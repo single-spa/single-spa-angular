@@ -1,5 +1,10 @@
 import * as fs from 'fs';
-import { findUp } from '@angular/cli/src/utilities/find-up';
+
+// Angular CLI 21.2+ renamed the sync variant to `findUpSync`; ≤21.1 only exports `findUp` (sync).
+// We load both at runtime and prefer `findUpSync` so the code works across both ranges.
+// eslint-disable-next-line  @typescript-eslint/no-var-requires
+const { findUpSync: _findUpSync, findUp: _findUp } = require('@angular/cli/src/utilities/find-up');
+const findUp: (names: string | string[], from: string) => string | null = _findUpSync ?? _findUp;
 
 import { externals } from './externals';
 import { removeMiniCssExtractRules } from './webpack-5/remove-mini-css-extract';
