@@ -1,6 +1,6 @@
 import { NavigationStart, Router } from '@angular/router';
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { singleSpaAngular, provideSingleSpaPlatform } from '@single-spa-community/angular';
+import { singleSpaAngular, provideSingleSpaPlatform } from 'single-spa-angular';
 
 import { loadMontserrat } from './fonts';
 import { appConfig } from './app/app.config';

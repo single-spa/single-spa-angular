@@ -1,10 +1,10 @@
 <% if (routing) { %>
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
 import { NavigationStart, Router } from '@angular/router';
-import { singleSpaAngular, provideSingleSpaPlatform } from '@single-spa-community/angular'
+import { singleSpaAngular, provideSingleSpaPlatform } from 'single-spa-angular'
 <% } else { %>
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { singleSpaAngular } from '@single-spa-community/angular'
+import { singleSpaAngular } from 'single-spa-angular'
 <% } %>
 
 import { appConfig } from './app/app.config';

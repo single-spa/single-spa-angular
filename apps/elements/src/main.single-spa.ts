@@ -1,5 +1,5 @@
-import { singleSpaAngularElements } from '@single-spa-community/angular/elements';
-import { provideSingleSpaPlatform } from '@single-spa-community/angular';
+import { singleSpaAngularElements } from 'single-spa-angular/elements';
+import { provideSingleSpaPlatform } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 

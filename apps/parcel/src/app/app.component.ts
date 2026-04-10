@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { defer, shareReplay } from 'rxjs';
-import { ParcelModule } from '@single-spa-community/angular/parcel';
+import { ParcelModule } from 'single-spa-angular/parcel';
 
 import { config } from './ReactWidget/ReactWidget';
 

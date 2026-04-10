@@ -46,8 +46,8 @@ export const externals = [
   '@angular/upgrade/static',
 
   'single-spa',
-  '@single-spa-community/angular/internals',
-  '@single-spa-community/angular',
-  '@single-spa-community/angular/elements',
-  '@single-spa-community/angular/parcel',
+  'single-spa-angular/internals',
+  'single-spa-angular',
+  'single-spa-angular/elements',
+  'single-spa-angular/parcel',
 ];
