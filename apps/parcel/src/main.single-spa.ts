@@ -1,5 +1,5 @@
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { provideSingleSpaPlatform, singleSpaAngular } from '@single-spa-community/angular';
+import { provideSingleSpaPlatform, singleSpaAngular } from 'single-spa-angular';
 
 import { AppComponent } from './app/app.component';
 

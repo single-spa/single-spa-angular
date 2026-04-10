@@ -1,5 +1,5 @@
 {
-  "name": "@single-spa-community/angular",
+  "name": "single-spa-angular",
   "version": "0.0.0",
   "description": "Helpers for building single-spa applications which use Angular 2+",
   "repository": {
@@ -34,7 +34,7 @@
     "test": "yarn clean && jest",
     "lint": "eslint apps libs --ext ts",
     "// - SINGLE-SPA-ANGULAR": "Scripts for building single-spa-angular",
-    "build:single-spa-angular": "nx build single-spa-community-angular --skip-nx-cache && cpx README.md lib",
+    "build:single-spa-angular": "nx build single-spa-angular --skip-nx-cache && cpx README.md lib",
     "// - WEBPACK": "Scripts for building Webpack config transformer",
     "build:webpack": "rimraf lib/lib && tsc -p tsconfig.webpack.json",
     "// - SYSTEM": "Scripts for building singla-spa-angular in SystemJS format",
@@ -53,6 +53,7 @@
     "serve:app:elements": "yarn nx serve elements --disable-host-check --live-reload false --port 4000",
     "serve:app:parcel": "yarn nx serve parcel --disable-host-check --live-reload false --port 4400",
     "serve:app:root-config": "yarn webpack-dev-server --config apps/root-config/webpack.config.js",
+    "serve:app:assets": "yarn serve system -s -l 4600 --cors",
     "serve:all": "concurrently 'yarn:serve:app:*'",
     "// - INTEGRATION BUILDS": "Build apps that are required for E2E testing #requires yarn install:integration",
     "build:app:shop": "nx build shop",

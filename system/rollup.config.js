@@ -26,23 +26,23 @@ const packages = ['2022']
   .map(ecma => [
     {
       ecma,
-      angularPackage: '@single-spa-community/angular/internals',
-      filename: 'single-spa-community-angular-internals',
+      angularPackage: 'single-spa-angular/internals',
+      filename: 'single-spa-angular-internals',
     },
     {
       ecma,
-      angularPackage: '@single-spa-community/angular',
-      filename: 'single-spa-community-angular',
+      angularPackage: 'single-spa-angular',
+      filename: 'single-spa-angular',
     },
     {
       ecma,
-      angularPackage: '@single-spa-community/angular/elements',
-      filename: 'single-spa-community-angular-elements',
+      angularPackage: 'single-spa-angular/elements',
+      filename: 'single-spa-angular-elements',
     },
     {
       ecma,
-      angularPackage: '@single-spa-community/angular/parcel',
-      filename: 'single-spa-community-angular-parcel',
+      angularPackage: 'single-spa-angular/parcel',
+      filename: 'single-spa-angular-parcel',
     },
   ])
   .flat();

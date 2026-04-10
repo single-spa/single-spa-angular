@@ -1,6 +1,6 @@
 import { NavigationStart, Router } from '@angular/router';
 import { bootstrapApplication, platformBrowser } from '@angular/platform-browser';
-import { provideSingleSpaPlatform, singleSpaAngular } from '@single-spa-community/angular';
+import { provideSingleSpaPlatform, singleSpaAngular } from 'single-spa-angular';
 
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
