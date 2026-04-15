@@ -13,7 +13,7 @@ if (environment.production) {
 const lifecycles = singleSpaAngular({
   bootstrapFunction: () =>
     platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
-  template: '<navbar-root />',
+  template: () => '<navbar-root />',
   NgZone,
   Router,
   NavigationStart,
