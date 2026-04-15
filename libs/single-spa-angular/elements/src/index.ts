@@ -1,11 +1,11 @@
 import type { LifeCycles } from 'single-spa';
 import type { NgElement } from '@angular/elements';
 import {
-  type BaseSingleSpaAngularOptions,
+  BaseSingleSpaAngularOptions,
   getContainerElementAndSetTemplate,
-} from '@single-spa-community/angular/internals';
+} from 'single-spa-angular/internals';
 
-import type { BootstrappedSingleSpaAngularElementsOptions } from './types';
+import { BootstrappedSingleSpaAngularElementsOptions } from './types';
 
 const defaultOptions: BootstrappedSingleSpaAngularElementsOptions = {
   element: null,
