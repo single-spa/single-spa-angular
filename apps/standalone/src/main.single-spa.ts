@@ -1,6 +1,7 @@
+import { NgZone } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { singleSpaAngular, enableProdMode } from '@single-spa-community/angular';
+import { singleSpaAngular, enableProdMode } from 'single-spa-angular';
 
 import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
@@ -15,7 +16,7 @@ const lifecycles = singleSpaAngular({
   template: '<standalone-root />',
   Router,
   NavigationStart,
-  NgZone: 'noop',
+  NgZone,
 });
 
 export const bootstrap = lifecycles.bootstrap;

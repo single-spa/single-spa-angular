@@ -1,10 +1,7 @@
+import { NgZone } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {
-  singleSpaAngular,
-  getSingleSpaExtraProviders,
-  enableProdMode,
-} from '@single-spa-community/angular';
+import { singleSpaAngular, getSingleSpaExtraProviders, enableProdMode } from 'single-spa-angular';
 
 import { loadMontserrat } from './fonts';
 import { AppModule } from './app/app.module';
@@ -17,14 +14,12 @@ if (environment.production) {
 const lifecycles = singleSpaAngular({
   bootstrapFunction: () =>
     loadMontserrat().then(() =>
-      platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule, {
-        ngZone: 'noop',
-      }),
+      platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
     ),
   template: '<shop-root />',
   Router,
   NavigationStart,
-  NgZone: 'noop',
+  NgZone,
 });
 
 export const bootstrap = lifecycles.bootstrap;

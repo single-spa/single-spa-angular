@@ -1,6 +1,6 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { singleSpaAngularElements } from '@single-spa-community/angular/elements';
-import { enableProdMode, getSingleSpaExtraProviders } from '@single-spa-community/angular';
+import { singleSpaAngularElements } from 'single-spa-angular/elements';
+import { enableProdMode, getSingleSpaExtraProviders } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -19,7 +19,9 @@ const lifecycles = singleSpaAngularElements({
 
     const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
       AppModule,
-      { ngZone: 'noop' },
+      {
+        ngZone: 'noop',
+      },
     );
 
     ngModuleRef.onDestroy(() => unmountableStyles.unuse());

@@ -1,10 +1,7 @@
+import { NgZone } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NavigationStart, Router } from '@angular/router';
-import {
-  singleSpaAngular,
-  getSingleSpaExtraProviders,
-  enableProdMode,
-} from '@single-spa-community/angular';
+import { singleSpaAngular, getSingleSpaExtraProviders, enableProdMode } from 'single-spa-angular';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -19,7 +16,6 @@ const lifecycles = singleSpaAngular({
     singleSpaPropsSubject.next(singleSpaProps);
     const ngModuleRef = await platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(
       AppModule,
-      { ngZone: 'noop' },
     );
     ngModuleRef.onDestroy(() => {
       // This is used only for testing purposes.
@@ -28,7 +24,7 @@ const lifecycles = singleSpaAngular({
     return ngModuleRef;
   },
   template: '<chat-root />',
-  NgZone: 'noop',
+  NgZone,
   Router,
   NavigationStart,
 });
