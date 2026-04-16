@@ -3,7 +3,11 @@ import type { LifeCycles } from 'single-spa';
 import { getContainerElementAndSetTemplate } from 'single-spa-angular/internals';
 
 import { SingleSpaPlatformLocation } from './platform-providers';
-import type { SingleSpaAngularOptions, BootstrappedSingleSpaAngularOptions } from './types';
+import type {
+  SingleSpaAngularOptions,
+  BootstrappedSingleSpaAngularOptions,
+  BootstrappedInstanceRef,
+} from './types';
 
 const defaultOptions = {
   // Required options that will be set by the library consumer.
@@ -14,7 +18,7 @@ const defaultOptions = {
   Router: undefined,
   domElementGetter: undefined, // only optional if you provide a domElementGetter as a custom prop
   updateFunction: () => Promise.resolve(),
-  bootstrappedRef: null,
+  instances: {},
 };
 
 export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): LifeCycles<T> {
@@ -53,7 +57,12 @@ export function singleSpaAngular<T>(userOptions: SingleSpaAngularOptions<T>): Li
   };
 }
 
-async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
+async function bootstrap(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
+  const instance: BootstrappedInstanceRef = {
+    bootstrappedRef: null,
+  };
+  options.instances[props.name || props.appName] = instance;
+
   if (options.NgZone === 'noop') {
     return;
   }
@@ -77,8 +86,8 @@ async function bootstrap(options: BootstrappedSingleSpaAngularOptions): Promise<
   // Angular zone via `NgZone.run()`, which signals to Angular that something has changed
   // and change detection should run.
   // See https://github.com/single-spa/single-spa-angular/issues/86
-  options.routingEventListener = () => {
-    options.bootstrappedNgZone!.run(() => {});
+  instance.routingEventListener = () => {
+    instance.bootstrappedNgZone!.run(() => {});
   };
 }
 
@@ -126,6 +135,8 @@ async function mount(
 
   const bootstrappedOptions = options as BootstrappedSingleSpaAngularOptions;
 
+  const instance = bootstrappedOptions.instances[props.name || props.appName];
+
   if (options.NgZone !== 'noop') {
     const ngZone: NgZone = bootstrappedRef.injector.get(options.NgZone);
 
@@ -140,22 +151,25 @@ async function mount(
       skipLocationChangeOnNonImperativeRoutingTriggers(bootstrappedRef, options);
     }
 
-    bootstrappedOptions.bootstrappedNgZone = ngZone;
-    window.addEventListener('single-spa:routing-event', bootstrappedOptions.routingEventListener!);
+    instance.bootstrappedNgZone = ngZone;
+    window.addEventListener('single-spa:routing-event', instance.routingEventListener!);
   }
 
-  bootstrappedOptions.bootstrappedRef = bootstrappedRef;
+  instance.bootstrappedRef = bootstrappedRef;
   return bootstrappedRef;
 }
 
-function unmount(options: BootstrappedSingleSpaAngularOptions): Promise<void> {
+function unmount(options: BootstrappedSingleSpaAngularOptions, props: any): Promise<void> {
+  const instance = options.instances[props.name || props.appName];
+
   return Promise.resolve().then(() => {
-    if (options.routingEventListener) {
-      window.removeEventListener('single-spa:routing-event', options.routingEventListener);
+    if (instance.routingEventListener) {
+      window.removeEventListener('single-spa:routing-event', instance.routingEventListener);
     }
 
-    options.bootstrappedRef!.destroy();
-    options.bootstrappedRef = null;
+    instance.bootstrappedRef!.destroy();
+    instance.bootstrappedRef = null;
+    instance.bootstrappedNgZone = undefined;
   });
 }
 
