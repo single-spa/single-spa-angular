@@ -14,12 +14,6 @@ This lets you have multiple Angular microfrontends coexist within the same page.
 
 See [documentation on single-spa.js.org](https://single-spa.js.org/docs/ecosystem-angular.html).
 
-## Project Status
-
-The package has been republished under the `@single-spa-community` scope due to a change in maintainership.
-
-> **Note:** This package is the continuation of the original `single-spa-angular` package. If you are migrating from `single-spa-angular`, simply update the package name in your dependencies — no other changes are required.
-
 ## Compatibility
 
 | `single-spa-angular` | Angular |
