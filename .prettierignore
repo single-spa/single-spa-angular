@@ -6,8 +6,7 @@ node_modules
 .npmignore
 .editorconfig
 *.template
-yarn.lock
-yarn-error.log
+pnpm-lock.yaml
 LICENSE
 browserslist
 *.ico
