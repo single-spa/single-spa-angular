@@ -121,8 +121,8 @@ async function mount(
   // Without it, Angular's router and single-spa will conflict when handling browser navigation,
   // leading to infinite loops or incorrect routing behavior.
   //
-  // However, if the app is running in zoneless mode (`NgZone: 'noop'`), change detection is
-  // managed manually and the platform location override is not needed, so we skip this check.
+  // Zoneless apps need this too. The popstate handling in
+  // SingleSpaPlatformLocation does not depend on zone.js.
   //
   // If the user provided a `Router` but `SingleSpaPlatformLocation` is not present in the
   // platform injector, it means `provideSingleSpaPlatform()` was not passed to `platformBrowser()`
