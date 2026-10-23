@@ -18,6 +18,7 @@ See [documentation on single-spa.js.org](https://single-spa.js.org/docs/ecosyste
 
 | `single-spa-angular` | Angular |
 | -------------------- | ------- |
+| `22.x`               | `22.x`  |
 | `21.x`               | `21.x`  |
 | `20.x`               | `20.x`  |
 | `19.x`               | `19.x`  |
