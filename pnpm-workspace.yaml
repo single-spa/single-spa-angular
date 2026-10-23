@@ -8,3 +8,5 @@ allowBuilds:
   lmdb: true
   msgpackr-extract: true
   nx: true
+patchedDependencies:
+  '@angular/core@22.1.8': patches/@angular__core@22.1.8.patch

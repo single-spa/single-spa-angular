@@ -2,7 +2,7 @@ import type { Config } from 'jest';
 import { createDefaultPreset } from 'ts-jest';
 
 const config: Config = {
-  ...createDefaultPreset(),
+  ...createDefaultPreset({ tsconfig: { types: ['jest', 'node'] } }),
   testPathIgnorePatterns: ['/node_modules/', '/lib/', 'cypress'],
   snapshotFormat: { escapeString: true, printBasicPrototype: true },
   moduleNameMapper: {

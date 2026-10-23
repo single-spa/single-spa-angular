@@ -62,3 +62,9 @@ migrations.json
 # SystemJS directories
 es2022
 system/es2022
+
+.claude/worktrees
+.claude/settings.local.json
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs

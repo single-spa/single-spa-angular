@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { createCustomElement } from '@angular/elements';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
@@ -18,7 +18,7 @@ export class AppModule implements DoBootstrap {
     customElements.define(
       'elements-root',
       createCustomElement(AppComponent, {
-        injector: createEnvironmentInjector([provideHttpClient()], this.injector),
+        injector: createEnvironmentInjector([provideHttpClient(withXhr())], this.injector),
       }),
     );
   }

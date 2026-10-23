@@ -16,3 +16,7 @@ export * from '@angular/core/primitives/signals';
 export * from '@angular/core/primitives/di';
 export * from '@angular/core/rxjs-interop';
 export * from '@angular/core/primitives/event-dispatch';
+
+// Both @angular/core and event-dispatch export Attribute, so export * drops it.
+// Keep the core decorator, because apps import it from @angular/core.
+export { Attribute } from '@angular/core';
