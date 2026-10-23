@@ -108,8 +108,8 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
  * which creates a `Subject` internally for listening to `popstate` events. We provide
  * this custom class in the root injector used during application bootstrapping.
  *
- * THIS IS REQUIRED FOR ALL APPLICATIONS (BOTH ZONE AND ZONELESS). Pass the result of
- * this function to `platformBrowser()` when bootstrapping your application:
+ * THIS IS REQUIRED FOR ALL APPLICATIONS THAT USE ANGULAR'S ROUTER (BOTH ZONE AND ZONELESS).
+ * Pass the result of this function to `platformBrowser()` when bootstrapping your application:
  *
  * @example
  * const lifecycles = singleSpaAngular({
