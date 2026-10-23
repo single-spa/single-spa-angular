@@ -17,33 +17,38 @@ jobs:
 
       - uses: actions/cache@v4
         with:
-          # Default cache directory for both Yarn and Cypress
+          # Default cache directory for Cypress
           path: ~/.cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-cypress-
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
           registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn --pure-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Build packages
-        run: yarn build
+        run: pnpm build
 
       - name: Build integration apps
-        run: yarn build:all
+        run: pnpm build:all
 
       - name: Run end-to-end tests via Cypress
         env:
           NO_UPDATE_CHECK: 1
-        run: yarn test:ci:integration
+        run: pnpm test:ci:integration
 
       - name: Run Jest
-        run: yarn test:ci
+        run: pnpm test:ci
