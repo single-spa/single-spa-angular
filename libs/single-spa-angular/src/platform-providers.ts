@@ -29,11 +29,7 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
 
     const platform = inject(PlatformRef);
 
-    // Clean up the Subject when the Angular platform is destroyed (e.g., app unmount in single-spa)
-    // to prevent memory leaks and dangling subscriptions.
-    platform.onDestroy(() => this.onPopState$.complete());
-
-    this.onPopState$
+    const subscription = this.onPopState$
       .pipe(
         // `switchMap` cancels any pending timer from a previous popstate event when a new one
         // arrives. This is the key to avoiding infinite loops and race conditions during fast
@@ -75,6 +71,8 @@ export class SingleSpaPlatformLocation extends BrowserPlatformLocation {
           fn(event);
         }
       });
+
+    platform.onDestroy(() => subscription.unsubscribe());
   }
 
   pushState(state: any, title: string, url: string): void {
