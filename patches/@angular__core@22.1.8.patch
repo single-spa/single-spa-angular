@@ -1,0 +1,95 @@
+diff --git a/fesm2022/_not_found-chunk.mjs b/fesm2022/_not_found-chunk.mjs
+index 864ad3e703ba6cf6b8a1bccdc6db520be68d0616..9a2e59e7512e70b33bae41e51d2f2dcf86ffa812 100755
+--- a/fesm2022/_not_found-chunk.mjs
++++ b/fesm2022/_not_found-chunk.mjs
+@@ -13,7 +13,12 @@ function setCurrentInjector(injector) {
+   _currentInjector = injector;
+   return former;
+ }
+-function inject(token, options) {
++// Both @angular/core and @angular/core/primitives/di export a function named
++// inject, causing a named export conflict when merging into a single SystemJS
++// bundle. Rename the primitives/di version to injectFromCurrentInjector to
++// reflect its actual behavior and align with the existing getCurrentInjector
++// and setCurrentInjector naming convention in that module.
++function injectFromCurrentInjector(token, options) {
+   const currentInjector = getCurrentInjector();
+   if (!currentInjector) {
+     throw new Error('Current injector is not set.');
+@@ -35,5 +40,5 @@ function isNotFound(e) {
+   return e === NOT_FOUND || e?.name === 'ɵNotFound';
+ }
+ 
+-export { NOT_FOUND, NotFoundError, getCurrentInjector, inject, isNotFound, setCurrentInjector };
++export { NOT_FOUND, NotFoundError, getCurrentInjector, injectFromCurrentInjector, isNotFound, setCurrentInjector };
+ //# sourceMappingURL=_not_found-chunk.mjs.map
+diff --git a/fesm2022/_resource-chunk.mjs b/fesm2022/_resource-chunk.mjs
+index d5b5d2a3eabd18662da28bd4b40b3cf749a2da7e..0640b5c28f754974eec0dabcbc7f5c249b26a723 100755
+--- a/fesm2022/_resource-chunk.mjs
++++ b/fesm2022/_resource-chunk.mjs
+@@ -6,7 +6,7 @@
+ 
+ import { inject, RuntimeError, formatRuntimeError, ErrorHandler, DestroyRef, InjectionToken, signalAsReadonlyFn, assertInInjectionContext, TransferState, effect, PendingTasks, signal, isSignal, Injector } from './_pending_tasks-chunk.mjs';
+ import { setActiveConsumer, createComputed, SIGNAL } from './_effect-chunk.mjs';
+-import { untracked as untracked$1, createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn } from './_untracked-chunk.mjs';
++import { untracked_internal, createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn } from './_untracked-chunk.mjs';
+ 
+ class OutputEmitterRef {
+   destroyed = false;
+@@ -98,7 +98,7 @@ function computed(computation, options) {
+ }
+ 
+ function untracked(nonReactiveReadsFn) {
+-  return untracked$1(nonReactiveReadsFn);
++  return untracked_internal(nonReactiveReadsFn);
+ }
+ 
+ class ResourceDependencyError extends Error {
+diff --git a/fesm2022/_untracked-chunk.mjs b/fesm2022/_untracked-chunk.mjs
+index 223b74c05deec47994b7019a533fa259cfd769b7..983bcafa767ec381ff288e94e6ba7a8ad2ce8e24 100755
+--- a/fesm2022/_untracked-chunk.mjs
++++ b/fesm2022/_untracked-chunk.mjs
+@@ -89,7 +89,9 @@ const LINKED_SIGNAL_NODE = /* @__PURE__ */(() => {
+   };
+ })();
+ 
+-function untracked(nonReactiveReadsFn) {
++// Both @angular/core and @angular/core/primitives/signals export a function named
++// untracked, causing a named export conflict when merging into a single SystemJS bundle.
++function untracked_internal(nonReactiveReadsFn) {
+   const prevConsumer = setActiveConsumer(null);
+   try {
+     return nonReactiveReadsFn();
+@@ -98,5 +100,5 @@ function untracked(nonReactiveReadsFn) {
+   }
+ }
+ 
+-export { createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn, untracked };
++export { createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn, untracked_internal };
+ //# sourceMappingURL=_untracked-chunk.mjs.map
+diff --git a/fesm2022/primitives-di.mjs b/fesm2022/primitives-di.mjs
+index fe4091aa66143215bf27a70726213dbe1a12e267..660313653d3943b8037926aa56c2cbfff3b4ba03 100755
+--- a/fesm2022/primitives-di.mjs
++++ b/fesm2022/primitives-di.mjs
+@@ -4,7 +4,7 @@
+  * License: MIT
+  */
+ 
+-export { NOT_FOUND, NotFoundError, getCurrentInjector, inject, isNotFound, setCurrentInjector } from './_not_found-chunk.mjs';
++export { NOT_FOUND, NotFoundError, getCurrentInjector, injectFromCurrentInjector, isNotFound, setCurrentInjector } from './_not_found-chunk.mjs';
+ 
+ function defineInjectable(opts) {
+   return {
+diff --git a/fesm2022/primitives-signals.mjs b/fesm2022/primitives-signals.mjs
+index 4e6bdc7b5aa1705dd6bf29f2d7799b419a584c71..1a65d083327aeb6e64ca1238f0b1a058e5aa2f56 100755
+--- a/fesm2022/primitives-signals.mjs
++++ b/fesm2022/primitives-signals.mjs
+@@ -6,7 +6,7 @@
+ 
+ import { SIGNAL, consumerMarkDirty, isInNotificationPhase, consumerPollProducersForChange, consumerBeforeComputation, consumerAfterComputation, consumerDestroy, REACTIVE_NODE } from './_effect-chunk.mjs';
+ export { BASE_EFFECT_NODE, SIGNAL_NODE, createComputed, createSignal, defaultEquals, finalizeConsumerAfterComputation, getActiveConsumer, isReactive, producerAccessed, producerIncrementEpoch, producerMarkClean, producerNotifyConsumers, producerUpdateValueVersion, producerUpdatesAllowed, resetConsumerBeforeComputation, runEffect, runPostProducerCreatedFn, runPostSignalSetFn, setActiveConsumer, setPostProducerCreatedFn, setPostSignalSetFn, setThrowInvalidWriteToSignalError, signalGetFn, signalSetFn, signalUpdateFn } from './_effect-chunk.mjs';
+-export { createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn, untracked } from './_untracked-chunk.mjs';
++export { createLinkedSignal, linkedSignalSetFn, linkedSignalUpdateFn, untracked_internal } from './_untracked-chunk.mjs';
+ export { setAlternateWeakRefImpl } from './_weak_ref-chunk.mjs';
+ 
+ const formatter = {

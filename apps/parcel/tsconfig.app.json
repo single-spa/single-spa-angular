@@ -2,7 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["systemjs"]
   },
-  "files": ["src/main.single-spa.ts"]
+  "files": ["src/main.single-spa.ts"],
+  "angularCompilerOptions": {
+    "strictTemplates": false
+  }
 }

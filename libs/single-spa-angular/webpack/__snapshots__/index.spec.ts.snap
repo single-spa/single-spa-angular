@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Webpack config Remove MiniCssExtractPlugin should not break if no Mini Css Extract configurations specified 1`] = `
 Array [

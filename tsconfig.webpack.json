@@ -2,6 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./lib/lib/webpack",
+    "rootDir": "./libs/single-spa-angular/webpack",
     "target": "ES2015",
     "module": "CommonJS",
     "types": ["node"]
